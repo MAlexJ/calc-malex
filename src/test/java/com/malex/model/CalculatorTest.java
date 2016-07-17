@@ -19,8 +19,8 @@ public class CalculatorTest {
         calculator = new Calculator();
         calculator.addOperation(new AddOperation());
         calculator.addOperation(new DivisionOperation());
-        calculator.addOperation(new SubtractionOperation());
         calculator.addOperation(new MultiplicationOperation());
+        calculator.addOperation(new SubtractionOperation());
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.malex.controller;
 
-import com.malex.MainApp;
 import com.malex.model.Calculator;
 import com.malex.service.impl.AddOperation;
 import com.malex.service.impl.DivisionOperation;
@@ -57,7 +56,6 @@ public class ViewController {
     @FXML
     private Button equals;
 
-
     // номер в памяти
     private int number;
 
@@ -67,23 +65,19 @@ public class ViewController {
     // Модель
     private static Calculator calculator;
 
-    private String operator = "";
-
     // Инициализация модели
-    public ViewController() {
+    static {
         calculator = new Calculator();
         calculator.addOperation(new AddOperation());
         calculator.addOperation(new DivisionOperation());
         calculator.addOperation(new SubtractionOperation());
         calculator.addOperation(new MultiplicationOperation());
-
     }
 
-    private MainApp mainApp;
+    private String operator = "";
 
     // Инициализация котроллера
-    public void init(MainApp mainApp) {
-        this.mainApp = mainApp;
+    public void init() {
         this.display.setEditable(false);
         this.display.setText(START_CURSOR_POSITION);
     }
@@ -139,6 +133,8 @@ public class ViewController {
                 break;
             case "comma":
                 display.appendText(".");
+                break;
+            default:
                 break;
         }
     }

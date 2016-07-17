@@ -32,7 +32,7 @@ public class MainApp extends Application {
 
             //Получение контроллера
             ViewController controller = loader.getController();
-            controller.init(this);
+            controller.init();
 
             primaryStage.setScene(new Scene(anchorPane));
             primaryStage.show();
