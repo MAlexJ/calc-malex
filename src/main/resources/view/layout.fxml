@@ -62,7 +62,7 @@
                         <Button fx:id="two" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Button fx:id="three" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="3" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                         <Button fx:id="add" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperation" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="+" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                        <Button fx:id="comma" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="47.0" prefWidth="59.0" text="," GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <Button fx:id="comma" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="," GridPane.columnIndex="2" GridPane.rowIndex="5" />
                         <Button fx:id="equals" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperation" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="=" GridPane.columnIndex="3" GridPane.rowIndex="5" />
                         <Button fx:id="zero" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="50.0" prefWidth="116.0" text="0" GridPane.columnSpan="3" GridPane.rowIndex="5" />
                     </children>

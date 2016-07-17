@@ -7,6 +7,9 @@ import com.malex.service.impl.SubtractionOperation;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 
@@ -31,28 +34,66 @@ public class CalculatorTest {
      * multiplication
      */
     @Test
-    public void testNumbers() {
-        test("add", 1, 2, 3);
+    public void testSimplyNumbers() {
+        test("add", "1", "2", "3");
+        test("add", "0.00", "1", "1.00");
+        test("add", "0.0001", "1", "1.0001");
 
-        test("subtraction", 1, 2, -1);
+        test("subtraction", "0", "1", "-1");
+        test("subtraction", "0.00", "1", "-1.00");
 
-        test("division", 1, 2, 0);
-        test("division", 0, 1, 0);
-        test("division", 1, 0, 0);
+        test("subtraction", "1", "2", "-1");
+        test("division", "1", "2", "0.5");
+        test("division", "0", "1", "0");
 
-        test("multiplication", 1, 2, 2);
+        test("multiplication", "1", "2", "2");
+
+        BigInteger bigNumMAX = new BigInteger(String.valueOf(Integer.MAX_VALUE));
+        BigInteger bigNumMIN = new BigInteger(String.valueOf(Integer.MIN_VALUE));
+
+        test("add", bigNumMAX.toString(), bigNumMAX.toString(), bigNumMAX.add(bigNumMAX).toString());
+        test("add", bigNumMAX.toString(), bigNumMIN.toString(), "-1");
+        test("add", bigNumMIN.toString(), bigNumMAX.toString(), "-1");
+
+        test("multiplication", bigNumMAX.toString(), bigNumMAX.toString(), bigNumMAX.multiply(bigNumMAX).toString());
+        test("multiplication", bigNumMAX.toString(), bigNumMIN.toString(), bigNumMAX.multiply(bigNumMIN).toString());
+
+        test("subtraction", bigNumMAX.toString(), bigNumMIN.toString(), bigNumMAX.subtract(bigNumMIN).toString());
+        test("subtraction", bigNumMIN.toString(), bigNumMIN.toString(), bigNumMIN.subtract(bigNumMIN).toString());
+
+        BigDecimal bigDecimalMAX = new BigDecimal(String.valueOf(Double.MAX_VALUE));
+        BigDecimal bigDecimalMIN = new BigDecimal(String.valueOf(Double.MIN_VALUE));
+
+        test("add", bigDecimalMAX.toString(), bigDecimalMIN.toString(), bigDecimalMAX.add(bigDecimalMIN).toString());
+        test("subtraction", bigDecimalMAX.toString(), bigDecimalMIN.toString(), bigDecimalMAX.subtract(bigDecimalMIN).toString());
+        test("multiplication", bigDecimalMAX.toString(), bigDecimalMIN.toString(), bigDecimalMAX.multiply(bigDecimalMIN).toString());
+        test("division", bigDecimalMAX.toString(), bigDecimalMIN.toString(), bigDecimalMAX.divide(bigDecimalMIN, 14, BigDecimal.ROUND_HALF_UP).toString());
     }
 
     @Test
     public void testIncorrectValues() {
-        // некорректное значение ператора
-        incorrectValues("", 1, 2);
-        incorrectValues(null, 1, 2);
-        incorrectValues("xxxxxxx", 1, 2);
-        incorrectValues("ADD", 1, 2);
+        incorrectValues(null, "1", "2");
+        incorrectValues("+", null, "2");
+        incorrectValues("+", "3", null);
+
+        incorrectValues("", "1", "2");
+        incorrectValues("+", "", "2");
+        incorrectValues("-", "1", "");
+
+        incorrectValues("xxxxxxx", "1", "2");
+        incorrectValues("+", "number", "2");
+        incorrectValues("-", "1", "number");
+
+        incorrectValues("division", "1", "0");
     }
 
-    private void incorrectValues(String operationName, int numberOne, int numberTwo) {
+    @Test
+    public void testAccuracy() {
+        test("multiplication", "111111111", "111111111", "12345678987654321");
+        test("multiplication", "12345679", "9", "111111111");
+    }
+
+    private void incorrectValues(String operationName, String numberOne, String numberTwo) {
         try {
             //when
             calculator.calculate(operationName, numberOne, numberTwo);
@@ -62,9 +103,9 @@ public class CalculatorTest {
         }
     }
 
-    private void test(String operationName, int numberOne, int numberTwo, int expectedResult) {
+    private void test(String operationName, String numberOne, String numberTwo, String expectedResult) {
         //when
-        int actualResult = calculator.calculate(operationName, numberOne, numberTwo);
+        String actualResult = calculator.calculate(operationName, numberOne, numberTwo);
 
         //then
         assertEquals(expectedResult, actualResult);

@@ -3,6 +3,8 @@ package com.malex.service.impl;
 import com.malex.model.enums.OperationName;
 import com.malex.service.AbstractOperation;
 
+import java.math.BigDecimal;
+
 public class DivisionOperation extends AbstractOperation {
 
     public DivisionOperation() {
@@ -10,11 +12,11 @@ public class DivisionOperation extends AbstractOperation {
     }
 
     @Override
-    public int execute(int numberOne, int numberTwo) {
+    public BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) {
 
-        if (numberTwo == 0) {
-            return 0;
+        if (numberTwo.compareTo(BigDecimal.ZERO) == 0) {
+            throw new ArithmeticException("Division by zero !");
         }
-        return numberOne / numberTwo;
+        return numberOne.divide(numberTwo, 14, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
     }
 }

@@ -4,6 +4,7 @@ package com.malex.model;
 import com.malex.model.enums.OperationName;
 import com.malex.service.Operation;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,17 +42,17 @@ public class Calculator {
      * @param numberTwo     второе число
      * @return результат операции над числами
      */
-    public int calculate(String operationName, int numberOne, int numberTwo) {
+    public String calculate(String operationName, String numberOne, String numberTwo) {
         OperationName name = OperationName.get(operationName);
         if (name == null) {
             throw new IllegalArgumentException("Invalid operation name");
         }
-        Operation operation = operations.get(name);
 
+        Operation operation = operations.get(name);
         if (operation == null) {
             throw new IllegalArgumentException("OperationName with this name doesn't exist!");
         }
-        return operation.execute(numberOne, numberTwo);
+        return operation.execute(new BigDecimal(numberOne), new BigDecimal(numberTwo)).toString();
     }
 
 }

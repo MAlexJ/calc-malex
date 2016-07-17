@@ -3,6 +3,8 @@ package com.malex.service.impl;
 import com.malex.model.enums.OperationName;
 import com.malex.service.AbstractOperation;
 
+import java.math.BigDecimal;
+
 public class SubtractionOperation extends AbstractOperation {
 
     public SubtractionOperation() {
@@ -10,7 +12,7 @@ public class SubtractionOperation extends AbstractOperation {
     }
 
     @Override
-    public int execute(int numberOne, int numberTwo) {
-        return numberOne - numberTwo;
+    public BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) {
+        return numberOne.subtract(numberTwo);
     }
 }
