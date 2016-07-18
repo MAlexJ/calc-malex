@@ -8,7 +8,8 @@ public enum OperationName {
     ADD("add"),
     SUBTRACTION("subtraction"),
     DIVISION("division"),
-    MULTIPLICATION("multiplication");
+    MULTIPLICATION("multiplication"),
+    PERCENT("percent");
 
     private String description;
 
@@ -22,6 +23,6 @@ public enum OperationName {
                 return name;
             }
         }
-        return null; //TODO NPE !!!
+        return null;
     }
 }

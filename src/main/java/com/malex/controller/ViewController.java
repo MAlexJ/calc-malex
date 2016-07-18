@@ -1,14 +1,12 @@
 package com.malex.controller;
 
 import com.malex.model.Calculator;
-import com.malex.service.impl.AddOperation;
-import com.malex.service.impl.DivisionOperation;
-import com.malex.service.impl.MultiplicationOperation;
-import com.malex.service.impl.SubtractionOperation;
+import com.malex.service.impl.*;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 
 import java.util.regex.Matcher;
@@ -26,44 +24,8 @@ public class ViewController {
     private TextField display;
 
     @FXML
-    private Button zero;
-    @FXML
-    private Button one;
-    @FXML
-    private Button two;
-    @FXML
-    private Button three;
-    @FXML
-    private Button four;
-    @FXML
-    private Button five;
-    @FXML
-    private Button six;
-    @FXML
-    private Button seven;
-    @FXML
-    private Button eight;
-    @FXML
-    private Button nine;
-
-    @FXML
-    private Button add;
-    @FXML
-    private Button subtraction;
-    @FXML
-    private Button multiplication;
-    @FXML
-    private Button division;
-    @FXML
-    private Button percent;
-    @FXML
     private Button reset;
-    @FXML
-    private Button sign;
-    @FXML
-    private Button comma;
-    @FXML
-    private Button equals;
+
 
     // значение первого числа
     private String numberOne = "";
@@ -90,6 +52,7 @@ public class ViewController {
         calculator.addOperation(new DivisionOperation());
         calculator.addOperation(new SubtractionOperation());
         calculator.addOperation(new MultiplicationOperation());
+        calculator.addOperation(new PercentOperation());
     }
 
     // Инициализация котроллера
@@ -101,7 +64,6 @@ public class ViewController {
     // Обработчик кнопок
     @FXML
     public void handlerNumbers(Event event) {
-
         if (display.getText().length() > 0) {  // поменять название кнопки
             reset.setText("C");
         }
@@ -111,11 +73,14 @@ public class ViewController {
             startPosition = false; // сброс стартовой позиции
         }
 
+        if (display.getText().startsWith("0") && display.getText().length() == 1) { // проверка на не допущения 012345
+            display.setText("");
+        }
+
         if (nextNumber) {   //проверка на начало следующего числа
             display.setText("");
             nextNumber = false;
         }
-
         Button btn = (Button) event.getSource();
         switch (btn.getId()) {
             case "zero":
@@ -163,7 +128,7 @@ public class ViewController {
         }
     }
 
-    //обработчик операция
+    //обработчик операций: +; -; *; /.
     @FXML
     public void handlerOperation(Event event) {
         Button btn = (Button) event.getSource();
@@ -191,7 +156,7 @@ public class ViewController {
         }
     }
 
-    // Обработчик кнопки сброс
+    // Обработчик кнопки сброс 'AC'
     @FXML
     public void handlerReset(Event event) {
         Button btn = (Button) event.getSource();
@@ -227,6 +192,59 @@ public class ViewController {
         }
     }
 
+    // дефолтое значение при получении процента одного числа
+    private final static String PERCENT_NUMBER_DEFAULT = "1";
+
+    //обработчик знака "%"
+    @FXML
+    public void handlerPercent(Event event) {
+        Button btn = (Button) event.getSource();
+        String percent = btn.getId();
+        if (numberTwo.isEmpty()) {
+            String calculate = calculator.calculate(percent, PERCENT_NUMBER_DEFAULT, this.display.getText());
+            this.display.setText(calculate);
+        } else {
+            String calculate = calculator.calculate(percent, this.numberOne, this.display.getText());
+            this.display.setText(calculate);
+        }
+    }
+
+    // дефолтое значение при получении процента одного числа
+    private final static String MEMORY_NUMBER_DEFAULT = "0";
+
+    // номер хранимый в памяти использую операции: MR; MC; M+; M-.
+    private static String numberInMemory = "0";
+
+    @FXML
+    public void handlerMemory(Event event) {
+        Button btn = (Button) event.getSource();
+        String memory = btn.getId();
+
+        switch (memory) {
+            case "mc":
+                numberInMemory = MEMORY_NUMBER_DEFAULT;
+                break;
+
+            case "m_plus":
+                numberInMemory = calculator.calculate("add", numberInMemory, this.display.getText());  //TODO "add" -> constant
+                this.nextNumber = true; //сброс начала курсора перед вводом нового числа
+                break;
+
+            case "m_minus":
+                numberInMemory = calculator.calculate("subtraction", numberInMemory, this.display.getText());  //TODO "subtraction" -> constant
+                this.nextNumber = true;  //сброс начала курсора перед вводом нового числа
+                break;
+
+            case "mr":
+                this.display.setText(numberInMemory);
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
     // Проверка на количество допустимых нулей в числе
     private boolean validateCountZero() {
         return !display.getText().startsWith("0") || display.getText().startsWith("0.") || display.getText().isEmpty();
@@ -248,7 +266,71 @@ public class ViewController {
         this.display.setText("0"); // set -> "0"
     }
 
-//    // минимальный шрифт текста в дисплее
+    // TODO Инициализация обработчика кнопок
+    @FXML
+    private void handlerKeyPressed(KeyEvent event) {
+
+        if (display.getText().length() > 0) {  // поменять название кнопки
+            reset.setText("C");
+        }
+
+        if (display.getText().equals("0") && startPosition) { // сброс дефолтного значения
+            display.setText("");
+            startPosition = false; // сброс стартовой позиции
+        }
+
+        if (nextNumber) {   //проверка на начало следующего числа
+            display.setText("");
+            nextNumber = false;
+        }
+
+        switch (event.getText()) {
+            case "0":
+                if (validateCountZero()) {
+                    display.appendText("0");
+                }
+                break;
+            case "1":
+                display.appendText("1");
+                break;
+            case "2":
+                display.appendText("2");
+                break;
+            case "3":
+                display.appendText("3");
+                break;
+            case "4":
+                display.appendText("4");
+                break;
+            case "5":
+                display.appendText("5");
+                break;
+            case "6":
+                display.appendText("6");
+                break;
+            case "7":
+                display.appendText("7");
+                break;
+            case "8":
+                display.appendText("8");
+                break;
+            case "9":
+                display.appendText("9");
+                break;
+            case ".":
+                if (display.getText().isEmpty()) {  // если первое значение пустое 0.00000
+                    display.appendText("0.");
+                }
+                if (!display.getText().contains(".")) {    // Проверка на наличее только одной точки
+                    display.appendText(".");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    //    // минимальный шрифт текста в дисплее
 //    private static final int MIX_FONT_SIZE_TEXT = 10; // FONT TextField
 
 
@@ -267,5 +349,6 @@ public class ViewController {
 //            fontSize = fontSize - STEP_FONT;
 //        }
 //    }
+
 }
 

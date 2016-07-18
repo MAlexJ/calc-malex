@@ -7,8 +7,6 @@ import org.junit.Test;
 import org.loadui.testfx.GuiTest;
 import org.loadui.testfx.utils.FXTestUtils;
 
-import java.util.concurrent.TimeUnit;
-
 import static junit.framework.TestCase.assertEquals;
 
 public class MainAppTest {
@@ -35,13 +33,20 @@ public class MainAppTest {
         testCalculate("1-3=", "-2");
 
         // negative numbers
+        testCalculate("1234567890~", "-1234567890");
         testCalculate("~1-3=", "-2");
         testCalculate("1~-3=", "-4");
         testCalculate("1~-3~=", "2");
+
+        // positive numbers float
+        testCalculate("123456.7890", "123456.7890");
+        testCalculate("1.01+1.1=", "2.11");
+        testCalculate("1-0.99=", "0.01");
+        testCalculate("1.01-3.01=", "-2");
     }
 
     @Test
-    public void testSetComma(){
+    public void testSetComma() {
         testCalculate("1..............", "1.");
         testCalculate("1.23....", "1.23");
         testCalculate("0.00....", "0.00");
@@ -56,6 +61,59 @@ public class MainAppTest {
         testCalculate("0.~", "0");
         testCalculate(".00=", "0");
         testCalculate("000.00", "0.00");
+        testCalculate("01234", "1234");
+    }
+
+    @Test
+    public void testPercent() {
+        // percent use one number
+        testCalculate("1%", "0.01");
+        testCalculate("1%=", "0.01");
+        testCalculate("1%===", "0.01");
+        testCalculate("1%%", "0.0001");
+        testCalculate("9%%%", "0.000009");
+        testCalculate("1%++++", "0.01");
+        testCalculate("1%+=========", "0.1");
+
+        // percent use two number
+        testCalculate("1+2%", "0.02");
+        testCalculate("1-2%", "0.02");
+        testCalculate("1*2%", "0.02");
+        testCalculate("1/2%", "0.02");
+
+        testCalculate("1+2%%", "0.0002");
+        testCalculate("1-2%=====", "0.9");
+        testCalculate("1+2%==", "1.04");
+//        testCalculate("1+2%*3=", "1.06");  TODO need fix operation priority: *, / -> +, -
+    }
+
+    @Test
+    public void testButtonMemory() {
+        // simply operation
+        testCalculate("r", "0");
+        testCalculate("56r", "0");
+        testCalculate("2pppppp", "2");
+        testCalculate("2mmmmmm", "2");
+        testCalculate("c5pmr", "0");
+        testCalculate("c5pmmr", "-5");
+        testCalculate("c5mpr", "0");
+
+        // simply operation M+
+        testCalculate("c1prar", "1");
+        testCalculate("c1.001pr456ar", "1.001");
+        testCalculate("c2~.001p123", "123");
+        testCalculate("c00.001~p123r", "-0.001");
+
+        // simply operation M-
+
+        // replace operation
+        testCalculate("c2ppppppppppr", "20");
+        testCalculate("c2mmmmmmmmmmr", "-20");
+
+        // memory operation and arithmetic operation
+        testCalculate("c5p63+r=", "68");
+        testCalculate("c5m63+r=", "58");
+
 
     }
 
@@ -75,7 +133,7 @@ public class MainAppTest {
     }
 
     @Test
-    public void testAccuracy() { //TODO http://chto-zachem-pochemu.ru/kak-proverit-tochnost-kalkyliatora/
+    public void testAccuracy() {                // http://chto-zachem-pochemu.ru/kak-proverit-tochnost-kalkyliatora/
         testCalculate("111111111*111111111=", "12345678987654321");
         testCalculate("12345679*9=", "111111111");
     }
@@ -87,7 +145,7 @@ public class MainAppTest {
         testCalculate("1***", "1");
         testCalculate("1///", "1");
 
-        testCalculate("1+========", "9");
+        testCalculate("1+=========", "10");
         testCalculate("1-=======", "-6");
         testCalculate("1*=======", "1");
         testCalculate("1/=======", "1");
@@ -98,7 +156,6 @@ public class MainAppTest {
 
     private void testCalculate(String arithmeticExpression, String expectedResult) {
         //#Step: 1. Clear display
-        controller.sleep(50, TimeUnit.MILLISECONDS);
         controller.click("#reset");
 
         //#Step: 2. Click on buttons
@@ -111,12 +168,16 @@ public class MainAppTest {
         String actualResult = display.getText();
 
         //# Step: 4. Compare the expected results with the actual result.
-        controller.sleep(100, TimeUnit.MILLISECONDS);
         assertEquals(expectedResult, actualResult);
     }
 
     // Поиск ид кнопки по символу.
     // Знак '+/-' еквивалентен '~'
+    // Знак 'a' еквивалентен 'reset'
+    // Знак 'm+' еквивалентен 'p'
+    // Знак 'm-' еквивалентен 'm'
+    // Знак 'mc' еквивалентен 'c'
+    // Знак 'mr' еквивалентен 'r'
     private String findKey(char key) {
         switch (key) {
             case '0':
@@ -151,11 +212,29 @@ public class MainAppTest {
             case '=':
                 return "#equals";
 
+            case '%':
+                return "#percent";
 
             case '~':
                 return "#sign";
             case '.':
                 return "#comma";
+
+            case 'a':
+                return "#reset";
+
+            // p -> M+
+            case 'p':
+                return "#m_plus";
+            // p -> M-
+            case 'm':
+                return "#m_minus";
+            // p -> MC
+            case 'c':
+                return "#mc";
+            // p -> MR
+            case 'r':
+                return "#mr";
         }
         throw new IllegalArgumentException("The button : \'" + key + "\'" + " cannot be found!!!");
     }

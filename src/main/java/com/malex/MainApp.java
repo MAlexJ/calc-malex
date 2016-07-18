@@ -30,15 +30,15 @@ public class MainApp extends Application {
             FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/view/layout.fxml"));
             AnchorPane anchorPane = loader.load();
 
-            //Получение контроллера
+            //Получение и инициализация контроллера
             ViewController controller = loader.getController();
             controller.init();
 
+            // инициализация Scene
             primaryStage.setScene(new Scene(anchorPane));
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }

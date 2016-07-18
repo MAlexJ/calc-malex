@@ -1,9 +1,6 @@
 package com.malex.model;
 
-import com.malex.service.impl.AddOperation;
-import com.malex.service.impl.DivisionOperation;
-import com.malex.service.impl.MultiplicationOperation;
-import com.malex.service.impl.SubtractionOperation;
+import com.malex.service.impl.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -24,6 +21,7 @@ public class CalculatorTest {
         calculator.addOperation(new DivisionOperation());
         calculator.addOperation(new MultiplicationOperation());
         calculator.addOperation(new SubtractionOperation());
+        calculator.addOperation(new PercentOperation());
     }
 
     /**
@@ -32,15 +30,17 @@ public class CalculatorTest {
      * subtraction
      * division
      * multiplication
+     * percent
      */
     @Test
     public void testSimplyNumbers() {
         test("add", "1", "2", "3");
-        test("add", "0.00", "1", "1.00");
+        test("add", "0.00", "1", "1");
+        test("add", "0.00", "0", "0");
         test("add", "0.0001", "1", "1.0001");
 
         test("subtraction", "0", "1", "-1");
-        test("subtraction", "0.00", "1", "-1.00");
+        test("subtraction", "0.00", "1", "-1");
 
         test("subtraction", "1", "2", "-1");
         test("division", "1", "2", "0.5");
@@ -66,25 +66,38 @@ public class CalculatorTest {
 
         test("add", bigDecimalMAX.toString(), bigDecimalMIN.toString(), bigDecimalMAX.add(bigDecimalMIN).toString());
         test("subtraction", bigDecimalMAX.toString(), bigDecimalMIN.toString(), bigDecimalMAX.subtract(bigDecimalMIN).toString());
-        test("multiplication", bigDecimalMAX.toString(), bigDecimalMIN.toString(), bigDecimalMAX.multiply(bigDecimalMIN).toString());
-        test("division", bigDecimalMAX.toString(), bigDecimalMIN.toString(), bigDecimalMAX.divide(bigDecimalMIN, 14, BigDecimal.ROUND_HALF_UP).toString());
+        test("multiplication", bigDecimalMAX.toString(), bigDecimalMIN.toString(), bigDecimalMAX.multiply(bigDecimalMIN).toPlainString());
+        test("division", bigDecimalMAX.toString(), bigDecimalMIN.toString(), bigDecimalMAX.divide(bigDecimalMIN, 14, BigDecimal.ROUND_HALF_UP).toPlainString());
+    }
+
+    @Test
+    public void testPercent(){
+        test("percent", "0", "2", "0");
+        test("percent", "1", "2", "0.02");
+        test("percent", "1.0", "2", "0.02");
+        test("percent", "55", "20.00", "11");
     }
 
     @Test
     public void testIncorrectValues() {
+        incorrectValues(null, null, null);
         incorrectValues(null, "1", "2");
         incorrectValues("+", null, "2");
         incorrectValues("+", "3", null);
 
+        incorrectValues("", "", "");
         incorrectValues("", "1", "2");
         incorrectValues("+", "", "2");
         incorrectValues("-", "1", "");
 
+        incorrectValues("ccccc", "aaaa", "bbbbb");
         incorrectValues("xxxxxxx", "1", "2");
         incorrectValues("+", "number", "2");
         incorrectValues("-", "1", "number");
 
         incorrectValues("division", "1", "0");
+        incorrectValues("division", "1.00", "0");
+        incorrectValues("division", "0.001", "0");
     }
 
     @Test
