@@ -11,12 +11,15 @@ import java.io.IOException;
 
 public class MainApp extends Application {
 
+    // хранить состояние Stage
     private Stage primaryStage;
 
+    // точка запуска приложения
     public static void main(String[] args) {
         launch(args);
     }
 
+    // This method is called on the JavaFX Application Thread.
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -24,6 +27,7 @@ public class MainApp extends Application {
         mainView();
     }
 
+    // инициализация контроллера и Stage
     private void mainView() {
         try {
             //Загрузка layout.fxml

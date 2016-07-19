@@ -6,7 +6,6 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 
 import java.util.regex.Matcher;
@@ -18,7 +17,45 @@ public class ViewController {
     private static final String START_CURSOR_POSITION = "0";
 
     // максимальный шрифт текста в дисплее
-    private static final int MAX_FONT_SIZE_TEXT = 32;  // FONT TextField
+    private static final int MAX_FONT_SIZE_TEXT = 32;
+
+    // дефолтое значение при получении процента одного числа
+    private final static String PERCENT_NUMBER_DEFAULT = "1";
+
+    // дефолтое значение при получении процента одного числа
+    private final static String MEMORY_NUMBER_DEFAULT = "0";
+
+    // дефолтое значение при нажатии на '.'
+    private final static String PRESS_COMMA = "0.";
+
+    // дефолтое значение при нажатии на '.'
+    private final static String COMMA = ".";
+
+    // дефолтое значение знака: -
+    private static final String SIGN = "-";
+
+    // название кнопки АС
+    private static final String VALUE_BUTTON_RESET_AC = "AC";
+
+    private static final String ID_ZERO = "zero";
+    private static final String ID_ONE = "one";
+    private static final String ID_TWO = "two";
+    private static final String ID_THREE = "three";
+    private static final String ID_FOUR = "four";
+    private static final String ID_FIVE = "five";
+    private static final String ID_SIX = "six";
+    private static final String ID_SEVEN = "seven";
+    private static final String ID_EIGHT = "eight";
+    private static final String ID_NINE = "nine";
+    private static final String ID_ADD = "add";
+    private static final String ID_SUBTRACTION = "subtraction";
+    private static final String ID_MULTIPLICATION = "multiplication";
+    private static final String ID_DIVISION = "division";
+    private static final String ID_PERCENT = "percent";
+    private static final String ID_SIGN = "sign";
+    private static final String ID_COMMA = "comma";
+    private static final String ID_EQUALS = "equals";
+    private static final String ID_RESET = "reset";
 
     @FXML
     private TextField display;
@@ -26,12 +63,14 @@ public class ViewController {
     @FXML
     private Button reset;
 
-
     // значение первого числа
     private String numberOne = "";
 
     // значение второго числа
     private String numberTwo = "";
+
+    // номер хранимый в памяти использую операции: MR; MC; M+; M-.
+    private String numberInMemory = "0";
 
     // значение оператора
     private String operator = "";
@@ -41,6 +80,9 @@ public class ViewController {
 
     // индикация инициализации стартовой позиции курсора
     private boolean startPosition = true;
+
+    // Переменная хранит состаяние повторного использования опереторов: +, -, *, /.
+    private boolean replaceOperator = false;
 
     // Модель
     private static Calculator calculator;
@@ -64,63 +106,67 @@ public class ViewController {
     // Обработчик кнопок
     @FXML
     public void handlerNumbers(Event event) {
-        if (display.getText().length() > 0) {  // поменять название кнопки
+        String value = display.getText();
+        if (value == null) {
+            throw new IllegalArgumentException("Incorrect data received from the controller !!!");
+        }
+        if (value.length() > 0) {  // поменять название кнопки
             reset.setText("C");
         }
-
-        if (display.getText().equals("0") && startPosition) { // сброс дефолтного значения
+        if (value.equals(START_CURSOR_POSITION) && startPosition) { // сброс дефолтного значения
             display.setText("");
             startPosition = false; // сброс стартовой позиции
         }
-
-        if (display.getText().startsWith("0") && display.getText().length() == 1) { // проверка на не допущения 012345
+        if (value.startsWith(START_CURSOR_POSITION) && display.getText().length() == 1) { // проверка на не допущения 012345
             display.setText("");
         }
-
         if (nextNumber) {   //проверка на начало следующего числа
             display.setText("");
             nextNumber = false;
         }
+
+        this.replaceOperator = false; // сброс повтора оператора при введении числа
+
         Button btn = (Button) event.getSource();
         switch (btn.getId()) {
-            case "zero":
+            case ID_ZERO:
                 if (validateCountZero()) {
-                    display.appendText("0");
+                    display.appendText(START_CURSOR_POSITION);
                 }
                 break;
-            case "one":
+            case ID_ONE:
                 display.appendText("1");
                 break;
-            case "two":
+            case ID_TWO:
                 display.appendText("2");
                 break;
-            case "three":
+            case ID_THREE:
                 display.appendText("3");
                 break;
-            case "four":
+            case ID_FOUR:
                 display.appendText("4");
                 break;
-            case "five":
+            case ID_FIVE:
                 display.appendText("5");
                 break;
-            case "six":
+            case ID_SIX:
                 display.appendText("6");
                 break;
-            case "seven":
+            case ID_SEVEN:
                 display.appendText("7");
                 break;
-            case "eight":
+            case ID_EIGHT:
                 display.appendText("8");
                 break;
-            case "nine":
+            case ID_NINE:
                 display.appendText("9");
                 break;
-            case "comma":
+            case ID_COMMA:
                 if (this.display.getText().isEmpty()) {  // если первое значение пустое 0.00000
-                    this.display.appendText("0.");
+                    this.display.appendText(PRESS_COMMA);
                 }
-                if (!this.display.getText().contains(".")) {    // Проверка на наличее только одной точки
-                    this.display.appendText(".");
+                if (!this.display.getText().contains(COMMA)) {  // Проверка на наличее только одной точки
+                    this.display.appendText(COMMA);
                 }
                 break;
             default:
@@ -133,15 +179,36 @@ public class ViewController {
     public void handlerOperation(Event event) {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
-        if (!"equals".equals(operatorValue)) { // все операторы
-            this.operator = operatorValue;
-            this.numberOne = this.display.getText();
-            this.nextNumber = true;
+        if (!ID_EQUALS.equals(operatorValue)) {
+
+            if (this.replaceOperator) {        // проверка на исключения проведения операций при повторном использованиии
+                this.replaceOperator = true;
+                this.operator = operatorValue;
+                return;
+            }
+
+            if (numberTwo.isEmpty() && operator.isEmpty()) {
+                // >>>>  старое решене  <<<<<<
+                this.operator = operatorValue;
+                this.numberOne = this.display.getText();
+                this.nextNumber = true;
+                // >>> ********************** <<<<
+            } else {
+
+
+                // TODO если нет приоритета операций!!!!!!
+                String tempNumber = this.display.getText();
+                this.numberOne = calculator.calculate(this.operator, this.numberOne, tempNumber);
+                this.display.setText(this.numberOne);
+                this.operator = operatorValue;
+                this.nextNumber = true;
+            }
+            this.replaceOperator = true;
         } else {
             if (this.operator.isEmpty()) {
                 String number = this.display.getText();
                 if (checkValueToZero(number)) {
-                    this.display.setText("0");
+                    this.display.setText(START_CURSOR_POSITION);
                 }
                 return;
             }
@@ -161,41 +228,39 @@ public class ViewController {
     public void handlerReset(Event event) {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
-        if (operatorValue.equals("reset")) {
+        if (operatorValue.equals(ID_RESET)) {
             resetValueDisplay();
             this.operator = "";
-            btn.setText("AC");
+            btn.setText(VALUE_BUTTON_RESET_AC);
             startPosition = true; // сброс стартовой позиции
             this.numberOne = "";  // сброс первого числа
             this.numberTwo = "";  // сброс второго чиса
         }
     }
 
+
     //обработчик знака "-"
     @FXML
     public void handlerSing(Event event) {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
-        if (operatorValue.equals("sign")) {
+        if (operatorValue.equals(ID_SIGN)) {
             String number = display.getText();
             if (!number.equals(START_CURSOR_POSITION)) {
                 if (checkValueToZero(number)) {
-                    this.display.setText("0");
+                    this.display.setText(START_CURSOR_POSITION);
                 } else {
-                    if (number.startsWith("-")) {
+                    if (number.startsWith(SIGN)) {
                         this.display.setText(number.substring(0, 0) + number.substring(1));
                     } else {
-                        this.display.setText('-' + number);
+                        this.display.setText(SIGN + number);
                     }
                 }
             }
         }
     }
 
-    // дефолтое значение при получении процента одного числа
-    private final static String PERCENT_NUMBER_DEFAULT = "1";
-
-    //обработчик знака "%"
+    // вычесление "%" чисел
     @FXML
     public void handlerPercent(Event event) {
         Button btn = (Button) event.getSource();
@@ -209,126 +274,114 @@ public class ViewController {
         }
     }
 
-    // дефолтое значение при получении процента одного числа
-    private final static String MEMORY_NUMBER_DEFAULT = "0";
-
-    // номер хранимый в памяти использую операции: MR; MC; M+; M-.
-    private static String numberInMemory = "0";
-
+    // хранение переменной в памяти
     @FXML
     public void handlerMemory(Event event) {
         Button btn = (Button) event.getSource();
         String memory = btn.getId();
-
         switch (memory) {
             case "mc":
                 numberInMemory = MEMORY_NUMBER_DEFAULT;
                 break;
-
             case "m_plus":
-                numberInMemory = calculator.calculate("add", numberInMemory, this.display.getText());  //TODO "add" -> constant
+                numberInMemory = calculator.calculate(ID_ADD, numberInMemory, this.display.getText());
                 this.nextNumber = true; //сброс начала курсора перед вводом нового числа
                 break;
-
             case "m_minus":
-                numberInMemory = calculator.calculate("subtraction", numberInMemory, this.display.getText());  //TODO "subtraction" -> constant
+                numberInMemory = calculator.calculate(ID_SUBTRACTION, numberInMemory, this.display.getText());
                 this.nextNumber = true;  //сброс начала курсора перед вводом нового числа
                 break;
-
             case "mr":
                 this.display.setText(numberInMemory);
                 break;
-
             default:
                 break;
         }
-
     }
 
     // Проверка на количество допустимых нулей в числе
     private boolean validateCountZero() {
-        return !display.getText().startsWith("0") || display.getText().startsWith("0.") || display.getText().isEmpty();
+        return !display.getText().startsWith(START_CURSOR_POSITION) || display.getText().startsWith(PRESS_COMMA) || display.getText().isEmpty();
     }
 
     // Проверка на колличество допустимых '.' в числе
     private boolean checkValueToZero(String number) {
         Pattern pattern = Pattern.compile("^0.[0]+");
         Matcher matcher = pattern.matcher(number); // valid -> "0.0000"
-        boolean checkValueZeroAndComma = number.startsWith("0.") && number.length() == 2;
+        boolean checkValueZeroAndComma = number.startsWith(PRESS_COMMA) && number.length() == 2;
         return matcher.matches() || checkValueZeroAndComma;
     }
+
 
     // сбросить позицию курсора на 0
     private void resetValueDisplay() {
         this.display.setFont(new Font(MAX_FONT_SIZE_TEXT)); //reset FONT_SIZE
-//        length = 7;
-//        fontSize = 30;
-        this.display.setText("0"); // set -> "0"
+        this.display.setText(START_CURSOR_POSITION); // set -> "0"
     }
 
-    // TODO Инициализация обработчика кнопок
-    @FXML
-    private void handlerKeyPressed(KeyEvent event) {
-
-        if (display.getText().length() > 0) {  // поменять название кнопки
-            reset.setText("C");
-        }
-
-        if (display.getText().equals("0") && startPosition) { // сброс дефолтного значения
-            display.setText("");
-            startPosition = false; // сброс стартовой позиции
-        }
-
-        if (nextNumber) {   //проверка на начало следующего числа
-            display.setText("");
-            nextNumber = false;
-        }
-
-        switch (event.getText()) {
-            case "0":
-                if (validateCountZero()) {
-                    display.appendText("0");
-                }
-                break;
-            case "1":
-                display.appendText("1");
-                break;
-            case "2":
-                display.appendText("2");
-                break;
-            case "3":
-                display.appendText("3");
-                break;
-            case "4":
-                display.appendText("4");
-                break;
-            case "5":
-                display.appendText("5");
-                break;
-            case "6":
-                display.appendText("6");
-                break;
-            case "7":
-                display.appendText("7");
-                break;
-            case "8":
-                display.appendText("8");
-                break;
-            case "9":
-                display.appendText("9");
-                break;
-            case ".":
-                if (display.getText().isEmpty()) {  // если первое значение пустое 0.00000
-                    display.appendText("0.");
-                }
-                if (!display.getText().contains(".")) {    // Проверка на наличее только одной точки
-                    display.appendText(".");
-                }
-                break;
-            default:
-                break;
-        }
-    }
+//    // TODO Инициализация обработчика кнопок
+//    @FXML
+//    public void handlerKeyPressed(KeyEvent event) {
+//
+//        if (display.getText().length() > 0) {  // поменять название кнопки
+//            reset.setText("C");
+//        }
+//
+//        if (display.getText().equals(START_CURSOR_POSITION) && startPosition) { // сброс дефолтного значения
+//            display.setText("");
+//            startPosition = false; // сброс стартовой позиции
+//        }
+//
+//        if (nextNumber) {   //проверка на начало следующего числа
+//            display.setText("");
+//            nextNumber = false;
+//        }
+//
+//        switch (event.getText()) {
+//            case "0":
+//                if (validateCountZero()) {
+//                    display.appendText(START_CURSOR_POSITION);
+//                }
+//                break;
+//            case "1":
+//                display.appendText("1");
+//                break;
+//            case "2":
+//                display.appendText("2");
+//                break;
+//            case "3":
+//                display.appendText("3");
+//                break;
+//            case "4":
+//                display.appendText("4");
+//                break;
+//            case "5":
+//                display.appendText("5");
+//                break;
+//            case "6":
+//                display.appendText("6");
+//                break;
+//            case "7":
+//                display.appendText("7");
+//                break;
+//            case "8":
+//                display.appendText("8");
+//                break;
+//            case "9":
+//                display.appendText("9");
+//                break;
+//            case ".":
+//                if (display.getText().isEmpty()) {  // если первое значение пустое 0.00000
+//                    display.appendText("0.");
+//                }
+//                if (!display.getText().contains(".")) {    // Проверка на наличее только одной точки
+//                    display.appendText(".");
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     //    // минимальный шрифт текста в дисплее
 //    private static final int MIX_FONT_SIZE_TEXT = 10; // FONT TextField

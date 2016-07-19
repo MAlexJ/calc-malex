@@ -46,6 +46,32 @@ public class MainAppTest {
     }
 
     @Test
+    public void testArithmeticOperationsWithoutPriorityOperation() {
+        testCalculate("1+2+3+4+5+6=", "21");
+        testCalculate("1+2+3+4+5+6==", "27");
+
+        testCalculate("1-2-3-4-5-6=", "-19");
+        testCalculate("1-2-3-4-5-6==", "-25");
+
+        testCalculate("1+2+3-5+1-3=", "-1");
+        testCalculate("1~-2+3-4-5=", "-9");
+
+        testCalculate("1*2*3*4*5*6=", "720");
+        testCalculate("1*2*3*4*5*6==", "4320");
+
+        testCalculate("2*2/4=", "1");
+        testCalculate("2*2/4*1*10=", "10");
+
+        testCalculate("2*3/2+2=", "5");
+        testCalculate("8/4-2=", "0");
+    }
+    @Test
+    public void testArithmeticOperationsPriorityOperation() {
+        testCalculate("1+2*3=", "7");
+
+    }
+
+    @Test
     public void testSetComma() {
         testCalculate("1..............", "1.");
         testCalculate("1.23....", "1.23");
@@ -158,6 +184,7 @@ public class MainAppTest {
         //#Step: 1. Clear display
         controller.click("#reset");
 
+
         //#Step: 2. Click on buttons
         for (char button : arithmeticExpression.toCharArray()) {
             controller.click(findKey(button));
@@ -172,6 +199,7 @@ public class MainAppTest {
     }
 
     // Поиск ид кнопки по символу.
+    // Принятые обозначения:
     // Знак '+/-' еквивалентен '~'
     // Знак 'a' еквивалентен 'reset'
     // Знак 'm+' еквивалентен 'p'
