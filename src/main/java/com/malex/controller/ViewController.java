@@ -124,9 +124,7 @@ public class ViewController {
             display.setText("");
             nextNumber = false;
         }
-
         this.replaceOperator = false; // сброс повтора оператора при введении числа
-
         Button btn = (Button) event.getSource();
         switch (btn.getId()) {
             case ID_ZERO:
@@ -174,6 +172,22 @@ public class ViewController {
         }
     }
 
+    // узнать приоритет операции
+    private boolean isHighPriorityOperations(String operation) {
+        return operation.equals(ID_MULTIPLICATION) || operation.equals(ID_DIVISION);
+    }
+
+    // Узнать приоритет операций
+    // return true if displayOperation = '/' or '*' and inMemoryOperation = '+' or '-'
+    private boolean getPriority(String displayOperation, String inMemoryOperation) {
+        return isHighPriorityOperations(displayOperation) && !isHighPriorityOperations(inMemoryOperation);
+    }
+
+
+    private boolean isPriorityOperations = false;
+
+    private String operatorInMemory = "";
+
     //обработчик операций: +; -; *; /.
     @FXML
     public void handlerOperation(Event event) {
@@ -181,29 +195,64 @@ public class ViewController {
         String operatorValue = btn.getId();
         if (!ID_EQUALS.equals(operatorValue)) {
 
-            if (this.replaceOperator) {        // проверка на исключения проведения операций при повторном использованиии
+            if (this.replaceOperator) {                              // проверка на исключения проведения операций при повторном использованиии
                 this.replaceOperator = true;
                 this.operator = operatorValue;
                 return;
             }
 
-            if (numberTwo.isEmpty() && operator.isEmpty()) {
-                // >>>>  старое решене  <<<<<<
-                this.operator = operatorValue;
-                this.numberOne = this.display.getText();
-                this.nextNumber = true;
-                // >>> ********************** <<<<
+            if (!this.operator.isEmpty() && this.operatorInMemory.isEmpty()) {                          // проверка на приоритет операций
+                if (getPriority(operatorValue, this.operator)) {
+                    System.out.println("ПРИОРИТЕТ СРАБОТАЛ");
+                    this.operatorInMemory = operatorValue;
+                    this.isPriorityOperations = true;
+                    this.numberTwo = this.display.getText();
+                    this.nextNumber = true;
+                    return;
+                }
+            }
+
+            if (!isPriorityOperations) {
+                //TODO: START >>>>> если нет приоритета операций!!!!!! <<<<<<<
+                if (numberTwo.isEmpty() && operator.isEmpty()) {
+                    // >>>>  старое решене  <<<<<<
+                    this.operator = operatorValue;
+                    this.numberOne = this.display.getText();
+                    this.nextNumber = true;
+                    // >>> ********************** <<<<
+                } else {
+                    String tempNumber = this.display.getText();
+                    this.numberOne = calculator.calculate(this.operator, this.numberOne, tempNumber);
+                    this.display.setText(this.numberOne);
+                    this.operator = operatorValue;
+                    this.nextNumber = true;
+                }
             } else {
-
-
-                // TODO если нет приоритета операций!!!!!!
+                System.out.println(" >>>> ПРИОРИТЕТ СРАБОТАЛ");
                 String tempNumber = this.display.getText();
-                this.numberOne = calculator.calculate(this.operator, this.numberOne, tempNumber);
-                this.display.setText(this.numberOne);
+                this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, tempNumber);
+                this.display.setText(this.numberTwo);
+                this.operatorInMemory = "";
+
+                // if( * || / ) ->>>>>>
+
+                if (isHighPriorityOperations(this.operator)) {
+
+                } else {
+
+                }
+
+                // <-- if ( + | - )
+                this.numberOne = calculator.calculate(this.operator, this.numberOne, this.numberTwo);
                 this.operator = operatorValue;
+                this.numberTwo = "";
+                // <-- + -
+                this.isPriorityOperations = false;
                 this.nextNumber = true;
             }
+
             this.replaceOperator = true;
+
         } else {
             if (this.operator.isEmpty()) {
                 String number = this.display.getText();
@@ -212,13 +261,31 @@ public class ViewController {
                 }
                 return;
             }
+
+
+            String tempNumber = this.display.getText();
+            if (isPriorityOperations) {
+                this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, tempNumber);
+            }
+
+
             if (numberTwo.isEmpty()) {
                 numberTwo = this.display.getText(); // сброс чисел в памяти
             }
-            String calculate = calculator.calculate(this.operator, this.numberOne, numberTwo);
+            String calculate = calculator.calculate(this.operator, this.numberOne, this.numberTwo);
             if (!this.numberOne.isEmpty()) {
                 this.numberOne = calculate;
             }
+
+            if (isPriorityOperations) {
+                this.operator = this.operatorInMemory;
+                this.numberOne = tempNumber;
+                this.numberTwo = "";
+                this.operatorInMemory = "";
+                this.isPriorityOperations = false;
+            }
+
+
             this.display.setText(calculate);
         }
     }
@@ -235,9 +302,10 @@ public class ViewController {
             startPosition = true; // сброс стартовой позиции
             this.numberOne = "";  // сброс первого числа
             this.numberTwo = "";  // сброс второго чиса
+
+            isPriorityOperations = false; // TODO fix 1
         }
     }
-
 
     //обработчик знака "-"
     @FXML

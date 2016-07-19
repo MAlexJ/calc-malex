@@ -65,10 +65,18 @@ public class MainAppTest {
         testCalculate("2*3/2+2=", "5");
         testCalculate("8/4-2=", "0");
     }
+
     @Test
     public void testArithmeticOperationsPriorityOperation() {
         testCalculate("1+2*3=", "7");
-
+        testCalculate("1+2*3+1=", "8");
+        testCalculate("1+4*3+1+2=", "16");
+        testCalculate("1+4*3+1+2*3=", "20");
+        testCalculate("1+4*3-1+2*3=", "18");
+        testCalculate("1+4*3-1=", "12");
+        testCalculate("1+4*3*1-1=", "12");
+        testCalculate("1+4*3*2/2=", "13");
+        testCalculate("1+4*3*2-1=", "24"); // TODO exception Actual   :25
     }
 
     @Test
@@ -110,7 +118,7 @@ public class MainAppTest {
         testCalculate("1+2%%", "0.0002");
         testCalculate("1-2%=====", "0.9");
         testCalculate("1+2%==", "1.04");
-//        testCalculate("1+2%*3=", "1.06");  TODO need fix operation priority: *, / -> +, -
+        testCalculate("1+2%*3=", "1.06");
     }
 
     @Test
@@ -139,7 +147,6 @@ public class MainAppTest {
         // memory operation and arithmetic operation
         testCalculate("c5p63+r=", "68");
         testCalculate("c5m63+r=", "58");
-
 
     }
 
@@ -178,6 +185,13 @@ public class MainAppTest {
 
         testCalculate("2*====", "32");
         testCalculate("2/=", "1");
+    }
+
+    @Test
+    public void testChangeOperation() {
+        testCalculate("2/*-+=", "4");
+        testCalculate("2+-*3-+3=", "9");
+        testCalculate("2+-*3*-+3=", "9");
     }
 
     private void testCalculate(String arithmeticExpression, String expectedResult) {
