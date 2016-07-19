@@ -76,7 +76,9 @@ public class MainAppTest {
         testCalculate("1+4*3-1=", "12");
         testCalculate("1+4*3*1-1=", "12");
         testCalculate("1+4*3*2/2=", "13");
-        testCalculate("1+4*3*2-1=", "24"); // TODO exception Actual   :25
+        testCalculate("1+4*3*2-1=", "24");
+        testCalculate("1+4*3*2-1+2=", "26");
+        testCalculate("1+4*3*2-1+2/2+1=", "26");
     }
 
     @Test
