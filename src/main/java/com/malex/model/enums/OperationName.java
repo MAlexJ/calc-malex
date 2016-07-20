@@ -1,5 +1,7 @@
 package com.malex.model.enums;
 
+import com.malex.exception.impl.NoSuchOperationException;
+
 /**
  *
  */
@@ -23,6 +25,6 @@ public enum OperationName {
                 return name;
             }
         }
-        return null;
+        throw new NoSuchOperationException("OperationName: \'" + description + "\' with this name doesn't exist!");   //TODO Exception -> NoSuchOperationException + тесты нужны
     }
 }

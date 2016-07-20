@@ -1,5 +1,7 @@
 package com.malex.model;
 
+import com.malex.exception.impl.NoSuchOperationException;
+import com.malex.exception.impl.UndefinedNumberException;
 import com.malex.service.impl.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -71,7 +73,7 @@ public class CalculatorTest {
     }
 
     @Test
-    public void testPercent(){
+    public void testPercent() {
         test("percent", "0", "2", "0");
         test("percent", "1", "2", "0.02");
         test("percent", "1.0", "2", "0.02");
@@ -118,7 +120,7 @@ public class CalculatorTest {
             //when
             calculator.calculate(operationName, numberOne, numberTwo);
             fail("Arithmetic expression: numberOne: " + numberOne + ", operation: " + operationName + ", numberTwo: " + numberTwo + " is valid!");
-        } catch (ArithmeticException | IllegalArgumentException e) {
+        } catch (UndefinedNumberException | NoSuchOperationException e) {
             //Ignore
         }
     }

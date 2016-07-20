@@ -175,6 +175,7 @@ public class MainAppTest {
     @Test
     public void testButtonMemoryWithArithmeticOperations() {
         // TODO !!!!!
+        testCalculate("2+2+2+2+2+2+2+2+2+2+2*2=", "24");
     }
 
 
@@ -220,6 +221,13 @@ public class MainAppTest {
         testCalculate("2/*-+=", "4");
         testCalculate("2+-*3-+3=", "9");
         testCalculate("2+-*3*-+3=", "9");
+    }
+
+    @Test
+    public void testDisplayUndefined(){
+        testCalculate("2/0=", "Undefined");
+        testCalculate("2/0+45=", "90");
+        testCalculate("2/0*45=", "2025");
     }
 
     private void testCalculate(String arithmeticExpression, String expectedResult) {

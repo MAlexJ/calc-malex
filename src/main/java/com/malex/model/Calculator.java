@@ -45,14 +45,10 @@ public class Calculator {
     public String calculate(String operationName, String numberOne, String numberTwo) {
         OperationName name = OperationName.get(operationName);
         if (name == null) {
-            throw new IllegalArgumentException("Invalid operation name");   //TODO Exception -> IllegalArgumentException -> LOGGER
+            throw new NoSuchOperationException("Invalid operation name !");
         }
 
         Operation operation = operations.get(name);
-        if (operation == null) {
-            throw new NoSuchOperationException("OperationName \'"+operationName+"\' with this name doesn't exist!");   //TODO Exception -> NoSuchOperationException
-        }
-
         BigDecimal result = operation.execute(new BigDecimal(numberOne), new BigDecimal(numberTwo));
         return result.stripTrailingZeros().toPlainString();
     }

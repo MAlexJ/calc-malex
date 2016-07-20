@@ -16,7 +16,7 @@ public class DivisionOperation extends AbstractOperation {
     public BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) {
 
         if (numberTwo.compareTo(BigDecimal.ZERO) == 0) {
-            throw new UndefinedNumberException("Division by zero !");   //TODO Exception -> UndefinedNumberException
+            throw new UndefinedNumberException("Division by zero !");
         }
         return numberOne.divide(numberTwo, 14, BigDecimal.ROUND_HALF_UP);
     }
