@@ -1,5 +1,6 @@
 package com.malex.model;
 
+import com.malex.exception.impl.NoSuchOperationException;
 import com.malex.model.enums.OperationName;
 import com.malex.service.Operation;
 
@@ -44,12 +45,12 @@ public class Calculator {
     public String calculate(String operationName, String numberOne, String numberTwo) {
         OperationName name = OperationName.get(operationName);
         if (name == null) {
-            throw new IllegalArgumentException("Invalid operation name");
+            throw new IllegalArgumentException("Invalid operation name");   //TODO Exception -> IllegalArgumentException -> LOGGER
         }
 
         Operation operation = operations.get(name);
         if (operation == null) {
-            throw new IllegalArgumentException("OperationName \'"+operationName+"\' with this name doesn't exist!");
+            throw new NoSuchOperationException("OperationName \'"+operationName+"\' with this name doesn't exist!");   //TODO Exception -> NoSuchOperationException
         }
 
         BigDecimal result = operation.execute(new BigDecimal(numberOne), new BigDecimal(numberTwo));

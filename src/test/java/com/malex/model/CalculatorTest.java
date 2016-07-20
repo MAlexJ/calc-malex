@@ -76,6 +76,13 @@ public class CalculatorTest {
         test("percent", "1", "2", "0.02");
         test("percent", "1.0", "2", "0.02");
         test("percent", "55", "20.00", "11");
+        test("percent", "0.1", "2", "0.002");
+
+        test("percent", "2", "50", "1");
+        test("percent", "2", "90", "1.8");
+        test("percent", "11111111", "50", "5555555.5");
+        test("percent", "-2", "50", "-1");
+        test("percent", "2", "-50", "-1");
     }
 
     @Test

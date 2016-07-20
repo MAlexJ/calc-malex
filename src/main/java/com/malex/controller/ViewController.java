@@ -37,6 +37,7 @@ public class ViewController {
     // название кнопки АС
     private static final String VALUE_BUTTON_RESET_AC = "AC";
 
+    // индификатор кнопки '0' представления layout.fxml
     private static final String ID_ZERO = "zero";
     private static final String ID_ONE = "one";
     private static final String ID_TWO = "two";
@@ -212,7 +213,7 @@ public class ViewController {
                 }
             }
 
-            if (!isPriorityOperations) {
+            if (!isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
                 if (numberTwo.isEmpty() && operator.isEmpty()) {
                     this.operator = operatorValue;
                     this.numberOne = this.display.getText();
@@ -314,7 +315,7 @@ public class ViewController {
     public void handlerPercent(Event event) {
         Button btn = (Button) event.getSource();
         String percent = btn.getId();
-        if (numberTwo.isEmpty()) {
+        if (numberOne.isEmpty()) {
             String calculate = calculator.calculate(percent, PERCENT_NUMBER_DEFAULT, this.display.getText());
             this.display.setText(calculate);
         } else {

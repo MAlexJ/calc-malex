@@ -1,5 +1,6 @@
 package com.malex.service.impl;
 
+import com.malex.exception.impl.UndefinedNumberException;
 import com.malex.model.enums.OperationName;
 import com.malex.service.AbstractOperation;
 
@@ -15,8 +16,8 @@ public class DivisionOperation extends AbstractOperation {
     public BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) {
 
         if (numberTwo.compareTo(BigDecimal.ZERO) == 0) {
-            throw new ArithmeticException("Division by zero !");
+            throw new UndefinedNumberException("Division by zero !");   //TODO Exception -> UndefinedNumberException
         }
-        return numberOne.divide(numberTwo, 14, BigDecimal.ROUND_HALF_UP); //TODO fix remove stripTrailingZeros
+        return numberOne.divide(numberTwo, 14, BigDecimal.ROUND_HALF_UP);
     }
 }

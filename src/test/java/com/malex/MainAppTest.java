@@ -68,6 +68,7 @@ public class MainAppTest {
 
     @Test
     public void testArithmeticOperationsPriorityOperation() {
+        //simply
         testCalculate("1+2*3=", "7");
         testCalculate("1+2*3+1=", "8");
         testCalculate("1+4*3+1+2=", "16");
@@ -79,6 +80,10 @@ public class MainAppTest {
         testCalculate("1+4*3*2-1=", "24");
         testCalculate("1+4*3*2-1+2=", "26");
         testCalculate("1+4*3*2-1+2/2+1=", "26");
+
+        //middle
+        testCalculate("4/6*7-89=", "-84.33333333333331");
+        testCalculate("543.02*0.02+48.33=", "59.1904");
     }
 
     @Test
@@ -121,6 +126,22 @@ public class MainAppTest {
         testCalculate("1-2%=====", "0.9");
         testCalculate("1+2%==", "1.04");
         testCalculate("1+2%*3=", "1.06");
+
+        testCalculate("0-2%", "0");
+        testCalculate("0-2%=", "0");
+        testCalculate("2-50%", "1");
+        testCalculate("2-90%", "1.8");
+        testCalculate("5-50%", "2.5");
+        testCalculate("11111111-50%", "5555555.5");
+        testCalculate("2~-50%", "-1");
+        testCalculate("2-50~%", "-1");
+    }
+
+    @Test
+    public void testAfterPercent() {
+        testCalculate("2-52%+3*4=", "12.96");
+        testCalculate("2-52%+3*4-111.2222=", "-98.2622");
+        testCalculate("2-52%+3*4/2=", "6.96");
     }
 
     @Test
@@ -140,7 +161,7 @@ public class MainAppTest {
         testCalculate("c2~.001p123", "123");
         testCalculate("c00.001~p123r", "-0.001");
 
-        // simply operation M-
+        // TODO !!!!! simply operation M-
 
         // replace operation
         testCalculate("c2ppppppppppr", "20");
@@ -149,8 +170,13 @@ public class MainAppTest {
         // memory operation and arithmetic operation
         testCalculate("c5p63+r=", "68");
         testCalculate("c5m63+r=", "58");
-
     }
+
+    @Test
+    public void testButtonMemoryWithArithmeticOperations() {
+        // TODO !!!!!
+    }
+
 
     @Test
     public void testLimitResultDivisionViewDisplay() {
