@@ -19,6 +19,9 @@ import org.apache.log4j.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ *
+ */
 public class ViewController {
 
     // инициализация логера
@@ -49,34 +52,71 @@ public class ViewController {
     private static final String VALUE_BUTTON_RESET_AC = "AC";
 
     // индификатор кнопки '0' представления layout.fxml
-    private static final String ID_ZERO = "zero";
-    private static final String ID_ONE = "one";
-    private static final String ID_TWO = "two";
-    private static final String ID_THREE = "three";
-    private static final String ID_FOUR = "four";
-    private static final String ID_FIVE = "five";
-    private static final String ID_SIX = "six";
-    private static final String ID_SEVEN = "seven";
-    private static final String ID_EIGHT = "eight";
-    private static final String ID_NINE = "nine";
-    private static final String ID_ADD = "add";
-    private static final String ID_SUBTRACTION = "subtraction";
-    private static final String ID_MULTIPLICATION = "multiplication";
-    private static final String ID_DIVISION = "division";
-    private static final String ID_PERCENT = "percent";
-    private static final String ID_SIGN = "sign";
-    private static final String ID_COMMA = "comma";
-    private static final String ID_EQUALS = "equals";
-    private static final String ID_RESET = "reset";
+    private static final String ID_ZERO = "DIGIT0";
+    private static final String ID_ONE = "DIGIT1";
+    private static final String ID_TWO = "DIGIT2";
+    private static final String ID_THREE = "DIGIT3";
+    private static final String ID_FOUR = "DIGIT4";
+    private static final String ID_FIVE = "DIGIT5";
+    private static final String ID_SIX = "DIGIT6";
+    private static final String ID_SEVEN = "DIGIT7";
+    private static final String ID_EIGHT = "DIGIT8";
+    private static final String ID_NINE = "DIGIT9";
+    private static final String ID_ADD = "ADD";
+    private static final String ID_SUBTRACTION = "MINUS"; // TODO фигня название
+    private static final String ID_MULTIPLICATION = "MULTIPLICATION";
+    private static final String ID_DIVISION = "SLASH";   // TODO фигня название
+    private static final String ID_PERCENT = "PERCENT";
+    private static final String ID_SIGN = "SIGN";
+    private static final String ID_COMMA = "COMMA";
+    private static final String ID_EQUALS = "EQUALS";
+    private static final String ID_RESET = "ESCAPE";
 
     @FXML
     private TextField display;
 
     @FXML
-    private Button reset;
+    public Button DIGIT0;
+    @FXML
+    public Button DIGIT1;
+    @FXML
+    public Button DIGIT2;
+    @FXML
+    public Button DIGIT3;
+    @FXML
+    public Button DIGIT4;
+    @FXML
+    public Button DIGIT5;
+    @FXML
+    public Button DIGIT6;
+    @FXML
+    public Button DIGIT7;
+    @FXML
+    public Button DIGIT8;
+    @FXML
+    public Button DIGIT9;
+    @FXML
+    public Button COMMA;
+
 
     @FXML
-    private Button one;
+    public Button MULTIPLICATION;
+    @FXML
+    public Button SLASH;  // TODO фигня название
+    @FXML
+    public Button ADD;
+    @FXML
+    public Button MINUS;   // TODO фигня название
+
+    @FXML
+    public Button EQUALS;
+
+    @FXML
+    public Button ESCAPE;
+    @FXML
+    public Button SIGN;
+    @FXML
+    public Button PERCENT;
 
     // значение первого числа
     private String numberOne = "";
@@ -124,14 +164,6 @@ public class ViewController {
         this.display.setText(START_CURSOR_POSITION);
     }
 
-    // проверка являиться ли входящая сторка числом
-    private boolean isNumber(String number) {
-        Pattern pattern = Pattern.compile("[0-9|.|-]+");
-        Matcher matcher = pattern.matcher(number);
-        return matcher.matches();
-    }
-
-
     // Обработчик кнопок
     @FXML
     public void handlerNumbersButton(Event event) {
@@ -147,7 +179,7 @@ public class ViewController {
             }
 
             if (value.length() > 0) {  // поменять название кнопки
-                reset.setText("C");
+                ESCAPE.setText("C");
             }
             if (value.equals(START_CURSOR_POSITION) && startPosition) { // сброс дефолтного значения
                 display.setText("");
@@ -164,7 +196,7 @@ public class ViewController {
             Button btn = (Button) event.getSource();
             switch (btn.getId()) {
                 case ID_ZERO:
-                    if (validateCountZero()) {
+                    if (validateNumberLimitNumberZeros()) {
                         display.appendText(START_CURSOR_POSITION);
                     }
                     break;
@@ -211,17 +243,6 @@ public class ViewController {
         } catch (Exception e) {
             logger.error("Exception -> handlerNumbersButton(Event event): " + e.getMessage());
         }
-    }
-
-    // узнать приоритет операции
-    private boolean isHighPriorityOperation(String operation) {
-        return operation.equals(ID_MULTIPLICATION) || operation.equals(ID_DIVISION);
-    }
-
-    // Узнать приоритет операций
-    // return true if displayOperation = '/' or '*' and inMemoryOperation = '+' or '-'
-    private boolean getPriorityOperations(String displayOperation, String inMemoryOperation) {
-        return isHighPriorityOperation(displayOperation) && !isHighPriorityOperation(inMemoryOperation);
     }
 
     //обработчик операций: =; +; -; *; /.
@@ -278,7 +299,7 @@ public class ViewController {
             } else {
                 if (this.operator.isEmpty()) {
                     String number = this.display.getText();
-                    if (validateValueComma(number)) {
+                    if (validateNumberAvailableInsideComma(number)) {
                         this.display.setText(START_CURSOR_POSITION);
                     }
                     return;
@@ -345,7 +366,7 @@ public class ViewController {
         if (operatorValue.equals(ID_SIGN)) {
             String number = display.getText();
             if (!number.equals(START_CURSOR_POSITION)) {
-                if (validateValueComma(number)) {
+                if (validateNumberAvailableInsideComma(number)) {
                     this.display.setText(START_CURSOR_POSITION);
                 } else {
                     if (number.startsWith(SIGN_VAL)) {
@@ -397,29 +418,132 @@ public class ViewController {
         }
     }
 
-    // Проверка на количество допустимых нулей в числе
-    private boolean validateCountZero() {
+    /**
+     * Initialize keyboard input data handler.
+     *
+     * @param event
+     */
+    @FXML
+    public void handlerKeyPressed(KeyEvent event) {
+        String nameKey = shortcuts(event);
+        PauseTransition pause = new PauseTransition(Duration.seconds(0.08));
+        switch (nameKey) {
+            case ID_ZERO:
+                clickOnButton(DIGIT0, pause);
+                break;
+            case ID_ONE:
+                clickOnButton(DIGIT1, pause);
+                break;
+            case ID_TWO:
+                clickOnButton(DIGIT2, pause);
+                break;
+            case ID_THREE:
+                clickOnButton(DIGIT3, pause);
+                break;
+            case ID_FOUR:
+                clickOnButton(DIGIT4, pause);
+                break;
+            case ID_FIVE:
+                clickOnButton(DIGIT5, pause);
+                break;
+            case ID_SIX:
+                clickOnButton(DIGIT6, pause);
+                break;
+            case ID_SEVEN:
+                clickOnButton(DIGIT7, pause);
+                break;
+            case ID_EIGHT:
+                clickOnButton(DIGIT8, pause);
+                break;
+            case ID_NINE:
+                clickOnButton(DIGIT9, pause);
+                break;
+            case ID_COMMA:
+                clickOnButton(COMMA, pause);
+                break;
+            case ID_MULTIPLICATION:
+                clickOnButton(MULTIPLICATION, pause);
+                break;
+            case ID_DIVISION:
+                clickOnButton(SLASH, pause);
+                break;
+            case ID_SUBTRACTION:
+                clickOnButton(MINUS, pause);
+                break;
+            case ID_ADD:
+                clickOnButton(ADD, pause);
+                break;
+            case ID_SIGN:
+                clickOnButton(SIGN, pause);
+                break;
+            case ID_PERCENT:
+                clickOnButton(PERCENT, pause);
+                break;
+            case ID_EQUALS:
+                clickOnButton(EQUALS, pause);
+                break;
+            case ID_RESET:
+                clickOnButton(ESCAPE, pause);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // узнать приоритет операции
+    private boolean isHighPriorityOperation(String operation) {
+        return operation.equals(ID_MULTIPLICATION) || operation.equals(ID_DIVISION);
+    }
+
+    // Узнать приоритет операций
+    // return true if displayOperation = '/' or '*' and inMemoryOperation = '+' or '-'
+    private boolean getPriorityOperations(String displayOperation, String inMemoryOperation) {
+        return isHighPriorityOperation(displayOperation) && !isHighPriorityOperation(inMemoryOperation);
+    }
+
+    /**
+     * Validate the number on the limit count of zeros.
+     *
+     * @return
+     */
+    private boolean validateNumberLimitNumberZeros() {
         return !display.getText().startsWith(START_CURSOR_POSITION) || display.getText().startsWith(PRESS_COMMA) || display.getText().isEmpty();
     }
 
-    // Проверка на колличество допустимых '.' в числе
-    private boolean validateValueComma(String number) {  //TODO rename method
-        Pattern pattern = Pattern.compile("^0.[0]+"); // valid -> "0.0000"
+    // проверка являиться ли входящая сторка числом
+    private boolean isNumber(String number) {
+        Pattern pattern = Pattern.compile("[0-9|.|-]+");
+        Matcher matcher = pattern.matcher(number);
+        return matcher.matches();
+    }
+
+    /**
+     * Validate the number on available inside the comma.
+     *
+     * @param number
+     * @return
+     */
+    private boolean validateNumberAvailableInsideComma(String number) {
+        Pattern pattern = Pattern.compile("^0.[0]+");
         Matcher matcher = pattern.matcher(number);
         boolean checkValueZeroAndComma = number.startsWith(PRESS_COMMA) && number.length() == 2;
         return matcher.matches() || checkValueZeroAndComma;
     }
 
-    // сбросить позицию курсора на 0
+    /**
+     * Reset the cursor position of the screen.
+     */
     private void resetDisplay() {
-        this.display.setFont(new Font(MAX_FONT_SIZE_TEXT)); //reset FONT_SIZE
-        this.display.setText(START_CURSOR_POSITION); // set -> "0"
+        this.display.setFont(new Font(MAX_FONT_SIZE_TEXT));
+        this.display.setText(START_CURSOR_POSITION);
     }
 
     // минимальный шрифт текста в дисплее
     private static final int MIN_FONT_SIZE_TEXT = 12;
 
-    // change the display size
+    /**
+     * Change the display size.
+     */
     private void changeDisplaySize() {
         this.display.textProperty().addListener(
                 (observable, oldValue, newValue) -> {
@@ -436,62 +560,38 @@ public class ViewController {
         );
     }
 
-    // Инициализация обработчика кнопок
-    @FXML
-    public void handlerKeyPressed(KeyEvent event) {
+    // Shortcuts -> определение сочетания кнопок!!
+    private String shortcuts(KeyEvent event) {
         KeyCode code = event.getCode();
         String nameKey = code.toString();
-        System.out.println(nameKey);
-        if (nameKey.equals("DIGIT1")) {
-            one.arm();
-            PauseTransition pause = new PauseTransition(Duration.seconds(0.2));
-            pause.setOnFinished(e -> one.disarm());
-            pause.play();
-            one.fire();
+
+        if (event.getText().equals("*") && nameKey.equals("DIGIT8")) { //TODO Constant
+            return ID_MULTIPLICATION;
         }
-
-        switch (nameKey){
-            case ID_ZERO:
-                one.arm();
-                PauseTransition pause = new PauseTransition(Duration.seconds(0.2));
-                pause.setOnFinished(e -> one.disarm());
-                pause.play();
-                one.fire();
-                break;
-            case ID_ONE:
-
-                break;
-            case ID_TWO:
-
-                break;
-            case ID_THREE:
-
-                break;
-            case ID_FOUR:
-
-                break;
-            case ID_FIVE:
-
-                break;
-            case ID_SIX:
-
-                break;
-            case ID_SEVEN:
-
-                break;
-            case ID_EIGHT:
-
-                break;
-            case ID_NINE:
-
-                break;
-            case ID_COMMA:
-
-
-                break;
-            default:
-                break;
+        if (event.getText().equals("+") && nameKey.equals("EQUALS")) {  //TODO Constant
+            return ID_ADD;
         }
+        if (event.getText().equals("_") && nameKey.equals("MINUS")) {   //TODO Constant
+            return ID_SIGN;
+
+        }
+        if (event.getText().equals("%") && nameKey.equals("DIGIT5")) {   //TODO Constant
+            return ID_PERCENT;
+        }
+        return nameKey;
+    }
+
+    /**
+     * Click on a given button.
+     *
+     * @param button
+     * @param pause
+     */
+    private void clickOnButton(Button button, PauseTransition pause) {
+        button.arm();
+        pause.setOnFinished(e -> button.disarm());
+        pause.play();
+        button.fire();
     }
 
 }

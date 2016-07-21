@@ -3,28 +3,55 @@ package com.malex.model.enums;
 import com.malex.exception.impl.NoSuchOperationException;
 
 /**
- *
+ * Enumeration {@code OperationName} stores basic arithmetic operations.
  */
 public enum OperationName {
+    /**
+     * The arithmetic operation of addition.
+     */
+    ADD("ADD"),
+    /**
+     * The arithmetic operation of subtraction.
+     */
+    SUBTRACTION("MINUS"),
+    /**
+     * The arithmetic operation of division.
+     */
+    DIVISION("SLASH"),
+    /**
+     * The arithmetic operation of multiplication.
+     */
+    MULTIPLICATION("MULTIPLICATION"),
+    /**
+     * The arithmetic operation of percentage.
+     */
+    PERCENT("PERCENT");
 
-    ADD("add"),
-    SUBTRACTION("subtraction"),
-    DIVISION("division"),
-    MULTIPLICATION("multiplication"),
-    PERCENT("percent");
-
+    /**
+     * Value is used to store the name arithmetic operation.
+     */
     private String description;
 
+    /**
+     * @param description the name arithmetic operation.
+     */
     OperationName(String description) {
         this.description = description;
     }
 
+    /**
+     * Get the value of arithmetic operation.
+     *
+     * @param description the name arithmetic operation.
+     * @return the value operation.
+     * @throws NoSuchOperationException if arithmetic operation doesn't exist.
+     */
     public static OperationName get(String description) {
         for (OperationName name : OperationName.values()) {
             if (name.description.equals(description)) {
                 return name;
             }
         }
-        throw new NoSuchOperationException("OperationName: \'" + description + "\' with this name doesn't exist!");   //TODO Exception -> NoSuchOperationException + тесты нужны
+        throw new NoSuchOperationException("OperationName: \'" + description + "\' with this name doesn't exist!");
     }
 }

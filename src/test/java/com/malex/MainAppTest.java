@@ -2,6 +2,7 @@ package com.malex;
 
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.loadui.testfx.GuiTest;
@@ -107,7 +108,6 @@ public class MainAppTest {
 
     @Test
     public void testPercent() {
-        // percent use one number
         testCalculate("1%", "0.01");
         testCalculate("1%=", "0.01");
         testCalculate("1%===", "0.01");
@@ -116,7 +116,6 @@ public class MainAppTest {
         testCalculate("1%++++", "0.01");
         testCalculate("1%+=========", "0.1");
 
-        // percent use two number
         testCalculate("1+2%", "0.02");
         testCalculate("1-2%", "0.02");
         testCalculate("1*2%", "0.02");
@@ -144,6 +143,11 @@ public class MainAppTest {
         testCalculate("2-52%+3*4/2=", "6.96");
     }
 
+//    @Test
+//    public void testAfterEquals() {
+//        testCalculate("9+2=-3=", "8"); //TODO -валюсь сдесь!!!!
+//    }
+
     @Test
     public void testButtonMemory() {
         // simply operation
@@ -155,13 +159,10 @@ public class MainAppTest {
         testCalculate("c5pmmr", "-5");
         testCalculate("c5mpr", "0");
 
-        // simply operation M+
         testCalculate("c1prar", "1");
         testCalculate("c1.001pr456ar", "1.001");
         testCalculate("c2~.001p123", "123");
         testCalculate("c00.001~p123r", "-0.001");
-
-        // TODO !!!!! simply operation M-
 
         // replace operation
         testCalculate("c2ppppppppppr", "20");
@@ -175,9 +176,9 @@ public class MainAppTest {
     @Test
     public void testButtonMemoryWithArithmeticOperations() {
         // TODO !!!!!
-        testCalculate("2+2+2+2+2+2+2+2+2+2+2*2=", "24");
+//        testCalculate("2+2+2+2+2+2+2+2+2+2+2*2=", "24");
+        testCalculate("6/3=5*2=", "10");
     }
-
 
     @Test
     public void testLimitResultDivisionViewDisplay() {
@@ -195,7 +196,7 @@ public class MainAppTest {
     }
 
     @Test
-    public void testAccuracy() {                // http://chto-zachem-pochemu.ru/kak-proverit-tochnost-kalkyliatora/
+    public void testAccuracy() {
         testCalculate("111111111*111111111=", "12345678987654321");
         testCalculate("12345679*9=", "111111111");
     }
@@ -224,16 +225,57 @@ public class MainAppTest {
     }
 
     @Test
-    public void testDisplayUndefined(){
+    public void testDisplayUndefined() {
         testCalculate("2/0=", "Undefined");
         testCalculate("2/0+45=", "90");
         testCalculate("2/0*45=", "2025");
     }
 
+//    @Test
+//    public void teRstTTT() {
+//
+//
+//        controller.push(KeyCode.DIGIT1);
+//        controller.sleep(10);
+//        controller.push(KeyCode.DIGIT2);
+//        controller.sleep(10);
+//        controller.push(KeyCode.DIGIT3);
+//        controller.sleep(10);
+//        controller.push(KeyCode.DIGIT4);
+//        controller.sleep(10);
+//        controller.push(KeyCode.DIGIT5);
+//        controller.sleep(10);
+//        controller.push(KeyCode.DIGIT6);
+//        controller.sleep(10);
+//        controller.push(KeyCode.DIGIT7);
+//        controller.sleep(10);
+//        controller.push(KeyCode.DIGIT8);
+//        controller.sleep(10);
+//        controller.push(KeyCode.DIGIT9);
+//        controller.sleep(10);
+////        controller.press(KeyCode.SHIFT);
+//        controller.push( KeyCode.DIGIT5,KeyCode.SHIFT);
+//
+//        controller.sleep(10);
+//        controller.push(KeyCode.DIGIT9);
+//        controller.sleep(3000);
+//
+//    }
+
+    private void testCalculateKeyKeyCode(String arithmeticExpression, String expectedResult) {
+        //#Step: 1. Clear display
+
+        //#Step: 2. Click on buttons
+
+        //# Step: 3. Get result on display
+
+        //# Step: 4. Compare the expected results with the actual result.
+
+    }
+
     private void testCalculate(String arithmeticExpression, String expectedResult) {
         //#Step: 1. Clear display
-        controller.click("#reset");
-
+        controller.click("#ESCAPE");
 
         //#Step: 2. Click on buttons
         for (char button : arithmeticExpression.toCharArray()) {
@@ -259,58 +301,49 @@ public class MainAppTest {
     private String findKey(char key) {
         switch (key) {
             case '0':
-                return "#zero";
+                return "#DIGIT0";
             case '1':
-                return "#one";
+                return "#DIGIT1";
             case '2':
-                return "#two";
+                return "#DIGIT2";
             case '3':
-                return "#three";
+                return "#DIGIT3";
             case '4':
-                return "#four";
+                return "#DIGIT4";
             case '5':
-                return "#five";
+                return "#DIGIT5";
             case '6':
-                return "#six";
+                return "#DIGIT6";
             case '7':
-                return "#seven";
+                return "#DIGIT7";
             case '8':
-                return "#eight";
+                return "#DIGIT8";
             case '9':
-                return "#nine";
-
+                return "#DIGIT9";
             case '+':
-                return "#add";
+                return "#ADD";
             case '-':
-                return "#subtraction";
+                return "#MINUS";
             case '*':
-                return "#multiplication";
+                return "#MULTIPLICATION";
             case '/':
-                return "#division";
+                return "#SLASH";
             case '=':
-                return "#equals";
-
+                return "#EQUALS";
             case '%':
-                return "#percent";
-
+                return "#PERCENT";
             case '~':
-                return "#sign";
+                return "#SIGN";
             case '.':
-                return "#comma";
-
+                return "#COMMA";
             case 'a':
-                return "#reset";
-
-            // p -> M+
+                return "#ESCAPE";
             case 'p':
                 return "#m_plus";
-            // p -> M-
             case 'm':
                 return "#m_minus";
-            // p -> MC
             case 'c':
                 return "#mc";
-            // p -> MR
             case 'r':
                 return "#mr";
         }

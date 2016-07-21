@@ -47,6 +47,7 @@ public class MainApp extends Application {
             this.primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 }
