@@ -5,11 +5,15 @@ import com.malex.exception.impl.NoSuchOperationException;
 import com.malex.exception.impl.UndefinedNumberException;
 import com.malex.model.Calculator;
 import com.malex.service.impl.*;
+import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 import org.apache.log4j.Logger;
 
 import java.util.regex.Matcher;
@@ -36,10 +40,10 @@ public class ViewController {
     private final static String PRESS_COMMA = "0.";
 
     // дефолтое значение при нажатии на '.'
-    private final static String COMMA = ".";
+    private final static String COMMA_VAL = ".";
 
     // дефолтое значение знака: -
-    private static final String SIGN = "-";
+    private static final String SIGN_VAL = "-";
 
     // название кнопки АС
     private static final String VALUE_BUTTON_RESET_AC = "AC";
@@ -70,6 +74,9 @@ public class ViewController {
 
     @FXML
     private Button reset;
+
+    @FXML
+    private Button one;
 
     // значение первого числа
     private String numberOne = "";
@@ -127,10 +134,10 @@ public class ViewController {
 
     // Обработчик кнопок
     @FXML
-    public void handlerNumbers(Event event) {
+    public void handlerNumbersButton(Event event) {
         try {
             String value = display.getText();
-            handlerDisplayTextField();
+            changeDisplaySize();
             if (value == null) {
                 throw new IncorrectDataException("Incorrect data received from the controller !!!");
             }
@@ -192,34 +199,34 @@ public class ViewController {
                     if (this.display.getText().isEmpty()) {  // если первое значение пустое 0.00000
                         this.display.appendText(PRESS_COMMA);
                     }
-                    if (!this.display.getText().contains(COMMA)) {  // Проверка на наличее только одной точки
-                        this.display.appendText(COMMA);
+                    if (!this.display.getText().contains(COMMA_VAL)) {  // Проверка на наличее только одной точки
+                        this.display.appendText(COMMA_VAL);
                     }
                     break;
                 default:
                     break;
             }
         } catch (IncorrectDataException e) {
-            logger.warn("IncorrectDataException -> handlerNumbers(Event event): " + e.getMessage());
+            logger.warn("IncorrectDataException -> handlerNumbersButton(Event event): " + e.getMessage());
         } catch (Exception e) {
-            logger.error("Exception -> handlerNumbers(Event event): " + e.getMessage());
+            logger.error("Exception -> handlerNumbersButton(Event event): " + e.getMessage());
         }
     }
 
     // узнать приоритет операции
-    private boolean isHighPriorityOperations(String operation) {
+    private boolean isHighPriorityOperation(String operation) {
         return operation.equals(ID_MULTIPLICATION) || operation.equals(ID_DIVISION);
     }
 
     // Узнать приоритет операций
     // return true if displayOperation = '/' or '*' and inMemoryOperation = '+' or '-'
-    private boolean getPriority(String displayOperation, String inMemoryOperation) {
-        return isHighPriorityOperations(displayOperation) && !isHighPriorityOperations(inMemoryOperation);
+    private boolean getPriorityOperations(String displayOperation, String inMemoryOperation) {
+        return isHighPriorityOperation(displayOperation) && !isHighPriorityOperation(inMemoryOperation);
     }
 
     //обработчик операций: =; +; -; *; /.
     @FXML
-    public void handlerOperation(Event event) {
+    public void handlerOperationButton(Event event) {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
         try {
@@ -232,7 +239,7 @@ public class ViewController {
                 }
 
                 if (!this.operator.isEmpty() && this.operatorInMemory.isEmpty()) {   // проверка на приоритет операций
-                    if (getPriority(operatorValue, this.operator)) {
+                    if (getPriorityOperations(operatorValue, this.operator)) {
                         this.operatorInMemory = operatorValue;
                         this.isPriorityOperations = true;
                         this.numberTwo = this.display.getText();
@@ -255,7 +262,7 @@ public class ViewController {
                 } else {
                     this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, this.display.getText());
                     this.display.setText(this.numberTwo);
-                    if (isHighPriorityOperations(this.operatorInMemory)) {
+                    if (isHighPriorityOperation(this.operatorInMemory)) {
                         this.operatorInMemory = operatorValue;
                         this.isPriorityOperations = true;
                     } else {
@@ -271,7 +278,7 @@ public class ViewController {
             } else {
                 if (this.operator.isEmpty()) {
                     String number = this.display.getText();
-                    if (checkValueToZero(number)) {
+                    if (validateValueComma(number)) {
                         this.display.setText(START_CURSOR_POSITION);
                     }
                     return;
@@ -308,19 +315,19 @@ public class ViewController {
             this.display.setText("Undefined");
             this.operator = operatorValue;
         } catch (NoSuchOperationException e) {
-            logger.warn("NoSuchOperationException -> handlerOperation(Event event): " + e.getMessage());
+            logger.warn("NoSuchOperationException -> handlerOperationButton(Event event): " + e.getMessage());
         } catch (Exception e) {
-            logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerOperation(Event event): " + e.getMessage());
+            logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerOperationButton(Event event): " + e.getMessage());
         }
     }
 
     // Обработчик кнопки сброс 'AC'
     @FXML
-    public void handlerReset(Event event) {
+    public void handlerResetButton(Event event) {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
         if (operatorValue.equals(ID_RESET)) {
-            resetValueDisplay();
+            resetDisplay();
             this.operator = "";
             btn.setText(VALUE_BUTTON_RESET_AC);
             startPosition = true; // сброс стартовой позиции
@@ -332,19 +339,19 @@ public class ViewController {
 
     //обработчик знака "-"
     @FXML
-    public void handlerSing(Event event) {
+    public void handlerSingButton(Event event) {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
         if (operatorValue.equals(ID_SIGN)) {
             String number = display.getText();
             if (!number.equals(START_CURSOR_POSITION)) {
-                if (checkValueToZero(number)) {
+                if (validateValueComma(number)) {
                     this.display.setText(START_CURSOR_POSITION);
                 } else {
-                    if (number.startsWith(SIGN)) {
+                    if (number.startsWith(SIGN_VAL)) {
                         this.display.setText(number.substring(0, 0) + number.substring(1));
                     } else {
-                        this.display.setText(SIGN + number);
+                        this.display.setText(SIGN_VAL + number);
                     }
                 }
             }
@@ -353,7 +360,7 @@ public class ViewController {
 
     // вычесление "%" чисел
     @FXML
-    public void handlerPercent(Event event) {
+    public void handlerPercentButton(Event event) {
         Button btn = (Button) event.getSource();
         String percent = btn.getId();
         if (numberOne.isEmpty()) {
@@ -367,7 +374,7 @@ public class ViewController {
 
     // хранение переменной в памяти
     @FXML
-    public void handlerMemory(Event event) {
+    public void handlerMemoryButton(Event event) {
         Button btn = (Button) event.getSource();
         String memory = btn.getId();
         switch (memory) {
@@ -396,7 +403,7 @@ public class ViewController {
     }
 
     // Проверка на колличество допустимых '.' в числе
-    private boolean checkValueToZero(String number) {
+    private boolean validateValueComma(String number) {  //TODO rename method
         Pattern pattern = Pattern.compile("^0.[0]+"); // valid -> "0.0000"
         Matcher matcher = pattern.matcher(number);
         boolean checkValueZeroAndComma = number.startsWith(PRESS_COMMA) && number.length() == 2;
@@ -404,13 +411,16 @@ public class ViewController {
     }
 
     // сбросить позицию курсора на 0
-    private void resetValueDisplay() {
+    private void resetDisplay() {
         this.display.setFont(new Font(MAX_FONT_SIZE_TEXT)); //reset FONT_SIZE
         this.display.setText(START_CURSOR_POSITION); // set -> "0"
     }
 
-    // слущатель размера дисплея
-    private void handlerDisplayTextField() {
+    // минимальный шрифт текста в дисплее
+    private static final int MIN_FONT_SIZE_TEXT = 12;
+
+    // change the display size
+    private void changeDisplaySize() {
         this.display.textProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue.length() < 10) {  //TODO Constant
@@ -419,96 +429,70 @@ public class ViewController {
                         if (newValue.length() < 26) { //TODO Constant
                             this.display.setFont(Font.font(38 - newValue.length())); //TODO Constant
                         } else {
-                            this.display.setFont(Font.font(12)); //TODO Constant
+                            this.display.setFont(Font.font(MIN_FONT_SIZE_TEXT));
                         }
                     }
                 }
         );
     }
 
-//    // TODO Инициализация обработчика кнопок
-//    @FXML
-//    public void handlerKeyPressed(KeyEvent event) {
-//
-//        if (display.getText().length() > 0) {  // поменять название кнопки
-//            reset.setText("C");
-//        }
-//
-//        if (display.getText().equals(START_CURSOR_POSITION) && startPosition) { // сброс дефолтного значения
-//            display.setText("");
-//            startPosition = false; // сброс стартовой позиции
-//        }
-//
-//        if (nextNumber) {   //проверка на начало следующего числа
-//            display.setText("");
-//            nextNumber = false;
-//        }
-//
-//        switch (event.getText()) {
-//            case "0":
-//                if (validateCountZero()) {
-//                    display.appendText(START_CURSOR_POSITION);
-//                }
-//                break;
-//            case "1":
-//                display.appendText("1");
-//                break;
-//            case "2":
-//                display.appendText("2");
-//                break;
-//            case "3":
-//                display.appendText("3");
-//                break;
-//            case "4":
-//                display.appendText("4");
-//                break;
-//            case "5":
-//                display.appendText("5");
-//                break;
-//            case "6":
-//                display.appendText("6");
-//                break;
-//            case "7":
-//                display.appendText("7");
-//                break;
-//            case "8":
-//                display.appendText("8");
-//                break;
-//            case "9":
-//                display.appendText("9");
-//                break;
-//            case ".":
-//                if (display.getText().isEmpty()) {  // если первое значение пустое 0.00000
-//                    display.appendText("0.");
-//                }
-//                if (!display.getText().contains(".")) {    // Проверка на наличее только одной точки
-//                    display.appendText(".");
-//                }
-//                break;
-//            default:
-//                break;
-//        }
-//    }
+    // Инициализация обработчика кнопок
+    @FXML
+    public void handlerKeyPressed(KeyEvent event) {
+        KeyCode code = event.getCode();
+        String nameKey = code.toString();
+        System.out.println(nameKey);
+        if (nameKey.equals("DIGIT1")) {
+            one.arm();
+            PauseTransition pause = new PauseTransition(Duration.seconds(0.2));
+            pause.setOnFinished(e -> one.disarm());
+            pause.play();
+            one.fire();
+        }
 
-    //    // минимальный шрифт текста в дисплее
-//    private static final int MIX_FONT_SIZE_TEXT = 10; // FONT TextField
+        switch (nameKey){
+            case ID_ZERO:
+                one.arm();
+                PauseTransition pause = new PauseTransition(Duration.seconds(0.2));
+                pause.setOnFinished(e -> one.disarm());
+                pause.play();
+                one.fire();
+                break;
+            case ID_ONE:
+
+                break;
+            case ID_TWO:
+
+                break;
+            case ID_THREE:
+
+                break;
+            case ID_FOUR:
+
+                break;
+            case ID_FIVE:
+
+                break;
+            case ID_SIX:
+
+                break;
+            case ID_SEVEN:
+
+                break;
+            case ID_EIGHT:
+
+                break;
+            case ID_NINE:
+
+                break;
+            case ID_COMMA:
 
 
-//    // Шаг уменьшения шрифта
-//    private static final int STEP_FONT = 2;
-//
-//    private static int fontSize = 30; // на этапе инициализации
-//
-//    private static int length = 7; // на этапе инициализации
-//
-//    // обображение теста на дисплее в соотвествии с длинной строки
-//    private void screenResizingTextField(TextField display) {
-//        if (display.getText().length() > length && fontSize > MIX_FONT_SIZE_TEXT) {
-//            display.setFont(new Font(fontSize));
-//            length = length + 1;
-//            fontSize = fontSize - STEP_FONT;
-//        }
-//    }
+                break;
+            default:
+                break;
+        }
+    }
 
 }
 

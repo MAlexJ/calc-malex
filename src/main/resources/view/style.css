@@ -24,6 +24,10 @@
     -fx-border-color: #c5c5c5;
 }
 
+.button:armed{
+    -fx-background-color: #B2B2B2;
+}
+
 .button:pressed {
     -fx-background-color: #B2B2B2;
 }

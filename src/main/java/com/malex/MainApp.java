@@ -6,10 +6,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
 public class MainApp extends Application {
+
+    // инициализация логера
+    private static Logger logger = Logger.getLogger(MainApp.class.getName());
 
     // хранить состояние Stage
     private Stage primaryStage;
@@ -39,8 +43,8 @@ public class MainApp extends Application {
             controller.init();
 
             // инициализация Scene
-            primaryStage.setScene(new Scene(anchorPane));
-            primaryStage.show();
+            this.primaryStage.setScene(new Scene(anchorPane));
+            this.primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="232.0" styleClass="backgroundApp" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.5" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.malex.controller.ViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#handlerKeyPressed" prefHeight="340.0" prefWidth="232.0" styleClass="backgroundApp" stylesheets="@style.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.malex.controller.ViewController">
     <children>
-      <TextField fx:id="display" alignment="CENTER_RIGHT" editable="false" focusTraversable="false" prefWidth="240.0" styleClass="backgroundApp">
+      <TextField fx:id="display" alignment="CENTER_RIGHT" editable="false" focusTraversable="false" prefWidth="238.0" styleClass="backgroundApp">
          <cursor>
             <Cursor fx:constant="DEFAULT" />
          </cursor>
@@ -20,7 +20,7 @@
             <Font size="32.0" />
          </font>
       </TextField>
-        <VBox prefHeight="340.0" prefWidth="232.0" AnchorPane.bottomAnchor="282.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+        <!--<VBox prefHeight="340.0" prefWidth="232.0" AnchorPane.bottomAnchor="282.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />-->
         <VBox layoutX="10.0" layoutY="10.0" prefHeight="350.0" prefWidth="232.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="58.0">
             <children>
                 <GridPane prefHeight="329.0" prefWidth="232.0">
@@ -39,29 +39,29 @@
                         <RowConstraints minHeight="47.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Button fx:id="mc" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerMemory" prefHeight="47.0" prefWidth="58.0" styleClass="operators" text="mc" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES" />
-                        <Button fx:id="m_plus" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerMemory" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="m+" GridPane.columnIndex="1" />
-                        <Button fx:id="mr" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerMemory" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="mr" GridPane.columnIndex="3" />
-                        <Button fx:id="m_minus" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerMemory" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="m-" GridPane.columnIndex="2" />
-                        <Button fx:id="reset" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerReset" prefHeight="47.0" prefWidth="59.0" text="AC" GridPane.rowIndex="1" />
-                        <Button fx:id="sign" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerSing" prefHeight="47.0" prefWidth="59.0" text="+/-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Button fx:id="percent" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerPercent" prefHeight="47.0" prefWidth="59.0" text="\%" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <Button fx:id="division" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperation" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="÷" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                        <Button fx:id="seven" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="7" GridPane.rowIndex="2" />
-                        <Button fx:id="eight" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="8" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Button fx:id="nine" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="9" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                        <Button fx:id="multiplication" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperation" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="x" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                        <Button fx:id="four" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="4" GridPane.rowIndex="3" />
-                        <Button fx:id="five" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="5" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Button fx:id="six" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="6" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                        <Button fx:id="subtraction" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperation" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="-" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                        <Button fx:id="one" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="1" GridPane.rowIndex="4" />
-                        <Button fx:id="two" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <Button fx:id="three" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="3" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                        <Button fx:id="add" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperation" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="+" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                        <Button fx:id="comma" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="47.0" prefWidth="59.0" text="," GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                        <Button fx:id="equals" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperation" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="=" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-                        <Button fx:id="zero" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbers" prefHeight="50.0" prefWidth="116.0" text="0" GridPane.columnSpan="3" GridPane.rowIndex="5" />
+                        <Button fx:id="mc" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerMemoryButton" prefHeight="47.0" prefWidth="58.0" styleClass="operators" text="mc" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES" />
+                        <Button fx:id="m_plus" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerMemoryButton" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="m+" GridPane.columnIndex="1" />
+                        <Button fx:id="mr" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerMemoryButton" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="mr" GridPane.columnIndex="3" />
+                        <Button fx:id="m_minus" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerMemoryButton" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="m-" GridPane.columnIndex="2" />
+                        <Button fx:id="reset" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerResetButton" prefHeight="47.0" prefWidth="59.0" text="AC" GridPane.rowIndex="1" />
+                        <Button fx:id="sign" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerSingButton" prefHeight="47.0" prefWidth="59.0" text="+/-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button fx:id="percent" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerPercentButton" prefHeight="47.0" prefWidth="59.0" text="\%" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Button fx:id="division" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperationButton" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="÷" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Button fx:id="seven" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="47.0" prefWidth="59.0" text="7" GridPane.rowIndex="2" />
+                        <Button fx:id="eight" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="47.0" prefWidth="59.0" text="8" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button fx:id="nine" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="47.0" prefWidth="59.0" text="9" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Button fx:id="multiplication" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperationButton" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="x" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <Button fx:id="four" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="47.0" prefWidth="59.0" text="4" GridPane.rowIndex="3" />
+                        <Button fx:id="five" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="47.0" prefWidth="59.0" text="5" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Button fx:id="six" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="47.0" prefWidth="59.0" text="6" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Button fx:id="subtraction" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperationButton" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="-" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Button fx:id="one" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="47.0" prefWidth="59.0" text="1" GridPane.rowIndex="4" />
+                        <Button fx:id="two" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="47.0" prefWidth="59.0" text="2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Button fx:id="three" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="47.0" prefWidth="59.0" text="3" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <Button fx:id="add" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperationButton" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="+" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <Button fx:id="comma" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="47.0" prefWidth="59.0" text="," GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <Button fx:id="equals" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerOperationButton" prefHeight="47.0" prefWidth="59.0" styleClass="operators" text="=" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                        <Button fx:id="zero" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handlerNumbersButton" prefHeight="50.0" prefWidth="116.0" text="0" GridPane.columnSpan="3" GridPane.rowIndex="5" />
                     </children>
                 </GridPane>
             </children>
