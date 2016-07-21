@@ -124,11 +124,13 @@ public class ViewController {
         return matcher.matches();
     }
 
+
     // Обработчик кнопок
     @FXML
     public void handlerNumbers(Event event) {
         try {
             String value = display.getText();
+            handlerDisplayTextField();
             if (value == null) {
                 throw new IncorrectDataException("Incorrect data received from the controller !!!");
             }
@@ -405,6 +407,23 @@ public class ViewController {
     private void resetValueDisplay() {
         this.display.setFont(new Font(MAX_FONT_SIZE_TEXT)); //reset FONT_SIZE
         this.display.setText(START_CURSOR_POSITION); // set -> "0"
+    }
+
+    // слущатель размера дисплея
+    private void handlerDisplayTextField() {
+        this.display.textProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue.length() < 10) {  //TODO Constant
+                        this.display.setFont(Font.font(MAX_FONT_SIZE_TEXT));
+                    } else {
+                        if (newValue.length() < 26) { //TODO Constant
+                            this.display.setFont(Font.font(38 - newValue.length())); //TODO Constant
+                        } else {
+                            this.display.setFont(Font.font(12)); //TODO Constant
+                        }
+                    }
+                }
+        );
     }
 
 //    // TODO Инициализация обработчика кнопок

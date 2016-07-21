@@ -10,20 +10,17 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="232.0" styleClass="backgroundApp" stylesheets="@style.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.malex.controller.ViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="232.0" styleClass="backgroundApp" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.5" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.malex.controller.ViewController">
     <children>
-        <VBox prefHeight="340.0" prefWidth="232.0" AnchorPane.bottomAnchor="282.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <TextField fx:id="display" alignment="CENTER_RIGHT" editable="false" focusTraversable="false" styleClass="backgroundApp" text="">
-               <cursor>
-                  <Cursor fx:constant="DEFAULT" />
-               </cursor>
-               <font>
-                  <Font size="32.0" />
-               </font>
-            </TextField>
-         </children>
-        </VBox>
+      <TextField fx:id="display" alignment="CENTER_RIGHT" editable="false" focusTraversable="false" prefWidth="240.0" styleClass="backgroundApp">
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
+         <font>
+            <Font size="32.0" />
+         </font>
+      </TextField>
+        <VBox prefHeight="340.0" prefWidth="232.0" AnchorPane.bottomAnchor="282.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
         <VBox layoutX="10.0" layoutY="10.0" prefHeight="350.0" prefWidth="232.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="58.0">
             <children>
                 <GridPane prefHeight="329.0" prefWidth="232.0">
