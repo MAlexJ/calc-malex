@@ -1,0 +1,1 @@
+16:36:19,850  WARN JavaFX Application Thread ViewController:handlerOperationButton:428 - NoSuchOperationException -> handlerOperationButton(Event event): Incorrect arithmetic operation !

@@ -347,11 +347,7 @@ public class ViewController {
                         this.numberOne = this.display.getText();
                         this.nextNumber = true;
                     } else {
-
-                        //TODO хуйня после срабатывания равно. он считает что 3+======
-//                        String NU_01 = this.numberOne;
-//                        String NUM2 = this.display.getText();
-                        this.numberOne = calculator.calculate(this.operator, this.numberOne, this.display.getText()); //TODO THERE <-
+                        this.numberOne = calculator.calculate(this.operator, this.numberOne, this.display.getText());
                         this.display.setText(this.numberOne);
                         this.operator = operatorValue;
                         this.nextNumber = true;
@@ -398,8 +394,6 @@ public class ViewController {
                 if (!this.numberOne.isEmpty()) {
                     this.numberOne = calculate;
                 }
-                 //TODO сделал бы флаг на отработку оператора =
-
                 if (isPriorityOperations) {
                     this.operator = this.operatorInMemory;
                     this.numberOne = tempNumber;
@@ -419,8 +413,6 @@ public class ViewController {
             logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerOperationButton(Event event): " + e.getMessage());
         }
     }
-
-
 
     /**
      * Handler pressing on click the button: 'AC'.
@@ -484,8 +476,6 @@ public class ViewController {
             this.display.setText(calculate);
         }
     }
-
-    // хранение переменной в памяти
 
     /**
      * Handler pressing on click the buttons: 'mr', 'mc','m-','m+'.
@@ -717,8 +707,6 @@ public class ViewController {
         if (nameKey.equals("ENTER")) {   //TODO Constant
             return ID_EQUALS;
         }
-
-        System.out.println( event.getText() +" "+ nameKey);
         return nameKey;
     }
 }

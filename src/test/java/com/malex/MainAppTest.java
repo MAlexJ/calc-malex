@@ -2,7 +2,6 @@ package com.malex;
 
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.loadui.testfx.GuiTest;
@@ -85,6 +84,7 @@ public class MainAppTest {
         //middle
         testCalculate("4/6*7-89=", "-84.33333333333331");
         testCalculate("543.02*0.02+48.33=", "59.1904");
+        testCalculate("2+2+2+2+2+2+2+2+2+2+2*3=", "26");
     }
 
     @Test
@@ -143,11 +143,6 @@ public class MainAppTest {
         testCalculate("2-52%+3*4/2=", "6.96");
     }
 
-//    @Test
-//    public void testAfterEquals() {
-//        testCalculate("9+2=-3=", "8"); //TODO -валюсь сдесь!!!!
-//    }
-
     @Test
     public void testButtonMemory() {
         // simply operation
@@ -171,12 +166,6 @@ public class MainAppTest {
         // memory operation and arithmetic operation
         testCalculate("c5p63+r=", "68");
         testCalculate("c5m63+r=", "58");
-    }
-
-    @Test
-    public void testButtonMemoryWithArithmeticOperations() {
-        testCalculate("2+2+2+2+2+2+2+2+2+2+2*3=", "26");
-//        testCalculate("6/3=5*2=", "10");
     }
 
     @Test
@@ -228,46 +217,6 @@ public class MainAppTest {
         testCalculate("2/0=", "Undefined");
         testCalculate("2/0+45=", "90");
         testCalculate("2/0*45=", "2025");
-    }
-
-    @Test
-    public void teRstTTT() {
-        controller.push(KeyCode.DIGIT1);
-        controller.sleep(10);
-        controller.push(KeyCode.DIGIT2);
-        controller.sleep(10);
-        controller.push(KeyCode.DIGIT3);
-        controller.sleep(10);
-        controller.push(KeyCode.DIGIT4);
-        controller.sleep(10);
-        controller.push(KeyCode.DIGIT5);
-        controller.sleep(10);
-        controller.push(KeyCode.DIGIT6);
-        controller.sleep(10);
-        controller.push(KeyCode.DIGIT7);
-        controller.sleep(10);
-        controller.push(KeyCode.DIGIT8);
-        controller.sleep(10);
-        controller.push(KeyCode.DIGIT9);
-        controller.sleep(10);
-//        controller.press(KeyCode.SHIFT);
-        controller.push( KeyCode.MINUS, KeyCode.SHIFT);
-
-        controller.sleep(10);
-        controller.push(KeyCode.DIGIT9);
-        controller.sleep(1000);
-
-    }
-
-    private void testCalculateKeyKeyCode(String arithmeticExpression, String expectedResult) {
-        //#Step: 1. Clear display
-
-        //#Step: 2. Click on buttons
-
-        //# Step: 3. Get result on display
-
-        //# Step: 4. Compare the expected results with the actual result.
-
     }
 
     private void testCalculate(String arithmeticExpression, String expectedResult) {
