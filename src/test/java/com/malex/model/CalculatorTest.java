@@ -29,8 +29,8 @@ public class CalculatorTest {
     /**
      * Оперции доступные по id:
      * ADD
-     * MINUS
-     * SLASH
+     * SUBTRACTION
+     * DIVISION
      * MULTIPLICATION
      * PERCENT
      */
@@ -41,12 +41,12 @@ public class CalculatorTest {
         test("ADD", "0.00", "0", "0");
         test("ADD", "0.0001", "1", "1.0001");
 
-        test("MINUS", "0", "1", "-1");
-        test("MINUS", "0.00", "1", "-1");
+        test("SUBTRACTION", "0", "1", "-1");
+        test("SUBTRACTION", "0.00", "1", "-1");
 
-        test("MINUS", "1", "2", "-1");
-        test("SLASH", "1", "2", "0.5");
-        test("SLASH", "0", "1", "0");
+        test("SUBTRACTION", "1", "2", "-1");
+        test("DIVISION", "1", "2", "0.5");
+        test("DIVISION", "0", "1", "0");
 
         test("MULTIPLICATION", "1", "2", "2");
 
@@ -60,16 +60,16 @@ public class CalculatorTest {
         test("MULTIPLICATION", bigNumMAX.toString(), bigNumMAX.toString(), bigNumMAX.multiply(bigNumMAX).toString());
         test("MULTIPLICATION", bigNumMAX.toString(), bigNumMIN.toString(), bigNumMAX.multiply(bigNumMIN).toString());
 
-        test("MINUS", bigNumMAX.toString(), bigNumMIN.toString(), bigNumMAX.subtract(bigNumMIN).toString());
-        test("MINUS", bigNumMIN.toString(), bigNumMIN.toString(), bigNumMIN.subtract(bigNumMIN).toString());
+        test("SUBTRACTION", bigNumMAX.toString(), bigNumMIN.toString(), bigNumMAX.subtract(bigNumMIN).toString());
+        test("SUBTRACTION", bigNumMIN.toString(), bigNumMIN.toString(), bigNumMIN.subtract(bigNumMIN).toString());
 
         BigDecimal bigDecimalMAX = new BigDecimal(String.valueOf(Double.MAX_VALUE));
         BigDecimal bigDecimalMIN = new BigDecimal(String.valueOf(Double.MIN_VALUE));
 
         test("ADD", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.add(bigDecimalMIN).toPlainString());
-        test("MINUS", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.subtract(bigDecimalMIN).toPlainString());
+        test("SUBTRACTION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.subtract(bigDecimalMIN).toPlainString());
         test("MULTIPLICATION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.multiply(bigDecimalMIN).toPlainString());
-        test("SLASH", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.divide(bigDecimalMIN, 14, BigDecimal.ROUND_HALF_UP).toPlainString());
+        test("DIVISION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.divide(bigDecimalMIN, 14, BigDecimal.ROUND_HALF_UP).toPlainString());
     }
 
     @Test
@@ -109,9 +109,9 @@ public class CalculatorTest {
         incorrectValues("MULTIPLICATION", "1", "number");
 
         // division by zero
-        incorrectValues("SLASH", "1", "0");
-        incorrectValues("SLASH", "1.00", "0");
-        incorrectValues("SLASH", "0.001", "0");
+        incorrectValues("DIVISION", "1", "0");
+        incorrectValues("DIVISION", "1.00", "0");
+        incorrectValues("DIVISION", "0.001", "0");
     }
 
     @Test

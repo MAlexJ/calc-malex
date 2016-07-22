@@ -13,11 +13,11 @@ public enum OperationName {
     /**
      * The arithmetic operation of subtraction.
      */
-    SUBTRACTION("MINUS"),
+    SUBTRACTION("SUBTRACTION"),
     /**
      * The arithmetic operation of division.
      */
-    DIVISION("SLASH"),
+    DIVISION("DIVISION"),
     /**
      * The arithmetic operation of multiplication.
      */

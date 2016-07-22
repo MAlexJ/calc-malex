@@ -20,38 +20,85 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * The {@code ViewController} class translate interactions with the view {@code layout.fxml}  into actions to be performed of the model {@code Calculator}.
+ * <p>
+ * Here are some more examples of how this can be used:
+ * <pre>
+ * // Step #1: Load fxml file.
+ * FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/view/layout.fxml"));
+ * Pane pane = loader.load();
  *
+ * // Step #2: Get the object of class {@code ViewController}.
+ * ViewController controller = loader.getController();
+ *
+ * // Step #3:  Initialization the controller {@code ViewController}.
+ * controller.init();
+ * </pre>
+ *
+ * @author MAlex
+ * @see com.malex.model.Calculator
+ * @see java.lang.String
+ * @see javafx.fxml.FXML
+ * @see javafx.scene.control.Button
+ * @see javafx.scene.control.TextField
+ * @see javafx.scene.input.KeyCode
+ * @see javafx.scene.text.Font
+ * @see javafx.util.Duration
+ * @see org.apache.log4j.Logger
+ * @see java.util.regex.Matcher
+ * @see java.util.regex.Pattern
  */
 public class ViewController {
 
-    // инициализация логера
+    /**
+     * Logging initialization.
+     */
     private static Logger logger = Logger.getLogger(ViewController.class.getName());
 
-    // курсор калькулятора
+    /**
+     * Value is used to store the cursor.
+     */
     private static final String START_CURSOR_POSITION = "0";
 
-    // максимальный шрифт текста в дисплее
+    /**
+     * Value is used to store the maximum font size a text.
+     */
     private static final int MAX_FONT_SIZE_TEXT = 32;
 
-    // дефолтое значение при получении процента одного числа
+    /**
+     * Value is used to store the minimum font size a text.
+     */
+    private static final int MIN_FONT_SIZE_TEXT = 12;
+
+    /**
+     * Value is used to store the value the default percent of number '1'.
+     */
     private final static String PERCENT_NUMBER_DEFAULT = "1";
 
-    // дефолтое значение при получении процента одного числа
-    private final static String MEMORY_NUMBER_DEFAULT = "0";
-
-    // дефолтое значение при нажатии на '.'
+    /**
+     * Value is used to store the value '0.'.
+     */
     private final static String PRESS_COMMA = "0.";
 
-    // дефолтое значение при нажатии на '.'
+
+    /**
+     * Value is used to store the value '.'.
+     */
     private final static String COMMA_VAL = ".";
 
-    // дефолтое значение знака: -
+    /**
+     * Value is used to store the value '-'.
+     */
     private static final String SIGN_VAL = "-";
 
-    // название кнопки АС
+    /**
+     * Value is used to store the value 'AC'.
+     */
     private static final String VALUE_BUTTON_RESET_AC = "AC";
 
-    // индификатор кнопки '0' представления layout.fxml
+    /**
+     * Value is used to store the indicator of a buttons.
+     */
     private static final String ID_ZERO = "DIGIT0";
     private static final String ID_ONE = "DIGIT1";
     private static final String ID_TWO = "DIGIT2";
@@ -63,18 +110,18 @@ public class ViewController {
     private static final String ID_EIGHT = "DIGIT8";
     private static final String ID_NINE = "DIGIT9";
     private static final String ID_ADD = "ADD";
-    private static final String ID_SUBTRACTION = "MINUS"; // TODO фигня название
+    private static final String ID_SUBTRACTION = "SUBTRACTION";
     private static final String ID_MULTIPLICATION = "MULTIPLICATION";
-    private static final String ID_DIVISION = "SLASH";   // TODO фигня название
+    private static final String ID_DIVISION = "DIVISION";
     private static final String ID_PERCENT = "PERCENT";
     private static final String ID_SIGN = "SIGN";
     private static final String ID_COMMA = "COMMA";
     private static final String ID_EQUALS = "EQUALS";
     private static final String ID_RESET = "ESCAPE";
 
+    // индификаторы кнопок представления layout.fxml
     @FXML
     private TextField display;
-
     @FXML
     public Button DIGIT0;
     @FXML
@@ -97,20 +144,16 @@ public class ViewController {
     public Button DIGIT9;
     @FXML
     public Button COMMA;
-
-
     @FXML
     public Button MULTIPLICATION;
     @FXML
-    public Button SLASH;  // TODO фигня название
+    public Button DIVISION;
     @FXML
     public Button ADD;
     @FXML
-    public Button MINUS;   // TODO фигня название
-
+    public Button SUBTRACTION;
     @FXML
     public Button EQUALS;
-
     @FXML
     public Button ESCAPE;
     @FXML
@@ -118,37 +161,59 @@ public class ViewController {
     @FXML
     public Button PERCENT;
 
-    // значение первого числа
+    /**
+     * Value is used to store the first number.
+     */
     private String numberOne = "";
 
-    // значение второго числа
+    /**
+     * Value is used to store the second number.
+     */
     private String numberTwo = "";
 
-    // номер хранимый в памяти использую операции: MR; MC; M+; M-.
+    /**
+     * Value is used to store the arithmetic operator in memory for an operation: MR; MC; M+; M-.
+     */
     private String numberInMemory = "0";
 
-    // значение оператора
+    /**
+     * Value is used to store the arithmetic operator in memory.
+     */
     private String operator = "";
 
-    // индикация для следующего числа
+    /**
+     * Value is used to indicate next a number.
+     */
     private boolean nextNumber;
 
-    // индикация инициализации стартовой позиции курсора
+    /**
+     * Value is used to indicate starting position of a cursor.
+     */
     private boolean startPosition = true;
 
-    // Переменная хранит состаяние повторного использования опереторов: +, -, *, /.
+    /**
+     * Value is used to store the status of reuse operators
+     */
     private boolean replaceOperator = false;
 
-    // индикация приоритетной арифметической операции
+    /**
+     * Value is used to indicate the priority operation.
+     */
     private boolean isPriorityOperations = false;
 
-    // переменная хранит арифметический приоритетный опретор
+    /**
+     * Value is used to store the priority an operator in memory.
+     */
     private String operatorInMemory = "";
 
-    // Модель
+    /**
+     * Value is used to store model  {@code Calculator}.
+     */
     private static Calculator calculator;
 
-    // Инициализация модели
+    /**
+     * Initialization the model of a calculator.
+     */
     static {
         calculator = new Calculator();
         calculator.addOperation(new AddOperation());
@@ -158,13 +223,19 @@ public class ViewController {
         calculator.addOperation(new PercentOperation());
     }
 
-    // Инициализация котроллера
+    /**
+     * Initialization the controller.
+     */
     public void init() {
         this.display.setEditable(false);
         this.display.setText(START_CURSOR_POSITION);
     }
 
-    // Обработчик кнопок
+    /**
+     * Handler pressing on click the buttons: '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'.
+     *
+     * @param event this event is generated when a buttons is pressed.
+     */
     @FXML
     public void handlerNumbersButton(Event event) {
         try {
@@ -196,7 +267,7 @@ public class ViewController {
             Button btn = (Button) event.getSource();
             switch (btn.getId()) {
                 case ID_ZERO:
-                    if (validateNumberLimitNumberZeros()) {
+                    if (validateLimitNumberZeros()) {
                         display.appendText(START_CURSOR_POSITION);
                     }
                     break;
@@ -245,20 +316,22 @@ public class ViewController {
         }
     }
 
-    //обработчик операций: =; +; -; *; /.
+    /**
+     * Handler pressing on click the buttons: '=', '+', '-', '*', '/'.
+     *
+     * @param event this event is generated when a buttons '=', '+', '-', '*', '/' is pressed.
+     */
     @FXML
     public void handlerOperationButton(Event event) {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
         try {
             if (!ID_EQUALS.equals(operatorValue)) {
-
                 if (this.replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
                     this.replaceOperator = true;
                     this.operator = operatorValue;
                     return;
                 }
-
                 if (!this.operator.isEmpty() && this.operatorInMemory.isEmpty()) {   // проверка на приоритет операций
                     if (getPriorityOperations(operatorValue, this.operator)) {
                         this.operatorInMemory = operatorValue;
@@ -268,14 +341,17 @@ public class ViewController {
                         return;
                     }
                 }
-
                 if (!isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
                     if (numberTwo.isEmpty() && operator.isEmpty()) {
                         this.operator = operatorValue;
                         this.numberOne = this.display.getText();
                         this.nextNumber = true;
                     } else {
-                        this.numberOne = calculator.calculate(this.operator, this.numberOne, this.display.getText());
+
+                        //TODO хуйня после срабатывания равно. он считает что 3+======
+//                        String NU_01 = this.numberOne;
+//                        String NUM2 = this.display.getText();
+                        this.numberOne = calculator.calculate(this.operator, this.numberOne, this.display.getText()); //TODO THERE <-
                         this.display.setText(this.numberOne);
                         this.operator = operatorValue;
                         this.nextNumber = true;
@@ -322,6 +398,7 @@ public class ViewController {
                 if (!this.numberOne.isEmpty()) {
                     this.numberOne = calculate;
                 }
+                 //TODO сделал бы флаг на отработку оператора =
 
                 if (isPriorityOperations) {
                     this.operator = this.operatorInMemory;
@@ -331,6 +408,7 @@ public class ViewController {
                     this.isPriorityOperations = false;
                 }
                 this.display.setText(calculate);
+                System.out.println();
             }
         } catch (UndefinedNumberException e) {
             this.display.setText("Undefined");
@@ -342,7 +420,13 @@ public class ViewController {
         }
     }
 
-    // Обработчик кнопки сброс 'AC'
+
+
+    /**
+     * Handler pressing on click the button: 'AC'.
+     *
+     * @param event this event is generated when a button 'AC' is pressed.
+     */
     @FXML
     public void handlerResetButton(Event event) {
         Button btn = (Button) event.getSource();
@@ -358,7 +442,11 @@ public class ViewController {
         }
     }
 
-    //обработчик знака "-"
+    /**
+     * Handler pressing on click the button: '-'.
+     *
+     * @param event this event is generated when a button '-' is pressed.
+     */
     @FXML
     public void handlerSingButton(Event event) {
         Button btn = (Button) event.getSource();
@@ -379,7 +467,11 @@ public class ViewController {
         }
     }
 
-    // вычесление "%" чисел
+    /**
+     * Handler pressing on click the button: '%'.
+     *
+     * @param event this event is generated when a button '%' is pressed.
+     */
     @FXML
     public void handlerPercentButton(Event event) {
         Button btn = (Button) event.getSource();
@@ -394,13 +486,19 @@ public class ViewController {
     }
 
     // хранение переменной в памяти
+
+    /**
+     * Handler pressing on click the buttons: 'mr', 'mc','m-','m+'.
+     *
+     * @param event this event is generated when a buttons 'mr', 'mc','m-','m+' is pressed.
+     */
     @FXML
     public void handlerMemoryButton(Event event) {
         Button btn = (Button) event.getSource();
         String memory = btn.getId();
         switch (memory) {
             case "mc":
-                numberInMemory = MEMORY_NUMBER_DEFAULT;
+                numberInMemory = START_CURSOR_POSITION;
                 break;
             case "m_plus":
                 numberInMemory = calculator.calculate(ID_ADD, numberInMemory, this.display.getText());
@@ -421,12 +519,12 @@ public class ViewController {
     /**
      * Initialize keyboard input data handler.
      *
-     * @param event
+     * @param event this event is generated when a key is pressed, released, or typed.
      */
     @FXML
     public void handlerKeyPressed(KeyEvent event) {
         String nameKey = shortcuts(event);
-        PauseTransition pause = new PauseTransition(Duration.seconds(0.08));
+        PauseTransition pause = new PauseTransition(Duration.seconds(0.1));
         switch (nameKey) {
             case ID_ZERO:
                 clickOnButton(DIGIT0, pause);
@@ -465,10 +563,10 @@ public class ViewController {
                 clickOnButton(MULTIPLICATION, pause);
                 break;
             case ID_DIVISION:
-                clickOnButton(SLASH, pause);
+                clickOnButton(DIVISION, pause);
                 break;
             case ID_SUBTRACTION:
-                clickOnButton(MINUS, pause);
+                clickOnButton(SUBTRACTION, pause);
                 break;
             case ID_ADD:
                 clickOnButton(ADD, pause);
@@ -490,57 +588,6 @@ public class ViewController {
         }
     }
 
-    // узнать приоритет операции
-    private boolean isHighPriorityOperation(String operation) {
-        return operation.equals(ID_MULTIPLICATION) || operation.equals(ID_DIVISION);
-    }
-
-    // Узнать приоритет операций
-    // return true if displayOperation = '/' or '*' and inMemoryOperation = '+' or '-'
-    private boolean getPriorityOperations(String displayOperation, String inMemoryOperation) {
-        return isHighPriorityOperation(displayOperation) && !isHighPriorityOperation(inMemoryOperation);
-    }
-
-    /**
-     * Validate the number on the limit count of zeros.
-     *
-     * @return
-     */
-    private boolean validateNumberLimitNumberZeros() {
-        return !display.getText().startsWith(START_CURSOR_POSITION) || display.getText().startsWith(PRESS_COMMA) || display.getText().isEmpty();
-    }
-
-    // проверка являиться ли входящая сторка числом
-    private boolean isNumber(String number) {
-        Pattern pattern = Pattern.compile("[0-9|.|-]+");
-        Matcher matcher = pattern.matcher(number);
-        return matcher.matches();
-    }
-
-    /**
-     * Validate the number on available inside the comma.
-     *
-     * @param number
-     * @return
-     */
-    private boolean validateNumberAvailableInsideComma(String number) {
-        Pattern pattern = Pattern.compile("^0.[0]+");
-        Matcher matcher = pattern.matcher(number);
-        boolean checkValueZeroAndComma = number.startsWith(PRESS_COMMA) && number.length() == 2;
-        return matcher.matches() || checkValueZeroAndComma;
-    }
-
-    /**
-     * Reset the cursor position of the screen.
-     */
-    private void resetDisplay() {
-        this.display.setFont(new Font(MAX_FONT_SIZE_TEXT));
-        this.display.setText(START_CURSOR_POSITION);
-    }
-
-    // минимальный шрифт текста в дисплее
-    private static final int MIN_FONT_SIZE_TEXT = 12;
-
     /**
      * Change the display size.
      */
@@ -560,7 +607,91 @@ public class ViewController {
         );
     }
 
-    // Shortcuts -> определение сочетания кнопок!!
+    /**
+     * Click on a given button.
+     *
+     * @param button the button.
+     * @param pause  the pause animation press on click button.
+     */
+    private void clickOnButton(Button button, PauseTransition pause) {
+        button.fire();
+        button.arm();
+        pause.setOnFinished(e -> button.disarm());
+        pause.play();
+    }
+
+    /**
+     * Get priority operations.
+     * This method compares two operations.
+     *
+     * @param displayOperation  the operation selected by the user.
+     * @param inMemoryOperation the operation in memory.
+     * @return true if the operation in display has a higher priority.
+     */
+    // return true if displayOperation = '/' or '*' and inMemoryOperation = '+' or '-'
+    private boolean getPriorityOperations(String displayOperation, String inMemoryOperation) {
+        return isHighPriorityOperation(displayOperation) && !isHighPriorityOperation(inMemoryOperation);
+    }
+
+    /**
+     * Get priority operation.
+     *
+     * @param operation the arithmetic operation
+     * @return true if the operation has a higher priority.
+     */
+    private boolean isHighPriorityOperation(String operation) {
+        return operation.equals(ID_MULTIPLICATION) || operation.equals(ID_DIVISION);
+    }
+
+    /**
+     * Verification whether a string is a number.
+     *
+     * @param number the incoming parameter.
+     * @return true if number.
+     */
+    private boolean isNumber(String number) {
+        Pattern pattern = Pattern.compile("[0-9|.|-]+");
+        Matcher matcher = pattern.matcher(number);
+        return matcher.matches();
+    }
+
+    /**
+     * Validate the number on the limit count of zeros.
+     *
+     * @return true if the count of zeros in the permitted limit.
+     */
+    private boolean validateLimitNumberZeros() {
+        return !display.getText().startsWith(START_CURSOR_POSITION) || display.getText().startsWith(PRESS_COMMA) || display.getText().isEmpty();
+    }
+
+
+    /**
+     * Validate the number on available inside the comma.
+     *
+     * @param number the incoming parameter.
+     * @return true if the count of commas in the permitted limit.
+     */
+    private boolean validateNumberAvailableInsideComma(String number) {
+        Pattern pattern = Pattern.compile("^0.[0]+");
+        Matcher matcher = pattern.matcher(number);
+        boolean checkValueZeroAndComma = number.startsWith(PRESS_COMMA) && number.length() == 2;
+        return matcher.matches() || checkValueZeroAndComma;
+    }
+
+    /**
+     * Reset the cursor position of the screen.
+     */
+    private void resetDisplay() {
+        this.display.setFont(new Font(MAX_FONT_SIZE_TEXT));
+        this.display.setText(START_CURSOR_POSITION);
+    }
+
+    /**
+     * The method determines the Shortcuts.
+     *
+     * @param event this event is generated when a key is pressed, released, or typed.
+     * @return the id button.
+     */
     private String shortcuts(KeyEvent event) {
         KeyCode code = event.getCode();
         String nameKey = code.toString();
@@ -573,26 +704,22 @@ public class ViewController {
         }
         if (event.getText().equals("_") && nameKey.equals("MINUS")) {   //TODO Constant
             return ID_SIGN;
-
+        }
+        if (event.getText().equals("-") && nameKey.equals("MINUS")) {   //TODO Constant
+            return ID_SUBTRACTION;
         }
         if (event.getText().equals("%") && nameKey.equals("DIGIT5")) {   //TODO Constant
             return ID_PERCENT;
         }
+        if (nameKey.equals("SLASH")) {   //TODO Constant
+            return ID_DIVISION;
+        }
+        if (nameKey.equals("ENTER")) {   //TODO Constant
+            return ID_EQUALS;
+        }
+
+        System.out.println( event.getText() +" "+ nameKey);
         return nameKey;
     }
-
-    /**
-     * Click on a given button.
-     *
-     * @param button
-     * @param pause
-     */
-    private void clickOnButton(Button button, PauseTransition pause) {
-        button.arm();
-        pause.setOnFinished(e -> button.disarm());
-        pause.play();
-        button.fire();
-    }
-
 }
 

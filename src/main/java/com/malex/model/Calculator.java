@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 public class Calculator {
 
     /**
-     * Value is used to store objects {@code Operation} of operations:  ADD, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
+     * Value is used to store map {@code Operation} of operations:  ADD, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
      */
     private Map<OperationName, Operation> operations;
 
@@ -64,7 +64,7 @@ public class Calculator {
      *
      * @param operationName the arithmetic operator:  ADD, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
      * @param numberOne     the first number.
-     * @param numberTwo
+     * @param numberTwo     the second number.
      * @return result of the arithmetic operation.
      */
     public String calculate(String operationName, String numberOne, String numberTwo) {
@@ -81,7 +81,7 @@ public class Calculator {
      *
      * @param operationName the arithmetic operator.
      * @param numberOne     the first number.
-     * @param numberTwo     the first number.
+     * @param numberTwo     the second number.
      */
     private void validateInputParameters(String operationName, String numberOne, String numberTwo) {
         if (operationName == null || operationName.equals("")) {
