@@ -1,10 +1,6 @@
 package com.malex.controller;
 
-import com.malex.model.Calculator;
-import com.malex.model.exception.IncorrectDataException;
-import com.malex.model.exception.NoSuchOperationException;
 import com.malex.model.exception.UndefinedNumberException;
-import com.malex.model.operation.impl.*;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -21,6 +17,8 @@ import org.apache.log4j.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.malex.model.Calculator.calculator;
 
 /**
  * The {@code ViewController} class translate interactions with the view {@code layout.fxml}  into actions to be performed of the model {@code Calculator}.
@@ -56,12 +54,12 @@ public class ViewController {
     /**
      * Value is used to store the maximum font size a text.
      */
-    private static final int MAX_FONT_SIZE_TEXT = 32;
+    private static final int MAX_FONT_SIZE_TEXT = 46;
 
     /**
-     * Value is used to store the minimum font size a text.
+     * Value is used to store the text font.
      */
-    private static final int MIN_FONT_SIZE_TEXT = 12;
+    private static final String TEXT_FONT = "Helvetica Neue Thin";
 
     /**
      * The value is used to store the value of the pause of the animation.
@@ -226,29 +224,15 @@ public class ViewController {
     private String operatorInMemory = "";
 
     /**
-     * Value is used to store model  {@code Calculator}.
-     */
-    private static Calculator calculator;
-
-    /**
-     * Initialization the model of a calculator.
-     */
-    static {
-        calculator = new Calculator();
-        calculator.addOperation(new AddOperation());
-        calculator.addOperation(new DivisionOperation());
-        calculator.addOperation(new SubtractionOperation());
-        calculator.addOperation(new MultiplicationOperation());
-        calculator.addOperation(new PercentOperation());
-    }
-
-    /**
      * Initialization the controller.
      */
     public void init() {
         this.display.setEditable(false);
-        this.display.setFont(new Font("Helvetica Neue Thin", 46));
+        this.display.setFont(new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT));
         this.display.setText(START_CURSOR_POSITION);
+        this.display.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            changeDisplaySize(newValue.intValue());
+        });
     }
 
     /**
@@ -260,10 +244,11 @@ public class ViewController {
     public void handlerNumbersButton(Event event) {
         try {
             String value = display.getText();
-            changeDisplaySize();
+
             if (value == null) {
-                throw new IncorrectDataException("Incorrect data received from the controller !!!");
+                throw new UndefinedNumberException("Incorrect value received from the controller !");
             }
+
             if (!isNumber(value)) {  // проверка входящего значения на число
                 this.display.setText("");
                 this.numberOne = "";
@@ -329,8 +314,6 @@ public class ViewController {
                 default:
                     break;
             }
-        } catch (IncorrectDataException e) {
-            logger.warn("IncorrectDataException -> handlerNumbersButton(Event event): " + e.getMessage());
         } catch (Exception e) {
             logger.error("Exception -> handlerNumbersButton(Event event): " + e.getMessage());
         }
@@ -423,11 +406,9 @@ public class ViewController {
                 }
                 this.display.setText(calculate);
             }
-        } catch (UndefinedNumberException e) {  //TODO checked
+        } catch (UndefinedNumberException e) {
             this.display.setText("Undefined");
             this.operator = operatorValue;
-        } catch (NoSuchOperationException e) {
-            logger.warn("NoSuchOperationException -> handlerOperationButton(Event event): " + e.getMessage());
         } catch (Exception e) {
             logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerOperationButton(Event event): " + e.getMessage());
         }
@@ -487,12 +468,16 @@ public class ViewController {
     public void handlerPercentButton(Event event) {
         Button btn = (Button) event.getSource();
         String percent = btn.getId();
-        if (this.numberOne.isEmpty()) {
-            String calculate = calculator.calculate(percent, PERCENT_NUMBER_DEFAULT, this.display.getText());
-            this.display.setText(calculate);
-        } else {
-            String calculate = calculator.calculate(percent, this.numberOne, this.display.getText());
-            this.display.setText(calculate);
+        try {
+            if (this.numberOne.isEmpty()) {
+                String calculate = calculator.calculate(percent, PERCENT_NUMBER_DEFAULT, this.display.getText());
+                this.display.setText(calculate);
+            } else {
+                String calculate = calculator.calculate(percent, this.numberOne, this.display.getText());
+                this.display.setText(calculate);
+            }
+        } catch (Exception e) {
+            logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerPercentButton(Event event): " + e.getMessage());
         }
     }
 
@@ -505,23 +490,27 @@ public class ViewController {
     public void handlerMemoryButton(Event event) {
         Button btn = (Button) event.getSource();
         String memory = btn.getId();
-        switch (memory) {
-            case "mc":
-                this.numberInMemory = START_CURSOR_POSITION;
-                break;
-            case "m_plus":
-                this.numberInMemory = calculator.calculate(ID_ADD, this.numberInMemory, this.display.getText());
-                this.nextNumber = true; //сброс начала курсора перед вводом нового числа
-                break;
-            case "m_minus":
-                this.numberInMemory = calculator.calculate(ID_SUBTRACTION, this.numberInMemory, this.display.getText());
-                this.nextNumber = true;  //сброс начала курсора перед вводом нового числа
-                break;
-            case "mr":
-                this.display.setText(numberInMemory);
-                break;
-            default:
-                break;
+        try {
+            switch (memory) {
+                case "mc":
+                    this.numberInMemory = START_CURSOR_POSITION;
+                    break;
+                case "m_plus":
+                    this.numberInMemory = calculator.calculate(ID_ADD, this.numberInMemory, this.display.getText());
+                    this.nextNumber = true; //сброс начала курсора перед вводом нового числа
+                    break;
+                case "m_minus":
+                    this.numberInMemory = calculator.calculate(ID_SUBTRACTION, this.numberInMemory, this.display.getText());
+                    this.nextNumber = true;  //сброс начала курсора перед вводом нового числа
+                    break;
+                case "mr":
+                    this.display.setText(numberInMemory);
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerMemoryButton(Event event): " + e.getMessage());
         }
     }
 
@@ -637,20 +626,69 @@ public class ViewController {
     /**
      * Change the display size.
      */
-    private void changeDisplaySize() {
-//        this.display.textProperty().addListener(
-//                (observable, oldValue, newValue) -> {
-//                    if (newValue.length() < 10) {  //TODO Constant
-//                        this.display.setFont(Font.font(MAX_FONT_SIZE_TEXT));
-//                    } else {
-//                        if (newValue.length() < 26) { //TODO Constant
-//                            this.display.setFont(Font.font(38 - newValue.length())); //TODO Constant
-//                        } else {
-//                            this.display.setFont(Font.font(MIN_FONT_SIZE_TEXT));
-//                        }
-//                    }
-//                }
-//        );
+    private void changeDisplaySize(int length) {
+        if (length < 7) {
+            this.display.setStyle("-fx-font-size: " + 46 + "px;");
+        }
+        switch (length) {
+            case 7:
+//                this.display.setFont(new Font(41));
+                this.display.setStyle("-fx-font-size: " + 41 + "px;");
+                break;
+            case 8:
+//                this.display.setFont(new Font(39));
+                this.display.setStyle("-fx-font-size: " + 39 + "px;");
+                break;
+            case 9:
+//                this.display.setFont(new Font(35));
+                this.display.setStyle("-fx-font-size: " + 35 + "px;");
+                break;
+            case 10:
+//                this.display.setFont(new Font(31));
+                this.display.setStyle("-fx-font-size: " + 31 + "px;");
+                break;
+            case 11:
+//                this.display.setFont(new Font(29));
+                this.display.setStyle("-fx-font-size: " + 29 + "px;");
+                break;
+            case 12:
+//                this.display.setFont(new Font(27));
+                this.display.setStyle("-fx-font-size: " + 27 + "px;");
+                break;
+            case 13:
+//                this.display.setFont(new Font(25));
+                this.display.setStyle("-fx-font-size: " + 25 + "px;");
+                break;
+            case 14:
+//                this.display.setFont(new Font(23));
+                this.display.setStyle("-fx-font-size: " + 23 + "px;");
+                break;
+            case 15:
+//                this.display.setFont(new Font(21));
+                this.display.setStyle("-fx-font-size: " + 21 + "px;");
+                break;
+            case 16:
+//                this.display.setFont(new Font(19));
+                this.display.setStyle("-fx-font-size: " + 19 + "px;");
+                break;
+            case 17:
+                this.display.setStyle("-fx-font-size: " + 18 + "px;");
+//                this.display.setFont(new Font(18));
+                break;
+            case 18:
+                this.display.setStyle("-fx-font-size: " + 17 + "px;");
+//                this.display.setFont(new Font(17));
+                break;
+            case 20:
+//                this.display.setFont(new Font(16));
+                this.display.setStyle("-fx-font-size: " + 16 + "px;");
+                break;
+            case 22:
+//                this.display.setFont(new Font(15));
+                this.display.setStyle("-fx-font-size: " + 15 + "px;");
+                break;
+        }
+        //TODO http://stackoverflow.com/questions/23804928/adjust-css-font-size-rule-dynamically-in-javafx
     }
 
     /**

@@ -3,7 +3,7 @@ package com.malex.model;
 import com.malex.model.enums.Operation;
 import com.malex.model.exception.NoSuchOperationException;
 import com.malex.model.exception.UndefinedNumberException;
-import com.malex.model.operation.ArithmeticOperation;
+import com.malex.model.operation.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -27,16 +27,27 @@ import java.util.regex.Pattern;
  * </pre>
  *
  * @author MAlex
- * @see java.lang.String
- * @see java.util.Map;
- * @see java.util.HashMap;
- * @see java.util.regex.Matcher;
- * @see java.util.regex.Pattern;
- * @see java.math.BigDecimal;
- * @see com.malex.model.operation.ArithmeticOperation;
- * @see Operation ;
+ * @see com.malex.model.operation.ArithmeticOperation
+ * @see com.malex.model.enums.Operation
  */
 public class Calculator {
+
+    /**
+     * Value is used to store model  {@code Calculator}.
+     */
+    public static Calculator calculator;
+
+    /**
+     * Initialization the model of a calculator.
+     */
+    static {
+        calculator = new Calculator();
+        calculator.addOperation(new AddOperation());
+        calculator.addOperation(new DivisionOperation());
+        calculator.addOperation(new SubtractionOperation());
+        calculator.addOperation(new MultiplicationOperation());
+        calculator.addOperation(new PercentOperation());
+    }
 
     /**
      * Value is used to store map {@code Operation} of operations:  ADD, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
@@ -46,7 +57,7 @@ public class Calculator {
     /**
      * Initializes a newly created {@code Calculator} object.
      */
-    public Calculator() {
+    private Calculator() {
         this.operations = new HashMap<>();
     }
 
@@ -55,7 +66,7 @@ public class Calculator {
      *
      * @param operation the arithmetic operation.
      */
-    public void addOperation(ArithmeticOperation operation) {
+    private void addOperation(ArithmeticOperation operation) {
         operations.put(operation.getOperationName(), operation);
     }
 
@@ -67,7 +78,7 @@ public class Calculator {
      * @param numberTwo     the second number.
      * @return result of the arithmetic operation.
      */
-    public String calculate(String operationName, String numberOne, String numberTwo) {
+    public String calculate(String operationName, String numberOne, String numberTwo) throws UndefinedNumberException {
         validateInputParameters(operationName, numberOne, numberTwo);
 
         Operation name = Operation.get(operationName);
@@ -89,17 +100,17 @@ public class Calculator {
         }
 
         if (numberOne == null || numberTwo == null) {
-            throw new UndefinedNumberException("One of the numbers is equal \'null\' !");
+            throw new IllegalArgumentException("One of the numbers is equal \'null\' !");
         }
 
         if (numberOne.equals("") || numberTwo.equals("")) {
-            throw new UndefinedNumberException("One of the numbers is empty !!");
+            throw new IllegalArgumentException("One of the numbers is empty !!");
         }
         if (!verificationNumber(numberOne)) {
-            throw new UndefinedNumberException("Value \'" + numberOne + "\' is not a number !");
+            throw new IllegalArgumentException("Value \'" + numberOne + "\' is not a number !");
         }
         if (!verificationNumber(numberTwo)) {
-            throw new UndefinedNumberException("Value \'" + numberTwo + "\' is not a number !");
+            throw new IllegalArgumentException("Value \'" + numberTwo + "\' is not a number !");
         }
 
     }

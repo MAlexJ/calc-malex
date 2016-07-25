@@ -2,29 +2,16 @@ package com.malex.model;
 
 import com.malex.model.exception.NoSuchOperationException;
 import com.malex.model.exception.UndefinedNumberException;
-import com.malex.model.operation.impl.*;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import static com.malex.model.Calculator.calculator;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 
 public class CalculatorTest {
-
-    private static Calculator calculator;
-
-    @BeforeClass
-    public static void init() {
-        calculator = new Calculator();
-        calculator.addOperation(new AddOperation());
-        calculator.addOperation(new DivisionOperation());
-        calculator.addOperation(new MultiplicationOperation());
-        calculator.addOperation(new SubtractionOperation());
-        calculator.addOperation(new PercentOperation());
-    }
 
     /**
      * Оперции доступные по id:
@@ -125,14 +112,19 @@ public class CalculatorTest {
             //when
             calculator.calculate(operationName, numberOne, numberTwo);
             fail("Arithmetic expression: numberOne: " + numberOne + ", operation: " + operationName + ", numberTwo: " + numberTwo + " is valid!");
-        } catch (UndefinedNumberException | NoSuchOperationException e) {
+        } catch (UndefinedNumberException | NoSuchOperationException | IllegalArgumentException e) {
             //Ignore
         }
     }
 
     private void test(String operationName, String numberOne, String numberTwo, String expectedResult) {
         //when
-        String actualResult = calculator.calculate(operationName, numberOne, numberTwo);
+        String actualResult = null;
+        try {
+            actualResult = calculator.calculate(operationName, numberOne, numberTwo);
+        } catch (UndefinedNumberException e) {
+            fail("Fail test param: " + operationName + " " + numberOne + " " + numberTwo);
+        }
 
         //then
         assertEquals(expectedResult, actualResult);

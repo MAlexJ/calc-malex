@@ -1,7 +1,0 @@
-14:44:19,933 ERROR main ViewController:handlerNumbersButton:317 - Exception -> handlerNumbersButton(Event event): Not on FX application thread; currentThread = main
-14:46:43,884 ERROR Thread-8 MainApp:mainView:95 - Error -> mainView()Not on FX application thread; currentThread = Thread-8
-14:47:42,589 ERROR main ViewController:handlerNumbersButton:317 - Exception -> handlerNumbersButton(Event event): Not on FX application thread; currentThread = main
-14:48:03,813 ERROR main ViewController:handlerNumbersButton:317 - Exception -> handlerNumbersButton(Event event): Not on FX application thread; currentThread = main
-17:15:45,116 ERROR JavaFX Application Thread MainApp:mainView:103 - Error -> mainView()Error resolving onDragDetected='#handlerDrag', either the event handler is not in the Namespace or there is an error in the script.
-/Users/malex/IdeaProjects/Calculator/target/classes/view/layout.fxml:22
-

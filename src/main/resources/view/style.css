@@ -6,6 +6,7 @@
     -fx-text-fill: #ffffff;
     -fx-background-color: transparent;
     -fx-cursor: null;
+    -fx-font-family: "Helvetica Neue Thin";
 }
 
 .paneApp {

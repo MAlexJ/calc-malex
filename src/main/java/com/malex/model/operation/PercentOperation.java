@@ -1,4 +1,4 @@
-package com.malex.model.operation.impl;
+package com.malex.model.operation;
 
 import com.malex.model.enums.Operation;
 import com.malex.model.operation.AbstractOperation;

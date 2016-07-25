@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0"
             prefWidth="232.0" styleClass="archPane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/null"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.malex.controller.ViewController">
     <children>
         <Pane prefHeight="100.0" prefWidth="232.0" styleClass="paneApp"/>
-        <TextField fx:id="display" alignment="CENTER_RIGHT" editable="false" focusTraversable="false" layoutX="-4.0"
-                   layoutY="-16.0" onMouseMoved="#handlerDragMouse" prefHeight="95.0" prefWidth="256.0" text="1234567"
-                   AnchorPane.leftAnchor="-4.0" AnchorPane.rightAnchor="-20.0" AnchorPane.topAnchor="-16.0">
+        <TextField fx:id="display" alignment="BOTTOM_RIGHT" editable="false" focusTraversable="false" layoutY="-22.0"
+                   maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                   onMouseMoved="#handlerDragMouse"
+                   prefHeight="100.0" prefWidth="232.0" text="1324125"
+                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <cursor>
                 <Cursor fx:constant="DEFAULT"/>
             </cursor>
+            <padding>
+                <Insets bottom="5.0" left="15.0" right="15.0"/>
+            </padding>
         </TextField>
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="48.0" layoutY="6.0" minHeight="-Infinity"
                 minWidth="-Infinity" mnemonicParsing="false" prefHeight="10.0" prefWidth="11.0"
@@ -148,7 +147,7 @@
                                 <String fx:value="operatorsFont"/>
                             </styleClass>
                         </Button>
-                        <Button fx:id="DIGIT0" alignment="BOTTOM_LEFT" contentDisplay="CENTER" minHeight="47.0"
+                        <Button fx:id="DIGIT0" alignment="BASELINE_LEFT" contentDisplay="CENTER" minHeight="47.0"
                                 minWidth="117.0" mnemonicParsing="false" onAction="#handlerNumbersButton"
                                 style="-fx-background-radius: 0  0 0 12; -fx-border-radius: 0  0 0 8;"
                                 styleClass="numbers" text="  0" GridPane.columnSpan="3" GridPane.rowIndex="5"/>

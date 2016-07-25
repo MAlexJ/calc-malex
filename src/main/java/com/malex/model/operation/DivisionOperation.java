@@ -1,4 +1,4 @@
-package com.malex.model.operation.impl;
+package com.malex.model.operation;
 
 import com.malex.model.enums.Operation;
 import com.malex.model.exception.UndefinedNumberException;
@@ -31,7 +31,7 @@ public class DivisionOperation extends AbstractOperation {
      * @throws UndefinedNumberException if second number is zero.
      */
     @Override
-    public BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) {
+    public BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) throws UndefinedNumberException {
 
         if (numberTwo.compareTo(BigDecimal.ZERO) == 0) {
             throw new UndefinedNumberException("Division by zero !");

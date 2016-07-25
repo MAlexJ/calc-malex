@@ -1,6 +1,7 @@
 package com.malex.model.operation;
 
 import com.malex.model.enums.Operation;
+import com.malex.model.exception.UndefinedNumberException;
 
 import java.math.BigDecimal;
 
@@ -23,5 +24,5 @@ public interface ArithmeticOperation {
      * @param numberTwo the second number.
      * @return result of the arithmetic operation.
      */
-    BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo);
+    BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) throws UndefinedNumberException;
 }
