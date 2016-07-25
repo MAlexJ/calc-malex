@@ -10,7 +10,7 @@ import org.loadui.testfx.utils.FXTestUtils;
 
 import static junit.framework.TestCase.assertEquals;
 
-public class MainAppFastTest {
+public class MainAppKeyTest {
 
     private static GuiTest controller;
 
@@ -198,7 +198,6 @@ public class MainAppFastTest {
 
     private void testCalculateKeyCode(String arithmeticExpression, String expectedResult) {
         //#Step: 1. Clear display
-        controller.sleep(100);
         controller.push(KeyCode.ESCAPE);
 
         //#Step: 2. Click on buttons

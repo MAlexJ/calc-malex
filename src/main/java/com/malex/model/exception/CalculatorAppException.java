@@ -1,6 +1,6 @@
-package com.malex.exception;
+package com.malex.model.exception;
 
-public class CalculatorAppException extends RuntimeException {
+public abstract class CalculatorAppException extends RuntimeException {
     public CalculatorAppException() {
     }
 

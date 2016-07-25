@@ -1,6 +1,6 @@
 package com.malex.model.enums;
 
-import com.malex.exception.impl.NoSuchOperationException;
+import com.malex.model.exception.NoSuchOperationException;
 
 /**
  * Enumeration {@code OperationName} stores basic arithmetic operations.

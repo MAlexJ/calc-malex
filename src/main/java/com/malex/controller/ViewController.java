@@ -1,10 +1,10 @@
 package com.malex.controller;
 
-import com.malex.exception.impl.IncorrectDataException;
-import com.malex.exception.impl.NoSuchOperationException;
-import com.malex.exception.impl.UndefinedNumberException;
 import com.malex.model.Calculator;
-import com.malex.service.impl.*;
+import com.malex.model.exception.IncorrectDataException;
+import com.malex.model.exception.NoSuchOperationException;
+import com.malex.model.exception.UndefinedNumberException;
+import com.malex.model.service.impl.*;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
 
@@ -228,6 +229,7 @@ public class ViewController {
      */
     public void init() {
         this.display.setEditable(false);
+        this.display.setFont(new Font("Helvetica Neue Thin", 46));
         this.display.setText(START_CURSOR_POSITION);
     }
 
@@ -402,7 +404,6 @@ public class ViewController {
                     this.isPriorityOperations = false;
                 }
                 this.display.setText(calculate);
-                System.out.println();
             }
         } catch (UndefinedNumberException e) {
             this.display.setText("Undefined");
@@ -507,6 +508,42 @@ public class ViewController {
     }
 
     /**
+     * Кнопка закрыть приложение
+     */
+    @FXML
+    public Button EXIT;
+
+    /**
+     * кнопка свернуть приложение
+     */
+    @FXML
+    public Button TRAY;
+
+    /**
+     * Handler pressing on click the button 'EXIT'.
+     */
+    @FXML
+    public void handleExitButton() {
+        Stage stage = (Stage) EXIT.getScene().getWindow();
+        stage.close();
+    }
+
+    /**
+     * Handler pressing on click the button 'TRAY'.
+     */
+    @FXML
+    public void handleTrayButton() {
+        Stage stage = (Stage) TRAY.getScene().getWindow();
+        stage.setIconified(true);
+
+    }
+
+    /**
+     * The value is used to store the value of the pause of the animation.
+     */
+    private final static double PAUSE_ANIMATION = 0.1;
+
+    /**
      * Initialize keyboard input data handler.
      *
      * @param event this event is generated when a key is pressed, released, or typed.
@@ -514,7 +551,7 @@ public class ViewController {
     @FXML
     public void handlerKeyPressed(KeyEvent event) {
         String nameKey = shortcuts(event);
-        PauseTransition pause = new PauseTransition(Duration.seconds(0.1));
+        PauseTransition pause = new PauseTransition(Duration.seconds(PAUSE_ANIMATION));
         switch (nameKey) {
             case ID_ZERO:
                 clickOnButton(DIGIT0, pause);
@@ -582,19 +619,19 @@ public class ViewController {
      * Change the display size.
      */
     private void changeDisplaySize() {
-        this.display.textProperty().addListener(
-                (observable, oldValue, newValue) -> {
-                    if (newValue.length() < 10) {  //TODO Constant
-                        this.display.setFont(Font.font(MAX_FONT_SIZE_TEXT));
-                    } else {
-                        if (newValue.length() < 26) { //TODO Constant
-                            this.display.setFont(Font.font(38 - newValue.length())); //TODO Constant
-                        } else {
-                            this.display.setFont(Font.font(MIN_FONT_SIZE_TEXT));
-                        }
-                    }
-                }
-        );
+//        this.display.textProperty().addListener(
+//                (observable, oldValue, newValue) -> {
+//                    if (newValue.length() < 10) {  //TODO Constant
+//                        this.display.setFont(Font.font(MAX_FONT_SIZE_TEXT));
+//                    } else {
+//                        if (newValue.length() < 26) { //TODO Constant
+//                            this.display.setFont(Font.font(38 - newValue.length())); //TODO Constant
+//                        } else {
+//                            this.display.setFont(Font.font(MIN_FONT_SIZE_TEXT));
+//                        }
+//                    }
+//                }
+//        );
     }
 
     /**
@@ -685,7 +722,9 @@ public class ViewController {
     private String shortcuts(KeyEvent event) {
         KeyCode code = event.getCode();
         String nameKey = code.toString();
-
+        if (event.getText().equals(";") && nameKey.equals("DIGIT8")) { //TODO Constant
+            return ID_MULTIPLICATION;
+        }
         if (event.getText().equals("*") && nameKey.equals("DIGIT8")) { //TODO Constant
             return ID_MULTIPLICATION;
         }
@@ -698,6 +737,9 @@ public class ViewController {
         if (event.getText().equals("-") && nameKey.equals("MINUS")) {   //TODO Constant
             return ID_SUBTRACTION;
         }
+        if (event.getText().equals(":") && nameKey.equals("DIGIT5")) {   //TODO Constant
+            return ID_PERCENT;
+        }
         if (event.getText().equals("%") && nameKey.equals("DIGIT5")) {   //TODO Constant
             return ID_PERCENT;
         }
@@ -706,6 +748,9 @@ public class ViewController {
         }
         if (nameKey.equals("ENTER")) {   //TODO Constant
             return ID_EQUALS;
+        }
+        if (nameKey.equals("PERIOD")) {   //TODO Constant
+            return ID_COMMA;
         }
         return nameKey;
     }

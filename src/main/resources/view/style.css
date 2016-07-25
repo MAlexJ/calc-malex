@@ -1,30 +1,59 @@
-.backgroundApp {
-    -fx-background-color: grey;
+.archPane {
+    /*-fx-background-color: transparent;*/
 }
 
-.text-area .content {
-    -fx-background-color: grey;
-}
-
-.text-field{
+.text-field {
     -fx-text-fill: #ffffff;
-    /*-fx-font-family: "Helvetica Neue Light";*/
+    -fx-background-color: transparent;
+    -fx-cursor: null;
+}
+
+.paneApp {
+    -fx-background-radius: 6px;
+    -fx-background-color: #252525;
+    -fx-opacity: 0.94;
+    -fx-cursor: null;
 }
 
 .operators {
     -fx-background-color: #FE9340;
     -fx-text-fill: #ffffff;
-    /*-fx-border-color: #c5c5c5;*/
 }
 
 .button {
-    -fx-background-radius: 0;
+    -fx-border-color: #636363;
     -fx-font-family: "Helvetica Neue Light";
     -fx-font-size: 19px;
-    -fx-border-color: #c5c5c5;
 }
 
-.button:armed{
+.buttonCancel {
+    -fx-background-radius: 1em;
+    -fx-background-color: #fb3a25;
+    -fx-border-style: hidden;
+    -fx-focus-traversable: false;
+}
+
+.buttonHide {
+    -fx-background-radius: 1em;
+    -fx-background-color: #f9d343;
+    -fx-focus-traversable: false;
+    -fx-border-style: hidden;
+}
+
+.buttonDeploy {
+    -fx-background-radius: 1em;
+    -fx-background-color: #51a12e;
+    -fx-focus-traversable: false;
+    -fx-border-style: hidden;
+}
+
+.numbers {
+    -fx-background-color: #dedede;
+    -fx-font-family: "Helvetica Neue Light";
+    -fx-font-size: 19px;
+}
+
+.button:armed {
     -fx-background-color: #B2B2B2;
 }
 
@@ -38,4 +67,9 @@
 
 .topOperators {
     -fx-background-color: #D6D6D6;
+}
+
+.operatorsFont{
+    -fx-font-family: "Helvetica Neue Light";
+    -fx-font-size: 24px;
 }

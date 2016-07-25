@@ -1,4 +1,4 @@
-package com.malex.service;
+package com.malex.model.service;
 
 import com.malex.model.enums.OperationName;
 

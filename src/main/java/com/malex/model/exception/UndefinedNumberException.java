@@ -1,6 +1,4 @@
-package com.malex.exception.impl;
-
-import com.malex.exception.CalculatorAppException;
+package com.malex.model.exception;
 
 public class UndefinedNumberException extends CalculatorAppException {
 

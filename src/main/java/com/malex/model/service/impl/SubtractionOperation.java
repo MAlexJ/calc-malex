@@ -1,7 +1,7 @@
-package com.malex.service.impl;
+package com.malex.model.service.impl;
 
 import com.malex.model.enums.OperationName;
-import com.malex.service.AbstractOperation;
+import com.malex.model.service.AbstractOperation;
 
 import java.math.BigDecimal;
 

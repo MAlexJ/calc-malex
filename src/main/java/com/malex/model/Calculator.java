@@ -1,9 +1,9 @@
 package com.malex.model;
 
-import com.malex.exception.impl.NoSuchOperationException;
-import com.malex.exception.impl.UndefinedNumberException;
+import com.malex.model.exception.NoSuchOperationException;
+import com.malex.model.exception.UndefinedNumberException;
 import com.malex.model.enums.OperationName;
-import com.malex.service.Operation;
+import com.malex.model.service.Operation;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * @see java.util.regex.Matcher;
  * @see java.util.regex.Pattern;
  * @see java.math.BigDecimal;
- * @see com.malex.service.Operation;
+ * @see com.malex.model.service.Operation;
  * @see com.malex.model.enums.OperationName;
  */
 public class Calculator {
