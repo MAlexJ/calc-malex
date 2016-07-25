@@ -2,7 +2,7 @@ package com.malex.model;
 
 import com.malex.model.exception.NoSuchOperationException;
 import com.malex.model.exception.UndefinedNumberException;
-import com.malex.model.service.impl.*;
+import com.malex.model.operation.impl.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

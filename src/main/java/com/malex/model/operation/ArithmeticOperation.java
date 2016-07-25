@@ -1,20 +1,20 @@
-package com.malex.model.service;
+package com.malex.model.operation;
 
-import com.malex.model.enums.OperationName;
+import com.malex.model.enums.Operation;
 
 import java.math.BigDecimal;
 
 /**
  * The main interface {@code Operation} of the arithmetic operation.
  */
-public interface Operation {
+public interface ArithmeticOperation {
 
     /**
      * Get the arithmetic operation.
      *
      * @return the arithmetic operation.
      */
-    OperationName getOperationName();
+    Operation getOperationName();
 
     /**
      * Execute predetermined arithmetic operation.

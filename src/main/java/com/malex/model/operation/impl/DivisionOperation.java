@@ -1,8 +1,8 @@
-package com.malex.model.service.impl;
+package com.malex.model.operation.impl;
 
+import com.malex.model.enums.Operation;
 import com.malex.model.exception.UndefinedNumberException;
-import com.malex.model.enums.OperationName;
-import com.malex.model.service.AbstractOperation;
+import com.malex.model.operation.AbstractOperation;
 
 import java.math.BigDecimal;
 
@@ -15,10 +15,10 @@ public class DivisionOperation extends AbstractOperation {
 
     /**
      * Initializes a newly created {@code DivisionOperation} object.
-     * {@code OperationName}
+     * {@code Operation}
      */
     public DivisionOperation() {
-        super(OperationName.DIVISION);
+        super(Operation.DIVISION);
     }
 
     /**

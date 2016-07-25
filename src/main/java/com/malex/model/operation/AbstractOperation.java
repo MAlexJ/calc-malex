@@ -1,13 +1,13 @@
-package com.malex.model.service;
+package com.malex.model.operation;
 
 
-import com.malex.model.enums.OperationName;
+import com.malex.model.enums.Operation;
 
-public abstract class AbstractOperation implements Operation {
+public abstract class AbstractOperation implements ArithmeticOperation {
     /**
      * Value is used to store of the name of arithmetic operation.
      */
-    private OperationName operationName;
+    private Operation operationName;
 
     /**
      * Initializes a newly created {@code AbstractOperation} object.
@@ -15,7 +15,7 @@ public abstract class AbstractOperation implements Operation {
      *
      * @param operationName the arithmetic operation.
      */
-    public AbstractOperation(OperationName operationName) {
+    public AbstractOperation(Operation operationName) {
         this.operationName = operationName;
     }
 
@@ -25,7 +25,7 @@ public abstract class AbstractOperation implements Operation {
      * @return the arithmetic operation.
      */
     @Override
-    public OperationName getOperationName() {
+    public Operation getOperationName() {
         return operationName;
     }
 }

@@ -1,9 +1,9 @@
 package com.malex.model;
 
+import com.malex.model.enums.Operation;
 import com.malex.model.exception.NoSuchOperationException;
 import com.malex.model.exception.UndefinedNumberException;
-import com.malex.model.enums.OperationName;
-import com.malex.model.service.Operation;
+import com.malex.model.operation.ArithmeticOperation;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -33,15 +33,15 @@ import java.util.regex.Pattern;
  * @see java.util.regex.Matcher;
  * @see java.util.regex.Pattern;
  * @see java.math.BigDecimal;
- * @see com.malex.model.service.Operation;
- * @see com.malex.model.enums.OperationName;
+ * @see com.malex.model.operation.ArithmeticOperation;
+ * @see Operation ;
  */
 public class Calculator {
 
     /**
      * Value is used to store map {@code Operation} of operations:  ADD, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
      */
-    private Map<OperationName, Operation> operations;
+    private Map<Operation, ArithmeticOperation> operations;
 
     /**
      * Initializes a newly created {@code Calculator} object.
@@ -55,7 +55,7 @@ public class Calculator {
      *
      * @param operation the arithmetic operation.
      */
-    public void addOperation(Operation operation) {
+    public void addOperation(ArithmeticOperation operation) {
         operations.put(operation.getOperationName(), operation);
     }
 
@@ -70,8 +70,8 @@ public class Calculator {
     public String calculate(String operationName, String numberOne, String numberTwo) {
         validateInputParameters(operationName, numberOne, numberTwo);
 
-        OperationName name = OperationName.get(operationName);
-        Operation operation = operations.get(name);
+        Operation name = Operation.get(operationName);
+        ArithmeticOperation operation = operations.get(name);
         BigDecimal result = operation.execute(new BigDecimal(numberOne), new BigDecimal(numberTwo));
         return result.stripTrailingZeros().toPlainString();
     }

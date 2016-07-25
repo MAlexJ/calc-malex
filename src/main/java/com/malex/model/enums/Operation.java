@@ -3,9 +3,9 @@ package com.malex.model.enums;
 import com.malex.model.exception.NoSuchOperationException;
 
 /**
- * Enumeration {@code OperationName} stores basic arithmetic operations.
+ * Enumeration {@code Operation} stores basic arithmetic operations.
  */
-public enum OperationName {
+public enum Operation {
     /**
      * The arithmetic operation of addition.
      */
@@ -35,7 +35,7 @@ public enum OperationName {
     /**
      * @param description the name arithmetic operation.
      */
-    OperationName(String description) {
+    Operation(String description) {
         this.description = description;
     }
 
@@ -46,12 +46,12 @@ public enum OperationName {
      * @return the value operation.
      * @throws NoSuchOperationException if arithmetic operation doesn't exist.
      */
-    public static OperationName get(String description) {
-        for (OperationName name : OperationName.values()) {
+    public static Operation get(String description) {
+        for (Operation name : Operation.values()) {
             if (name.description.equals(description)) {
                 return name;
             }
         }
-        throw new NoSuchOperationException("OperationName: \'" + description + "\' with this name doesn't exist!");
+        throw new NoSuchOperationException("Operation: \'" + description + "\' with this name doesn't exist!");
     }
 }

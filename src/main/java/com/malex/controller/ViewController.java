@@ -4,10 +4,12 @@ import com.malex.model.Calculator;
 import com.malex.model.exception.IncorrectDataException;
 import com.malex.model.exception.NoSuchOperationException;
 import com.malex.model.exception.UndefinedNumberException;
-import com.malex.model.service.impl.*;
+import com.malex.model.operation.impl.*;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -38,16 +40,6 @@ import java.util.regex.Pattern;
  *
  * @author MAlex
  * @see com.malex.model.Calculator
- * @see java.lang.String
- * @see javafx.fxml.FXML
- * @see javafx.scene.control.Button
- * @see javafx.scene.control.TextField
- * @see javafx.scene.input.KeyCode
- * @see javafx.scene.text.Font
- * @see javafx.util.Duration
- * @see org.apache.log4j.Logger
- * @see java.util.regex.Matcher
- * @see java.util.regex.Pattern
  */
 public class ViewController {
 
@@ -72,20 +64,24 @@ public class ViewController {
     private static final int MIN_FONT_SIZE_TEXT = 12;
 
     /**
+     * The value is used to store the value of the pause of the animation.
+     */
+    private static final double PAUSE_ANIMATION = 0.1;
+
+    /**
      * Value is used to store the value the default percent of number '1'.
      */
-    private final static String PERCENT_NUMBER_DEFAULT = "1";
+    private static final String PERCENT_NUMBER_DEFAULT = "1";
 
     /**
      * Value is used to store the value '0.'.
      */
-    private final static String PRESS_COMMA = "0.";
-
+    private static final String ZERO_COMMA = "0.";
 
     /**
      * Value is used to store the value '.'.
      */
-    private final static String COMMA_VAL = ".";
+    private static final String COMMA_VAL = ".";
 
     /**
      * Value is used to store the value '-'.
@@ -161,6 +157,28 @@ public class ViewController {
     public Button SIGN;
     @FXML
     public Button PERCENT;
+
+    /**
+     * Кнопка закрыть приложение
+     */
+    @FXML
+    public Button EXIT;
+
+    /**
+     * кнопка свернуть приложение
+     */
+    @FXML
+    public Button TRAY;
+
+    /**
+     * Value is used to store the position on the x-axis.
+     */
+    private static double POSITION_X;
+
+    /**
+     * Value is used to store the position on the y-axis.
+     */
+    private static double POSITION_Y;
 
     /**
      * Value is used to store the first number.
@@ -302,7 +320,7 @@ public class ViewController {
                     break;
                 case ID_COMMA:
                     if (this.display.getText().isEmpty()) {  // если первое значение пустое 0.00000
-                        this.display.appendText(PRESS_COMMA);
+                        this.display.appendText(ZERO_COMMA);
                     }
                     if (!this.display.getText().contains(COMMA_VAL)) {  // Проверка на наличее только одной точки
                         this.display.appendText(COMMA_VAL);
@@ -343,7 +361,7 @@ public class ViewController {
                         return;
                     }
                 }
-                if (!isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
+                if (!this.isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
                     if (numberTwo.isEmpty() && operator.isEmpty()) {
                         this.operator = operatorValue;
                         this.numberOne = this.display.getText();
@@ -380,12 +398,12 @@ public class ViewController {
                 }
 
                 String tempNumber = this.display.getText();
-                if (isPriorityOperations) {
+                if (this.isPriorityOperations) {
                     this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, tempNumber);
                 }
 
-                if (numberTwo.isEmpty()) {  // сброс чисел в памяти
-                    numberTwo = this.display.getText();
+                if (this.numberTwo.isEmpty()) {  // сброс чисел в памяти
+                    this.numberTwo = this.display.getText();
                 }
 
                 if (this.numberOne.equals("")) {
@@ -405,7 +423,7 @@ public class ViewController {
                 }
                 this.display.setText(calculate);
             }
-        } catch (UndefinedNumberException e) {
+        } catch (UndefinedNumberException e) {  //TODO checked
             this.display.setText("Undefined");
             this.operator = operatorValue;
         } catch (NoSuchOperationException e) {
@@ -428,10 +446,10 @@ public class ViewController {
             resetDisplay();
             this.operator = "";
             btn.setText(VALUE_BUTTON_RESET_AC);
-            startPosition = true; // сброс стартовой позиции
+            this.startPosition = true; // сброс стартовой позиции
             this.numberOne = "";  // сброс первого числа
             this.numberTwo = "";  // сброс второго чиса
-            isPriorityOperations = false; // сброс приоритета операторов
+            this.isPriorityOperations = false; // сброс приоритета операторов
         }
     }
 
@@ -445,7 +463,7 @@ public class ViewController {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
         if (operatorValue.equals(ID_SIGN)) {
-            String number = display.getText();
+            String number = this.display.getText();
             if (!number.equals(START_CURSOR_POSITION)) {
                 if (validateNumberAvailableInsideComma(number)) {
                     this.display.setText(START_CURSOR_POSITION);
@@ -469,7 +487,7 @@ public class ViewController {
     public void handlerPercentButton(Event event) {
         Button btn = (Button) event.getSource();
         String percent = btn.getId();
-        if (numberOne.isEmpty()) {
+        if (this.numberOne.isEmpty()) {
             String calculate = calculator.calculate(percent, PERCENT_NUMBER_DEFAULT, this.display.getText());
             this.display.setText(calculate);
         } else {
@@ -489,14 +507,14 @@ public class ViewController {
         String memory = btn.getId();
         switch (memory) {
             case "mc":
-                numberInMemory = START_CURSOR_POSITION;
+                this.numberInMemory = START_CURSOR_POSITION;
                 break;
             case "m_plus":
-                numberInMemory = calculator.calculate(ID_ADD, numberInMemory, this.display.getText());
+                this.numberInMemory = calculator.calculate(ID_ADD, this.numberInMemory, this.display.getText());
                 this.nextNumber = true; //сброс начала курсора перед вводом нового числа
                 break;
             case "m_minus":
-                numberInMemory = calculator.calculate(ID_SUBTRACTION, numberInMemory, this.display.getText());
+                this.numberInMemory = calculator.calculate(ID_SUBTRACTION, this.numberInMemory, this.display.getText());
                 this.nextNumber = true;  //сброс начала курсора перед вводом нового числа
                 break;
             case "mr":
@@ -508,24 +526,31 @@ public class ViewController {
     }
 
     /**
-     * Кнопка закрыть приложение
+     * Handler moving applications.
      */
     @FXML
-    public Button EXIT;
-
-    /**
-     * кнопка свернуть приложение
-     */
-    @FXML
-    public Button TRAY;
+    public void handlerDragMouse() {
+        Stage stage = (Stage) display.getScene().getWindow();
+        Scene scene = stage.getScene();
+        this.display.setOnMousePressed(mouseEvent -> {
+            POSITION_X = stage.getX() - mouseEvent.getScreenX();
+            POSITION_Y = stage.getY() - mouseEvent.getScreenY();
+            scene.setCursor(Cursor.MOVE);
+        });
+        this.display.setOnMouseDragged(mouseEvent -> {
+            stage.setX(mouseEvent.getScreenX() + POSITION_X);
+            stage.setY(mouseEvent.getScreenY() + POSITION_Y);
+        });
+    }
 
     /**
      * Handler pressing on click the button 'EXIT'.
      */
     @FXML
     public void handleExitButton() {
-        Stage stage = (Stage) EXIT.getScene().getWindow();
-        stage.close();
+//        Stage stage = (Stage) EXIT.getScene().getWindow();
+//        stage.close();
+        System.exit(0);
     }
 
     /**
@@ -535,13 +560,7 @@ public class ViewController {
     public void handleTrayButton() {
         Stage stage = (Stage) TRAY.getScene().getWindow();
         stage.setIconified(true);
-
     }
-
-    /**
-     * The value is used to store the value of the pause of the animation.
-     */
-    private final static double PAUSE_ANIMATION = 0.1;
 
     /**
      * Initialize keyboard input data handler.
@@ -688,9 +707,8 @@ public class ViewController {
      * @return true if the count of zeros in the permitted limit.
      */
     private boolean validateLimitNumberZeros() {
-        return !display.getText().startsWith(START_CURSOR_POSITION) || display.getText().startsWith(PRESS_COMMA) || display.getText().isEmpty();
+        return !display.getText().startsWith(START_CURSOR_POSITION) || display.getText().startsWith(ZERO_COMMA) || display.getText().isEmpty();
     }
-
 
     /**
      * Validate the number on available inside the comma.
@@ -701,7 +719,7 @@ public class ViewController {
     private boolean validateNumberAvailableInsideComma(String number) {
         Pattern pattern = Pattern.compile("^0.[0]+");
         Matcher matcher = pattern.matcher(number);
-        boolean checkValueZeroAndComma = number.startsWith(PRESS_COMMA) && number.length() == 2;
+        boolean checkValueZeroAndComma = number.startsWith(ZERO_COMMA) && number.length() == 2;
         return matcher.matches() || checkValueZeroAndComma;
     }
 
