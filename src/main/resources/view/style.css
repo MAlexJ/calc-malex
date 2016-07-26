@@ -1,12 +1,9 @@
-.archPane {
-    /*-fx-background-color: transparent;*/
-}
-
 .text-field {
     -fx-text-fill: #ffffff;
     -fx-background-color: transparent;
-    -fx-cursor: null;
+    -fx-cursor: default;
     -fx-font-family: "Helvetica Neue Thin";
+    -fx-font-size: 46;
 }
 
 .paneApp {
@@ -70,7 +67,7 @@
     -fx-background-color: #D6D6D6;
 }
 
-.operatorsFont{
+.operatorsFont {
     -fx-font-family: "Helvetica Neue Light";
     -fx-font-size: 24px;
 }

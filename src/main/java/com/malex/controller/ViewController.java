@@ -47,6 +47,15 @@ public class ViewController {
     private static Logger logger = Logger.getLogger(ViewController.class.getName());
 
     /**
+     * Value is used to store allowable minimum length of digits.
+     */
+    private final static int ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS = 7;
+    /**
+     * Value is used to store allowable minimum length of digits.
+     */
+    private final static int ALLOWABLE_MAXIMUM_LENGTH_OF_DIGITS = 40;
+
+    /**
      * Value is used to store the cursor.
      */
     private static final String START_CURSOR_POSITION = "0";
@@ -55,6 +64,10 @@ public class ViewController {
      * Value is used to store the maximum font size a text.
      */
     private static final int MAX_FONT_SIZE_TEXT = 46;
+    /**
+     * Value is used to store the minimum font size a text.
+     */
+    private static final int MIN_FONT_SIZE_TEXT = 8;
 
     /**
      * Value is used to store the text font.
@@ -92,7 +105,7 @@ public class ViewController {
     private static final String VALUE_BUTTON_RESET_AC = "AC";
 
     /**
-     * Value is used to store the indicator of a buttons.
+     * Value is used to store the indicator of a buttons. -> E
      */
     private static final String ID_ZERO = "DIGIT0";
     private static final String ID_ONE = "DIGIT1";
@@ -112,7 +125,20 @@ public class ViewController {
     private static final String ID_SIGN = "SIGN";
     private static final String ID_COMMA = "COMMA";
     private static final String ID_EQUALS = "EQUALS";
+    private static final String ID_MR = "MR";
+    private static final String ID_MC = "MC";
+    private static final String ID_M_PLUS = "M_PLUS";
+    private static final String ID_M_MINUS = "M_MINUS";
     private static final String ID_RESET = "ESCAPE";
+
+    @FXML
+    public Button MR;
+    @FXML
+    public Button MC;
+    @FXML
+    public Button M_PLUS;
+    @FXML
+    public Button M_MINUS;
 
     // индификаторы кнопок представления layout.fxml
     @FXML
@@ -492,18 +518,18 @@ public class ViewController {
         String memory = btn.getId();
         try {
             switch (memory) {
-                case "mc":
+                case "MC":
                     this.numberInMemory = START_CURSOR_POSITION;
                     break;
-                case "m_plus":
+                case "M_PLUS":
                     this.numberInMemory = calculator.calculate(ID_ADD, this.numberInMemory, this.display.getText());
                     this.nextNumber = true; //сброс начала курсора перед вводом нового числа
                     break;
-                case "m_minus":
+                case "M_MINUS":
                     this.numberInMemory = calculator.calculate(ID_SUBTRACTION, this.numberInMemory, this.display.getText());
                     this.nextNumber = true;  //сброс начала курсора перед вводом нового числа
                     break;
-                case "mr":
+                case "MR":
                     this.display.setText(numberInMemory);
                     break;
                 default:
@@ -520,11 +546,9 @@ public class ViewController {
     @FXML
     public void handlerDragMouse() {
         Stage stage = (Stage) display.getScene().getWindow();
-        Scene scene = stage.getScene();
         this.display.setOnMousePressed(mouseEvent -> {
             POSITION_X = stage.getX() - mouseEvent.getScreenX();
             POSITION_Y = stage.getY() - mouseEvent.getScreenY();
-            scene.setCursor(Cursor.MOVE);
         });
         this.display.setOnMouseDragged(mouseEvent -> {
             stage.setX(mouseEvent.getScreenX() + POSITION_X);
@@ -618,6 +642,18 @@ public class ViewController {
             case ID_RESET:
                 clickOnButton(ESCAPE, pause);
                 break;
+            case ID_MC:
+                clickOnButton(MC, pause);
+                break;
+            case ID_MR:
+                clickOnButton(MR, pause);
+                break;
+            case ID_M_MINUS:
+                clickOnButton(M_MINUS, pause);
+                break;
+            case ID_M_PLUS:
+                clickOnButton(M_PLUS, pause);
+                break;
             default:
                 break;
         }
@@ -627,68 +663,17 @@ public class ViewController {
      * Change the display size.
      */
     private void changeDisplaySize(int length) {
-        if (length < 7) {
-            this.display.setStyle("-fx-font-size: " + 46 + "px;");
+        if (length < ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
+            this.display.setStyle("-fx-font-size: " + MAX_FONT_SIZE_TEXT + "px;");
         }
-        switch (length) {
-            case 7:
-//                this.display.setFont(new Font(41));
-                this.display.setStyle("-fx-font-size: " + 41 + "px;");
-                break;
-            case 8:
-//                this.display.setFont(new Font(39));
-                this.display.setStyle("-fx-font-size: " + 39 + "px;");
-                break;
-            case 9:
-//                this.display.setFont(new Font(35));
-                this.display.setStyle("-fx-font-size: " + 35 + "px;");
-                break;
-            case 10:
-//                this.display.setFont(new Font(31));
-                this.display.setStyle("-fx-font-size: " + 31 + "px;");
-                break;
-            case 11:
-//                this.display.setFont(new Font(29));
-                this.display.setStyle("-fx-font-size: " + 29 + "px;");
-                break;
-            case 12:
-//                this.display.setFont(new Font(27));
-                this.display.setStyle("-fx-font-size: " + 27 + "px;");
-                break;
-            case 13:
-//                this.display.setFont(new Font(25));
-                this.display.setStyle("-fx-font-size: " + 25 + "px;");
-                break;
-            case 14:
-//                this.display.setFont(new Font(23));
-                this.display.setStyle("-fx-font-size: " + 23 + "px;");
-                break;
-            case 15:
-//                this.display.setFont(new Font(21));
-                this.display.setStyle("-fx-font-size: " + 21 + "px;");
-                break;
-            case 16:
-//                this.display.setFont(new Font(19));
-                this.display.setStyle("-fx-font-size: " + 19 + "px;");
-                break;
-            case 17:
-                this.display.setStyle("-fx-font-size: " + 18 + "px;");
-//                this.display.setFont(new Font(18));
-                break;
-            case 18:
-                this.display.setStyle("-fx-font-size: " + 17 + "px;");
-//                this.display.setFont(new Font(17));
-                break;
-            case 20:
-//                this.display.setFont(new Font(16));
-                this.display.setStyle("-fx-font-size: " + 16 + "px;");
-                break;
-            case 22:
-//                this.display.setFont(new Font(15));
-                this.display.setStyle("-fx-font-size: " + 15 + "px;");
-                break;
+        if (length > ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
+            if (length > ALLOWABLE_MAXIMUM_LENGTH_OF_DIGITS) {
+                this.display.setStyle("-fx-font-size: " + MIN_FONT_SIZE_TEXT + "px;");
+            } else {
+                int size = MAX_FONT_SIZE_TEXT * ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS / length;
+                this.display.setStyle("-fx-font-size: " + size + "px;");
+            }
         }
-        //TODO http://stackoverflow.com/questions/23804928/adjust-css-font-size-rule-dynamically-in-javafx
     }
 
     /**
@@ -778,13 +763,13 @@ public class ViewController {
     private String shortcuts(KeyEvent event) {
         KeyCode code = event.getCode();
         String nameKey = code.toString();
-        if (event.getText().equals(";") && nameKey.equals("DIGIT8")) { //TODO Constant
+        if (event.getText().equals(";") && nameKey.equals(ID_EIGHT)) { //TODO Constant
             return ID_MULTIPLICATION;
         }
-        if (event.getText().equals("*") && nameKey.equals("DIGIT8")) { //TODO Constant
+        if (event.getText().equals("*") && nameKey.equals(ID_EIGHT)) { //TODO Constant
             return ID_MULTIPLICATION;
         }
-        if (event.getText().equals("+") && nameKey.equals("EQUALS")) {  //TODO Constant
+        if (event.getText().equals("+") && nameKey.equals(ID_EQUALS)) {  //TODO Constant
             return ID_ADD;
         }
         if (event.getText().equals("_") && nameKey.equals("MINUS")) {   //TODO Constant
@@ -793,10 +778,10 @@ public class ViewController {
         if (event.getText().equals("-") && nameKey.equals("MINUS")) {   //TODO Constant
             return ID_SUBTRACTION;
         }
-        if (event.getText().equals(":") && nameKey.equals("DIGIT5")) {   //TODO Constant
+        if (event.getText().equals(":") && nameKey.equals(ID_FIVE)) {   //TODO Constant
             return ID_PERCENT;
         }
-        if (event.getText().equals("%") && nameKey.equals("DIGIT5")) {   //TODO Constant
+        if (event.getText().equals("%") && nameKey.equals(ID_FIVE)) {   //TODO Constant
             return ID_PERCENT;
         }
         if (nameKey.equals("SLASH")) {   //TODO Constant
@@ -808,6 +793,19 @@ public class ViewController {
         if (nameKey.equals("PERIOD")) {   //TODO Constant
             return ID_COMMA;
         }
+        if (nameKey.equals("C")) {   //TODO Constant
+            return ID_MC;
+        }
+        if (nameKey.equals("R")) {   //TODO Constant
+            return ID_MR;
+        }
+        if (nameKey.equals("M")) {   //TODO Constant
+            return ID_M_MINUS;
+        }
+        if (nameKey.equals("P")) {   //TODO Constant
+            return ID_M_PLUS;
+        }
+
         return nameKey;
     }
 }

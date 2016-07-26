@@ -35,7 +35,7 @@ public class Calculator {
     /**
      * Value is used to store model  {@code Calculator}.
      */
-    public static Calculator calculator;
+    public final static Calculator calculator;
 
     /**
      * Initialization the model of a calculator.

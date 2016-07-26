@@ -285,13 +285,13 @@ public class MainAppMouseTest {
             case 'a':
                 return "#ESCAPE";
             case 'p':
-                return "#m_plus";
+                return "#M_PLUS";
             case 'm':
-                return "#m_minus";
+                return "#M_MINUS";
             case 'c':
-                return "#mc";
+                return "#MC";
             case 'r':
-                return "#mr";
+                return "#MR";
         }
         throw new IllegalArgumentException("The button : \'" + key + "\'" + " cannot be found!!!");
     }

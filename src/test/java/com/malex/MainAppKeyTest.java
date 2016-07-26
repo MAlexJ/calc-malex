@@ -163,6 +163,34 @@ public class MainAppKeyTest {
     public void testAccuracy() {
         testCalculateKeyCode("111111111*111111111=", "12345678987654321");
         testCalculateKeyCode("12345679*9=", "111111111");
+        testCalculateKeyCode("10/3*3=", "9.99999999999999");
+        testCalculateKeyCode("9/7*7=", "9.00000000000003");
+    }
+
+    @Test
+    public void testButtonMemory() {
+        // simply operation
+        testCalculateKeyCode("r", "0");
+        testCalculateKeyCode("56r", "0");
+        testCalculateKeyCode("2pppppp", "2");
+        testCalculateKeyCode("2mmmmmm", "2");
+        testCalculateKeyCode("c5pmr", "0");
+        testCalculateKeyCode("c5pmmr", "-5");
+        testCalculateKeyCode("c5mpr", "0");
+
+        testCalculateKeyCode("c1prar", "1");
+        testCalculateKeyCode("c1.001pr456ar", "1.001");
+        testCalculateKeyCode("c2~.001p123", "123");
+        testCalculateKeyCode("c00.001~p123r", "-0.001");
+
+        // replace operation
+        testCalculateKeyCode("c2ppppppppppr", "20");
+        testCalculateKeyCode("c2mmmmmmmmmmr", "-20");
+
+        // memory operation and arithmetic operation
+        testCalculateKeyCode("c5p63+r=", "68");
+        testCalculateKeyCode("c5m63+r=", "58");
+        testCalculateKeyCode("c56p2+6-r=", "-48");
     }
 
     @Test
@@ -257,14 +285,12 @@ public class MainAppKeyTest {
                 controller.push(KeyCode.DIGIT9);
                 return;
             case '+':
-                controller.sleep(20);
                 controller.push(KeyCode.EQUALS, KeyCode.SHIFT);
                 return;
             case '-':
                 controller.push(KeyCode.MINUS);
                 return;
             case '*':
-                controller.sleep(20);
                 controller.push(KeyCode.DIGIT8, KeyCode.SHIFT);
                 return;
             case '/':
@@ -274,11 +300,9 @@ public class MainAppKeyTest {
                 controller.push(KeyCode.ENTER);
                 return;
             case '%':
-                controller.sleep(30);
                 controller.push(KeyCode.DIGIT5, KeyCode.SHIFT);
                 return;
             case '~':
-                controller.sleep(20);
                 controller.push(KeyCode.MINUS, KeyCode.SHIFT);
                 return;
             case '.':
@@ -288,12 +312,16 @@ public class MainAppKeyTest {
                 controller.push(KeyCode.ESCAPE);
                 return;
             case 'p':
+                controller.push(KeyCode.P);
                 return;
             case 'm':
+                controller.push(KeyCode.M);
                 return;
             case 'c':
+                controller.push(KeyCode.C);
                 return;
             case 'r':
+                controller.push(KeyCode.R);
                 return;
         }
         throw new IllegalArgumentException("The button : \'" + value + "\'" + " cannot be found!!!");

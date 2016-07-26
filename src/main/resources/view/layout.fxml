@@ -5,15 +5,15 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0"
-            prefWidth="232.0" styleClass="archPane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/null"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.malex.controller.ViewController">
+<AnchorPane onKeyReleased="#handlerKeyPressed" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="360.0" prefWidth="232.0" stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.malex.controller.ViewController">
     <children>
         <Pane prefHeight="100.0" prefWidth="232.0" styleClass="paneApp"/>
         <TextField fx:id="display" alignment="BOTTOM_RIGHT" editable="false" focusTraversable="false" layoutY="-22.0"
                    maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                   onMouseMoved="#handlerDragMouse"
-                   prefHeight="100.0" prefWidth="232.0" text="1324125"
+                   onMouseMoved="#handlerDragMouse" prefHeight="100.0" prefWidth="232.0" text="1324125"
                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <cursor>
                 <Cursor fx:constant="DEFAULT"/>
@@ -36,7 +36,7 @@
         <VBox layoutX="10.0" layoutY="10.0" prefHeight="350.0" prefWidth="232.0" AnchorPane.bottomAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="78.0">
             <children>
-                <GridPane onKeyReleased="#handlerKeyPressed" prefHeight="329.0" prefWidth="232.0">
+                <GridPane prefHeight="329.0" prefWidth="232.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -52,18 +52,18 @@
                         <RowConstraints minHeight="47.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
                     <children>
-                        <Button fx:id="mc" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0" minWidth="59.0"
+                        <Button fx:id="MC" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0" minWidth="59.0"
                                 mnemonicParsing="false" onAction="#handlerMemoryButton" prefHeight="48.0"
                                 prefWidth="60.0" styleClass="operators" text="mc" GridPane.halignment="CENTER"
                                 GridPane.hgrow="SOMETIMES" GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES"/>
-                        <Button fx:id="m_plus" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0"
+                        <Button fx:id="M_PLUS" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0"
                                 minWidth="59.0" mnemonicParsing="false" onAction="#handlerMemoryButton"
                                 prefHeight="48.0" prefWidth="60.0" styleClass="operators" text="m+"
                                 GridPane.columnIndex="1"/>
-                        <Button fx:id="mr" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0"
+                        <Button fx:id="MR" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0"
                                 mnemonicParsing="false" onAction="#handlerMemoryButton" prefHeight="48.0"
                                 prefWidth="60.0" styleClass="operators" text="mr" GridPane.columnIndex="3"/>
-                        <Button fx:id="m_minus" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0"
+                        <Button fx:id="M_MINUS" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0"
                                 minWidth="59.0" mnemonicParsing="false" onAction="#handlerMemoryButton"
                                 prefHeight="48.0" prefWidth="60.0" styleClass="operators" text="m-"
                                 GridPane.columnIndex="2"/>
