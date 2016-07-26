@@ -194,6 +194,8 @@ public class ViewController {
      * Value is used to store ID.
      */
     @FXML
+    public TextField DISPLAY;
+    @FXML
     public Button MR;
     @FXML
     public Button MC;
@@ -201,8 +203,6 @@ public class ViewController {
     public Button M_PLUS;
     @FXML
     public Button M_MINUS;
-    @FXML
-    private TextField display;
     @FXML
     public Button DIGIT0;
     @FXML
@@ -310,10 +310,10 @@ public class ViewController {
      * Initialization the controller.
      */
     public void init() {
-        this.display.setEditable(false);
-        this.display.setFont(new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT));
-        this.display.setText(START_CURSOR_POSITION);
-        this.display.lengthProperty().addListener((observable, oldValue, newValue) -> {
+        this.DISPLAY.setEditable(false);
+        this.DISPLAY.setFont(new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT));
+        this.DISPLAY.setText(START_CURSOR_POSITION);
+        this.DISPLAY.lengthProperty().addListener((observable, oldValue, newValue) -> {
             changeDisplaySize(newValue.intValue());
         });
     }
@@ -326,14 +326,14 @@ public class ViewController {
     @FXML
     public void handlerNumbersButton(Event event) {
         try {
-            String value = display.getText();
+            String value = DISPLAY.getText();
 
             if (value == null) {
                 throw new UndefinedNumberException("Incorrect value received from the controller !");
             }
 
             if (!isNumber(value)) {  // проверка входящего значения на число
-                this.display.setText(RESET_NUMBER);
+                this.DISPLAY.setText(RESET_NUMBER);
                 this.numberOne = RESET_NUMBER;
             }
 
@@ -341,14 +341,14 @@ public class ViewController {
                 ESCAPE.setText("C");
             }
             if (value.equals(START_CURSOR_POSITION) && startPosition) { // сброс дефолтного значения
-                display.setText(RESET_NUMBER);
+                DISPLAY.setText(RESET_NUMBER);
                 startPosition = false; // сброс стартовой позиции
             }
-            if (value.startsWith(START_CURSOR_POSITION) && display.getText().length() == 1) { // проверка на не допущения 012345
-                display.setText(RESET_NUMBER);
+            if (value.startsWith(START_CURSOR_POSITION) && DISPLAY.getText().length() == 1) { // проверка на не допущения 012345
+                DISPLAY.setText(RESET_NUMBER);
             }
             if (nextNumber) {   //проверка на начало следующего числа
-                display.setText(RESET_NUMBER);
+                DISPLAY.setText(RESET_NUMBER);
                 nextNumber = false;
             }
             this.replaceOperator = false; // сброс повтора оператора при введении числа
@@ -356,42 +356,42 @@ public class ViewController {
             switch (btn.getId()) {
                 case ID_ZERO:
                     if (validateLimitNumberZeros()) {
-                        display.appendText(START_CURSOR_POSITION);
+                        DISPLAY.appendText(START_CURSOR_POSITION);
                     }
                     break;
                 case ID_ONE:
-                    display.appendText("1");
+                    DISPLAY.appendText("1");
                     break;
                 case ID_TWO:
-                    display.appendText("2");
+                    DISPLAY.appendText("2");
                     break;
                 case ID_THREE:
-                    display.appendText("3");
+                    DISPLAY.appendText("3");
                     break;
                 case ID_FOUR:
-                    display.appendText("4");
+                    DISPLAY.appendText("4");
                     break;
                 case ID_FIVE:
-                    display.appendText("5");
+                    DISPLAY.appendText("5");
                     break;
                 case ID_SIX:
-                    display.appendText("6");
+                    DISPLAY.appendText("6");
                     break;
                 case ID_SEVEN:
-                    display.appendText("7");
+                    DISPLAY.appendText("7");
                     break;
                 case ID_EIGHT:
-                    display.appendText("8");
+                    DISPLAY.appendText("8");
                     break;
                 case ID_NINE:
-                    display.appendText("9");
+                    DISPLAY.appendText("9");
                     break;
                 case ID_COMMA:
-                    if (this.display.getText().isEmpty()) {  // если первое значение пустое 0.00000
-                        this.display.appendText(ZERO_COMMA);
+                    if (this.DISPLAY.getText().isEmpty()) {  // если первое значение пустое 0.00000
+                        this.DISPLAY.appendText(ZERO_COMMA);
                     }
-                    if (!this.display.getText().contains(COMMA_VAL)) {  // Проверка на наличее только одной точки
-                        this.display.appendText(COMMA_VAL);
+                    if (!this.DISPLAY.getText().contains(COMMA_VAL)) {  // Проверка на наличее только одной точки
+                        this.DISPLAY.appendText(COMMA_VAL);
                     }
                     break;
                 default:
@@ -421,7 +421,7 @@ public class ViewController {
                         return;
                     }
 
-                    this.numberOne = this.display.getText();
+                    this.numberOne = this.DISPLAY.getText();
                     this.numberTwo = RESET_NUMBER;
                     this.operator = operatorValue;
                     this.nextNumber = true;
@@ -438,7 +438,7 @@ public class ViewController {
                         if (getPriorityOperations(operatorValue, this.operator)) {
                             this.operatorInMemory = operatorValue;
                             this.isPriorityOperations = true;
-                            this.numberTwo = this.display.getText();
+                            this.numberTwo = this.DISPLAY.getText();
                             this.nextNumber = true;
                             return;
                         }
@@ -446,17 +446,17 @@ public class ViewController {
                     if (!this.isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
                         if (numberTwo.isEmpty() && operator.isEmpty()) {
                             this.operator = operatorValue;
-                            this.numberOne = this.display.getText();
+                            this.numberOne = this.DISPLAY.getText();
                             this.nextNumber = true;
                         } else {
-                            this.numberOne = calculator.calculate(this.operator, this.numberOne, this.display.getText());
-                            this.display.setText(this.numberOne);
+                            this.numberOne = calculator.calculate(this.operator, this.numberOne, this.DISPLAY.getText());
+                            this.DISPLAY.setText(this.numberOne);
                             this.operator = operatorValue;
                             this.nextNumber = true;
                         }
                     } else {
-                        this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, this.display.getText());
-                        this.display.setText(this.numberTwo);
+                        this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, this.DISPLAY.getText());
+                        this.DISPLAY.setText(this.numberTwo);
                         if (isHighPriorityOperation(this.operatorInMemory)) {
                             this.operatorInMemory = operatorValue;
                             this.isPriorityOperations = true;
@@ -473,20 +473,20 @@ public class ViewController {
                 }
             } else {
                 if (this.operator.isEmpty()) {
-                    String number = this.display.getText();
+                    String number = this.DISPLAY.getText();
                     if (validateNumberAvailableInsideComma(number)) {
-                        this.display.setText(START_CURSOR_POSITION);
+                        this.DISPLAY.setText(START_CURSOR_POSITION);
                     }
                     return;
                 }
 
-                String tempNumber = this.display.getText();
+                String tempNumber = this.DISPLAY.getText();
                 if (this.isPriorityOperations) {
                     this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, tempNumber);
                 }
 
                 if (this.numberTwo.isEmpty()) {  // сброс чисел в памяти
-                    this.numberTwo = this.display.getText();
+                    this.numberTwo = this.DISPLAY.getText();
                 }
 
                 if (this.numberOne.equals(RESET_NUMBER)) {
@@ -505,10 +505,10 @@ public class ViewController {
                     this.operatorInMemory = RESET_NUMBER;
                     this.isPriorityOperations = false;
                 }
-                this.display.setText(calculate);
+                this.DISPLAY.setText(calculate);
             }
         } catch (UndefinedNumberException e) {
-            this.display.setText("Undefined");
+            this.DISPLAY.setText("Undefined");
             this.operator = operatorValue;
         } catch (Exception e) {
             logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerOperationButton(Event event): " + e.getMessage());
@@ -546,15 +546,15 @@ public class ViewController {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
         if (operatorValue.equals(ID_SIGN)) {
-            String number = this.display.getText();
+            String number = this.DISPLAY.getText();
             if (!number.equals(START_CURSOR_POSITION)) {
                 if (validateNumberAvailableInsideComma(number)) {
-                    this.display.setText(START_CURSOR_POSITION);
+                    this.DISPLAY.setText(START_CURSOR_POSITION);
                 } else {
                     if (number.startsWith(SIGN_VAL)) {
-                        this.display.setText(number.substring(0, 0) + number.substring(1));
+                        this.DISPLAY.setText(number.substring(0, 0) + number.substring(1));
                     } else {
-                        this.display.setText(SIGN_VAL + number);
+                        this.DISPLAY.setText(SIGN_VAL + number);
                     }
                 }
             }
@@ -572,11 +572,11 @@ public class ViewController {
         String percent = btn.getId();
         try {
             if (this.numberOne.isEmpty()) {
-                String calculate = calculator.calculate(percent, PERCENT_NUMBER_DEFAULT, this.display.getText());
-                this.display.setText(calculate);
+                String calculate = calculator.calculate(percent, PERCENT_NUMBER_DEFAULT, this.DISPLAY.getText());
+                this.DISPLAY.setText(calculate);
             } else {
-                String calculate = calculator.calculate(percent, this.numberOne, this.display.getText());
-                this.display.setText(calculate);
+                String calculate = calculator.calculate(percent, this.numberOne, this.DISPLAY.getText());
+                this.DISPLAY.setText(calculate);
             }
         } catch (Exception e) {
             logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerPercentButton(Event event): " + e.getMessage());
@@ -598,15 +598,15 @@ public class ViewController {
                     this.numberInMemory = START_CURSOR_POSITION;
                     break;
                 case "M_PLUS":
-                    this.numberInMemory = calculator.calculate(ID_ADD, this.numberInMemory, this.display.getText());
+                    this.numberInMemory = calculator.calculate(ID_ADD, this.numberInMemory, this.DISPLAY.getText());
                     this.nextNumber = true;
                     break;
                 case "M_MINUS":
-                    this.numberInMemory = calculator.calculate(ID_SUBTRACTION, this.numberInMemory, this.display.getText());
+                    this.numberInMemory = calculator.calculate(ID_SUBTRACTION, this.numberInMemory, this.DISPLAY.getText());
                     this.nextNumber = true;
                     break;
                 case "MR":
-                    this.display.setText(numberInMemory);
+                    this.DISPLAY.setText(numberInMemory);
                     break;
                 default:
                     break;
@@ -621,12 +621,12 @@ public class ViewController {
      */
     @FXML
     public void handlerDragMouse() {
-        Stage stage = (Stage) display.getScene().getWindow();
-        this.display.setOnMousePressed(mouseEvent -> {
+        Stage stage = (Stage) DISPLAY.getScene().getWindow();
+        this.DISPLAY.setOnMousePressed(mouseEvent -> {
             POSITION_X = stage.getX() - mouseEvent.getScreenX();
             POSITION_Y = stage.getY() - mouseEvent.getScreenY();
         });
-        this.display.setOnMouseDragged(mouseEvent -> {
+        this.DISPLAY.setOnMouseDragged(mouseEvent -> {
             stage.setX(mouseEvent.getScreenX() + POSITION_X);
             stage.setY(mouseEvent.getScreenY() + POSITION_Y);
         });
@@ -736,18 +736,18 @@ public class ViewController {
     }
 
     /**
-     * Change the display size.
+     * Change the DISPLAY size.
      */
     private void changeDisplaySize(int length) {
         if (length < ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
-            this.display.setStyle("-fx-font-size: " + MAX_FONT_SIZE_TEXT + "px;");
+            this.DISPLAY.setStyle("-fx-font-size: " + MAX_FONT_SIZE_TEXT + "px;");
         }
         if (length > ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
             if (length > ALLOWABLE_MAXIMUM_LENGTH_OF_DIGITS) {
-                this.display.setStyle("-fx-font-size: " + MIN_FONT_SIZE_TEXT + "px;");
+                this.DISPLAY.setStyle("-fx-font-size: " + MIN_FONT_SIZE_TEXT + "px;");
             } else {
                 int size = MAX_FONT_SIZE_TEXT * ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS / length;
-                this.display.setStyle("-fx-font-size: " + size + "px;");
+                this.DISPLAY.setStyle("-fx-font-size: " + size + "px;");
             }
         }
     }
@@ -771,7 +771,7 @@ public class ViewController {
      *
      * @param displayOperation  the operation selected by the user.
      * @param inMemoryOperation the operation in memory.
-     * @return true if the operation in display has a higher priority.
+     * @return true if the operation in DISPLAY has a higher priority.
      */
     // return true if displayOperation = '/' or '*' and inMemoryOperation = '+' or '-'
     private boolean getPriorityOperations(String displayOperation, String inMemoryOperation) {
@@ -806,7 +806,7 @@ public class ViewController {
      * @return true if the count of zeros in the permitted limit.
      */
     private boolean validateLimitNumberZeros() {
-        return !display.getText().startsWith(START_CURSOR_POSITION) || display.getText().startsWith(ZERO_COMMA) || display.getText().isEmpty();
+        return !DISPLAY.getText().startsWith(START_CURSOR_POSITION) || DISPLAY.getText().startsWith(ZERO_COMMA) || DISPLAY.getText().isEmpty();
     }
 
     /**
@@ -826,8 +826,8 @@ public class ViewController {
      * Reset the cursor position of the screen.
      */
     private void resetDisplay() {
-        this.display.setFont(new Font(MAX_FONT_SIZE_TEXT));
-        this.display.setText(START_CURSOR_POSITION);
+        this.DISPLAY.setFont(new Font(MAX_FONT_SIZE_TEXT));
+        this.DISPLAY.setText(START_CURSOR_POSITION);
     }
 
     /**

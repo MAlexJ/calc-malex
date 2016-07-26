@@ -5,13 +5,13 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.*?>
-<AnchorPane onKeyReleased="#handlerKeyPressed" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="360.0" prefWidth="232.0" stylesheets="@style.css"
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            onKeyReleased="#handlerKeyPressed" prefHeight="360.0" prefWidth="232.0" stylesheets="@style.css"
             xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.malex.controller.ViewController">
     <children>
         <Pane prefHeight="100.0" prefWidth="232.0" styleClass="paneApp"/>
-        <TextField fx:id="display" alignment="BOTTOM_RIGHT" editable="false" focusTraversable="false" layoutY="-22.0"
+        <TextField fx:id="DISPLAY" alignment="BOTTOM_RIGHT" editable="false" focusTraversable="false" layoutY="-22.0"
                    maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
                    onMouseMoved="#handlerDragMouse" prefHeight="100.0" prefWidth="232.0" text="1324125"
                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">

@@ -14,7 +14,7 @@ import static junit.framework.TestCase.fail;
 public class CalculatorTest {
 
     /**
-     * Оперции доступные по id:
+     * Arithmetic operations:
      * ADD
      * SUBTRACTION
      * DIVISION

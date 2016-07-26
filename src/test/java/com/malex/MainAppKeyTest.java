@@ -150,6 +150,8 @@ public class MainAppKeyTest {
         testCalculateKeyCode("0+1=+2+2+2*3/2=", "8");
         testCalculateKeyCode("1/1=+2+2+2*3/2=", "8");
         testCalculateKeyCode("1*1=+2+2+2*3/2=", "8");
+        testCalculateKeyCode("1/0+1=", "2");
+        testCalculateKeyCode("3+5=.0+0=", "8");
     }
 
     @Test
@@ -174,6 +176,20 @@ public class MainAppKeyTest {
         testCalculateKeyCode("10/3*3=", "9.99999999999999");
         testCalculateKeyCode("10/3=*3=", "9.99999999999999");
         testCalculateKeyCode("9/7*7=", "9.00000000000003");
+        testCalculateKeyCode("100*10/2+16*4=", "564");
+        testCalculateKeyCode("12345679*27=", "333333333");
+        testCalculateKeyCode("12345679*8=", "98765432");
+
+        testCalculateKeyCode("1111*1111=", "1234321");
+        testCalculateKeyCode("123123123/1001001=", "123");
+        testCalculateKeyCode("12345679*7.2=", "88888888.8");
+        testCalculateKeyCode("12345678-123456789=", "-111111111");
+        testCalculateKeyCode("12345679*9=/9=", "12345679");
+
+        testCalculateKeyCode("12345679*9=", "111111111");
+        testCalculateKeyCode("12345679*18=", "222222222");
+        testCalculateKeyCode("12345679*27=", "333333333");
+        testCalculateKeyCode("12345679*81=", "999999999");
     }
 
     @Test
@@ -232,9 +248,8 @@ public class MainAppKeyTest {
         testCalculateKeyCode("2/0*45=", "2025");
     }
 
-
     private void testCalculateKeyCode(String arithmeticExpression, String expectedResult) {
-        //#Step: 1. Clear display
+        //#Step: 1. Clear DISPLAY
         controller.push(KeyCode.ESCAPE);
 
         //#Step: 2. Click on buttons
@@ -242,24 +257,24 @@ public class MainAppKeyTest {
             pushKey(button);
         }
 
-        //# Step: 3. Get result on display
-        TextField display = GuiTest.find("#display");
+        //# Step: 3. Get result on DISPLAY
+        TextField display = GuiTest.find("#DISPLAY");
         String actualResult = display.getText();
 
         //# Step: 4. Compare the expected results with the actual result.
         assertEquals(expectedResult, actualResult);
     }
 
-
     /**
-     * // Поиск ид кнопки по символу.
-     * Принятые обозначения:
-     * Знак '+/-' еквивалентен '~'
-     * Знак 'a' еквивалентен 'reset'
-     * Знак 'm+' еквивалентен 'p'
-     * Знак 'm-' еквивалентен 'm'
-     * Знак 'mc' еквивалентен 'c'
-     * Знак 'mr' еквивалентен 'r'
+     * Search by ID button.
+     * <p>
+     * The designations:
+     * Value '+/-' equals '~'
+     * Value 'a' equals 'reset'
+     * Value 'm+' equals 'p'
+     * Value 'm-' equals 'm'
+     * Value 'mc' equals 'c'
+     * Value 'mr' equals 'r'
      */
     private void pushKey(char value) {
         switch (value) {

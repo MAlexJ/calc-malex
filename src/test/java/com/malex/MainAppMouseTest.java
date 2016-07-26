@@ -220,7 +220,7 @@ public class MainAppMouseTest {
     }
 
     private void testCalculate(String arithmeticExpression, String expectedResult) {
-        //#Step: 1. Clear display
+        //#Step: 1. Clear DISPLAY
         controller.click("#ESCAPE");
 
         //#Step: 2. Click on buttons
@@ -228,22 +228,25 @@ public class MainAppMouseTest {
             controller.click(findKey(button));
         }
 
-        //# Step: 3. Get result on display
-        TextField display = GuiTest.find("#display");
+        //# Step: 3. Get result on DISPLAY
+        TextField display = GuiTest.find("#DISPLAY");
         String actualResult = display.getText();
 
         //# Step: 4. Compare the expected results with the actual result.
         assertEquals(expectedResult, actualResult);
     }
 
-    // Поиск ид кнопки по символу.
-    // Принятые обозначения:
-    // Знак '+/-' еквивалентен '~'
-    // Знак 'a' еквивалентен 'reset'
-    // Знак 'm+' еквивалентен 'p'
-    // Знак 'm-' еквивалентен 'm'
-    // Знак 'mc' еквивалентен 'c'
-    // Знак 'mr' еквивалентен 'r'
+    /**
+     * Search by ID button.
+     *
+     * The designations:
+     * Value '+/-' equals '~'
+     * Value 'a' equals 'reset'
+     * Value 'm+' equals 'p'
+     * Value 'm-' equals 'm'
+     * Value 'mc' equals 'c'
+     * Value 'mr' equals 'r'
+     */
     private String findKey(char key) {
         switch (key) {
             case '0':
