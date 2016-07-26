@@ -4,8 +4,6 @@ import com.malex.model.exception.UndefinedNumberException;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -49,16 +47,21 @@ public class ViewController {
     /**
      * Value is used to store allowable minimum length of digits.
      */
-    private final static int ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS = 7;
+    private static final int ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS = 7;
     /**
      * Value is used to store allowable minimum length of digits.
      */
-    private final static int ALLOWABLE_MAXIMUM_LENGTH_OF_DIGITS = 40;
+    private static final int ALLOWABLE_MAXIMUM_LENGTH_OF_DIGITS = 40;
 
     /**
      * Value is used to store the cursor.
      */
     private static final String START_CURSOR_POSITION = "0";
+
+    /**
+     * Value is used to store the reset number.
+     */
+    private static final String RESET_NUMBER = "";
 
     /**
      * Value is used to store the maximum font size a text.
@@ -100,6 +103,62 @@ public class ViewController {
     private static final String SIGN_VAL = "-";
 
     /**
+     * Value is used to store the value '_'.
+     */
+    private static final String UNDERSCORE_VAL = "_";
+    /**
+     * Value is used to store the value '*'.
+     */
+    private static final String STAR_VAL = "*";
+    /**
+     * Value is used to store the value ';'.
+     */
+    private static final String SEMICOLON_VAL = ";";
+    /**
+     * Value is used to store the value '%'.
+     */
+    private static final String PERCENT_VAL = "%";
+    /**
+     * Value is used to store the value ':'.
+     */
+    private static final String COLON_VAL = ":";
+    /**
+     * Value is used to store the value '+'.
+     */
+    private static final String PLUS_VAL = "+";
+    /**
+     * Value is used to store the value 'MINUS'.
+     */
+    private static final String MINUS_VAL = "MINUS";
+    /**
+     * Value is used to store the value 'SLASH'.
+     */
+    private static final String SLASH_VAL = "SLASH";
+    /**
+     * Value is used to store the value 'ENTER'.
+     */
+    private static final String ENTER_VAL = "ENTER";
+    /**
+     * Value is used to store the value 'PERIOD'.
+     */
+    private static final String PERIOD_VAL = "PERIOD";
+    /**
+     * Value is used to store the value 'C'.
+     */
+    private static final String C_VAL = "C";
+    /**
+     * Value is used to store the value 'R'.
+     */
+    private static final String R_VAL = "R";
+    /**
+     * Value is used to store the value 'P'.
+     */
+    private static final String P_VAL = "P";
+    /**
+     * Value is used to store the value 'M'.
+     */
+    private static final String M_VAL = "M";
+    /**
      * Value is used to store the value 'AC'.
      */
     private static final String VALUE_BUTTON_RESET_AC = "AC";
@@ -131,6 +190,9 @@ public class ViewController {
     private static final String ID_M_MINUS = "M_MINUS";
     private static final String ID_RESET = "ESCAPE";
 
+    /**
+     * Value is used to store ID.
+     */
     @FXML
     public Button MR;
     @FXML
@@ -139,8 +201,6 @@ public class ViewController {
     public Button M_PLUS;
     @FXML
     public Button M_MINUS;
-
-    // индификаторы кнопок представления layout.fxml
     @FXML
     private TextField display;
     @FXML
@@ -181,16 +241,8 @@ public class ViewController {
     public Button SIGN;
     @FXML
     public Button PERCENT;
-
-    /**
-     * Кнопка закрыть приложение
-     */
     @FXML
     public Button EXIT;
-
-    /**
-     * кнопка свернуть приложение
-     */
     @FXML
     public Button TRAY;
 
@@ -237,12 +289,17 @@ public class ViewController {
     /**
      * Value is used to store the status of reuse operators
      */
-    private boolean replaceOperator = false;
+    private boolean replaceOperator;
+
+    /**
+     * Value is used to store reuse operator 'equals'.
+     */
+    private boolean operatorEqualsUsed;
 
     /**
      * Value is used to indicate the priority operation.
      */
-    private boolean isPriorityOperations = false;
+    private boolean isPriorityOperations;
 
     /**
      * Value is used to store the priority an operator in memory.
@@ -276,22 +333,22 @@ public class ViewController {
             }
 
             if (!isNumber(value)) {  // проверка входящего значения на число
-                this.display.setText("");
-                this.numberOne = "";
+                this.display.setText(RESET_NUMBER);
+                this.numberOne = RESET_NUMBER;
             }
 
             if (value.length() > 0) {  // поменять название кнопки
                 ESCAPE.setText("C");
             }
             if (value.equals(START_CURSOR_POSITION) && startPosition) { // сброс дефолтного значения
-                display.setText("");
+                display.setText(RESET_NUMBER);
                 startPosition = false; // сброс стартовой позиции
             }
             if (value.startsWith(START_CURSOR_POSITION) && display.getText().length() == 1) { // проверка на не допущения 012345
-                display.setText("");
+                display.setText(RESET_NUMBER);
             }
             if (nextNumber) {   //проверка на начало следующего числа
-                display.setText("");
+                display.setText(RESET_NUMBER);
                 nextNumber = false;
             }
             this.replaceOperator = false; // сброс повтора оператора при введении числа
@@ -356,47 +413,64 @@ public class ViewController {
         String operatorValue = btn.getId();
         try {
             if (!ID_EQUALS.equals(operatorValue)) {
-                if (this.replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
-                    this.replaceOperator = true;
-                    this.operator = operatorValue;
-                    return;
-                }
-                if (!this.operator.isEmpty() && this.operatorInMemory.isEmpty()) {   // проверка на приоритет операций
-                    if (getPriorityOperations(operatorValue, this.operator)) {
-                        this.operatorInMemory = operatorValue;
-                        this.isPriorityOperations = true;
-                        this.numberTwo = this.display.getText();
-                        this.nextNumber = true;
+                if (operatorEqualsUsed) {
+
+                    if (this.replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
+                        this.replaceOperator = true;
+                        this.operator = operatorValue;
                         return;
                     }
-                }
-                if (!this.isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
-                    if (numberTwo.isEmpty() && operator.isEmpty()) {
-                        this.operator = operatorValue;
-                        this.numberOne = this.display.getText();
-                        this.nextNumber = true;
-                    } else {
-                        this.numberOne = calculator.calculate(this.operator, this.numberOne, this.display.getText());
-                        this.display.setText(this.numberOne);
-                        this.operator = operatorValue;
-                        this.nextNumber = true;
-                    }
-                } else {
-                    this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, this.display.getText());
-                    this.display.setText(this.numberTwo);
-                    if (isHighPriorityOperation(this.operatorInMemory)) {
-                        this.operatorInMemory = operatorValue;
-                        this.isPriorityOperations = true;
-                    } else {
-                        this.operatorInMemory = "";
-                        this.numberOne = calculator.calculate(this.operator, this.numberOne, this.numberTwo);
-                        this.operator = operatorValue;
-                        this.numberTwo = "";
-                        this.isPriorityOperations = false;
-                    }
+
+                    this.numberOne = this.display.getText();
+                    this.numberTwo = RESET_NUMBER;
+                    this.operator = operatorValue;
                     this.nextNumber = true;
+                    this.operatorEqualsUsed = false;
+                } else {
+
+
+                    if (this.replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
+                        this.replaceOperator = true;
+                        this.operator = operatorValue;
+                        return;
+                    }
+                    if (!this.operator.isEmpty() && this.operatorInMemory.isEmpty()) {   // проверка на приоритет операций
+                        if (getPriorityOperations(operatorValue, this.operator)) {
+                            this.operatorInMemory = operatorValue;
+                            this.isPriorityOperations = true;
+                            this.numberTwo = this.display.getText();
+                            this.nextNumber = true;
+                            return;
+                        }
+                    }
+                    if (!this.isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
+                        if (numberTwo.isEmpty() && operator.isEmpty()) {
+                            this.operator = operatorValue;
+                            this.numberOne = this.display.getText();
+                            this.nextNumber = true;
+                        } else {
+                            this.numberOne = calculator.calculate(this.operator, this.numberOne, this.display.getText());
+                            this.display.setText(this.numberOne);
+                            this.operator = operatorValue;
+                            this.nextNumber = true;
+                        }
+                    } else {
+                        this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, this.display.getText());
+                        this.display.setText(this.numberTwo);
+                        if (isHighPriorityOperation(this.operatorInMemory)) {
+                            this.operatorInMemory = operatorValue;
+                            this.isPriorityOperations = true;
+                        } else {
+                            this.operatorInMemory = RESET_NUMBER;
+                            this.numberOne = calculator.calculate(this.operator, this.numberOne, this.numberTwo);
+                            this.operator = operatorValue;
+                            this.numberTwo = RESET_NUMBER;
+                            this.isPriorityOperations = false;
+                        }
+                        this.nextNumber = true;
+                    }
+                    this.replaceOperator = true;
                 }
-                this.replaceOperator = true;
             } else {
                 if (this.operator.isEmpty()) {
                     String number = this.display.getText();
@@ -415,19 +489,20 @@ public class ViewController {
                     this.numberTwo = this.display.getText();
                 }
 
-                if (this.numberOne.equals("")) {
+                if (this.numberOne.equals(RESET_NUMBER)) {
                     this.numberOne = this.numberTwo;
                 }
 
                 String calculate = calculator.calculate(this.operator, this.numberOne, this.numberTwo);
+                this.operatorEqualsUsed = true;
                 if (!this.numberOne.isEmpty()) {
                     this.numberOne = calculate;
                 }
                 if (isPriorityOperations) {
                     this.operator = this.operatorInMemory;
                     this.numberOne = tempNumber;
-                    this.numberTwo = "";
-                    this.operatorInMemory = "";
+                    this.numberTwo = RESET_NUMBER;
+                    this.operatorInMemory = RESET_NUMBER;
                     this.isPriorityOperations = false;
                 }
                 this.display.setText(calculate);
@@ -451,12 +526,13 @@ public class ViewController {
         String operatorValue = btn.getId();
         if (operatorValue.equals(ID_RESET)) {
             resetDisplay();
-            this.operator = "";
+            this.operator = RESET_NUMBER;
             btn.setText(VALUE_BUTTON_RESET_AC);
-            this.startPosition = true; // сброс стартовой позиции
-            this.numberOne = "";  // сброс первого числа
-            this.numberTwo = "";  // сброс второго чиса
-            this.isPriorityOperations = false; // сброс приоритета операторов
+            this.startPosition = true;
+            this.numberOne = RESET_NUMBER;
+            this.numberTwo = RESET_NUMBER;
+            this.isPriorityOperations = false;
+            this.operatorEqualsUsed = false;
         }
     }
 
@@ -523,11 +599,11 @@ public class ViewController {
                     break;
                 case "M_PLUS":
                     this.numberInMemory = calculator.calculate(ID_ADD, this.numberInMemory, this.display.getText());
-                    this.nextNumber = true; //сброс начала курсора перед вводом нового числа
+                    this.nextNumber = true;
                     break;
                 case "M_MINUS":
                     this.numberInMemory = calculator.calculate(ID_SUBTRACTION, this.numberInMemory, this.display.getText());
-                    this.nextNumber = true;  //сброс начала курсора перед вводом нового числа
+                    this.nextNumber = true;
                     break;
                 case "MR":
                     this.display.setText(numberInMemory);
@@ -763,49 +839,48 @@ public class ViewController {
     private String shortcuts(KeyEvent event) {
         KeyCode code = event.getCode();
         String nameKey = code.toString();
-        if (event.getText().equals(";") && nameKey.equals(ID_EIGHT)) { //TODO Constant
+        if (event.getText().equals(SEMICOLON_VAL) && nameKey.equals(ID_EIGHT)) {
             return ID_MULTIPLICATION;
         }
-        if (event.getText().equals("*") && nameKey.equals(ID_EIGHT)) { //TODO Constant
+        if (event.getText().equals(STAR_VAL) && nameKey.equals(ID_EIGHT)) {
             return ID_MULTIPLICATION;
         }
-        if (event.getText().equals("+") && nameKey.equals(ID_EQUALS)) {  //TODO Constant
+        if (event.getText().equals(PLUS_VAL) && nameKey.equals(ID_EQUALS)) {
             return ID_ADD;
         }
-        if (event.getText().equals("_") && nameKey.equals("MINUS")) {   //TODO Constant
+        if (event.getText().equals(UNDERSCORE_VAL) && nameKey.equals(MINUS_VAL)) {
             return ID_SIGN;
         }
-        if (event.getText().equals("-") && nameKey.equals("MINUS")) {   //TODO Constant
+        if (event.getText().equals(SIGN_VAL) && nameKey.equals(MINUS_VAL)) {
             return ID_SUBTRACTION;
         }
-        if (event.getText().equals(":") && nameKey.equals(ID_FIVE)) {   //TODO Constant
+        if (event.getText().equals(COLON_VAL) && nameKey.equals(ID_FIVE)) {
             return ID_PERCENT;
         }
-        if (event.getText().equals("%") && nameKey.equals(ID_FIVE)) {   //TODO Constant
+        if (event.getText().equals(PERCENT_VAL) && nameKey.equals(ID_FIVE)) {
             return ID_PERCENT;
         }
-        if (nameKey.equals("SLASH")) {   //TODO Constant
+        if (nameKey.equals(SLASH_VAL)) {
             return ID_DIVISION;
         }
-        if (nameKey.equals("ENTER")) {   //TODO Constant
+        if (nameKey.equals(ENTER_VAL)) {
             return ID_EQUALS;
         }
-        if (nameKey.equals("PERIOD")) {   //TODO Constant
+        if (nameKey.equals(PERIOD_VAL)) {
             return ID_COMMA;
         }
-        if (nameKey.equals("C")) {   //TODO Constant
+        if (nameKey.equals(C_VAL)) {
             return ID_MC;
         }
-        if (nameKey.equals("R")) {   //TODO Constant
+        if (nameKey.equals(R_VAL)) {
             return ID_MR;
         }
-        if (nameKey.equals("M")) {   //TODO Constant
+        if (nameKey.equals(M_VAL)) {
             return ID_M_MINUS;
         }
-        if (nameKey.equals("P")) {   //TODO Constant
+        if (nameKey.equals(P_VAL)) {
             return ID_M_PLUS;
         }
-
         return nameKey;
     }
 }

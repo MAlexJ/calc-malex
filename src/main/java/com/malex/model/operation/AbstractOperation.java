@@ -3,7 +3,7 @@ package com.malex.model.operation;
 
 import com.malex.model.enums.Operation;
 
-public abstract class AbstractOperation implements ArithmeticOperation {
+abstract class AbstractOperation implements ArithmeticOperation {
     /**
      * Value is used to store of the name of arithmetic operation.
      */
@@ -15,7 +15,7 @@ public abstract class AbstractOperation implements ArithmeticOperation {
      *
      * @param operationName the arithmetic operation.
      */
-    public AbstractOperation(Operation operationName) {
+    AbstractOperation(Operation operationName) {
         this.operationName = operationName;
     }
 

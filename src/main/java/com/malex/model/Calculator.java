@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
  * Here are some more examples of how this can be used:
  * <pre>
  * Calculator calculator = new Calculator();
+ *
  * //Added arithmetic operation
  * calculator.addOperation(new AddOperation());
  * calculator.addOperation(new DivisionOperation());
@@ -77,6 +78,7 @@ public class Calculator {
      * @param numberOne     the first number.
      * @param numberTwo     the second number.
      * @return result of the arithmetic operation.
+     * @throws UndefinedNumberException if division by zero.
      */
     public String calculate(String operationName, String numberOne, String numberTwo) throws UndefinedNumberException {
         validateInputParameters(operationName, numberOne, numberTwo);
@@ -93,6 +95,8 @@ public class Calculator {
      * @param operationName the arithmetic operator.
      * @param numberOne     the first number.
      * @param numberTwo     the second number.
+     * @throws NoSuchOperationException if incorrect arithmetic operation.
+     * @throws IllegalArgumentException if incorrect the first number or the second number.
      */
     private void validateInputParameters(String operationName, String numberOne, String numberTwo) {
         if (operationName == null || operationName.equals("")) {
@@ -112,7 +116,6 @@ public class Calculator {
         if (!verificationNumber(numberTwo)) {
             throw new IllegalArgumentException("Value \'" + numberTwo + "\' is not a number !");
         }
-
     }
 
     /**
@@ -125,7 +128,5 @@ public class Calculator {
         Pattern pattern = Pattern.compile("[0-9|.|-]+");
         Matcher matcher = pattern.matcher(number);
         return matcher.matches();
-
     }
-
 }

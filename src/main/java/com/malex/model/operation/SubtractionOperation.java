@@ -1,10 +1,12 @@
 package com.malex.model.operation;
 
 import com.malex.model.enums.Operation;
-import com.malex.model.operation.AbstractOperation;
 
 import java.math.BigDecimal;
 
+/**
+ * The {@code SubtractionOperation} class represents the algorithm of subtracting two numbers.
+ */
 public class SubtractionOperation extends AbstractOperation {
 
     /**

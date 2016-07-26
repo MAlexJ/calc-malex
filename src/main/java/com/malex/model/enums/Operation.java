@@ -33,6 +33,8 @@ public enum Operation {
     private String description;
 
     /**
+     * Get enumeration: ADD, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
+     *
      * @param description the name arithmetic operation.
      */
     Operation(String description) {

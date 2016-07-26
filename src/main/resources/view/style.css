@@ -26,21 +26,21 @@
 
 .buttonCancel {
     -fx-background-radius: 1em;
-    -fx-background-color: #fb3a25;
+    -fx-background-color: #EF3B3D;
     -fx-border-style: hidden;
     -fx-focus-traversable: false;
 }
 
 .buttonHide {
     -fx-background-radius: 1em;
-    -fx-background-color: #f9d343;
+    -fx-background-color: #F1AC27;
     -fx-focus-traversable: false;
     -fx-border-style: hidden;
 }
 
 .buttonDeploy {
     -fx-background-radius: 1em;
-    -fx-background-color: #51a12e;
+    -fx-background-color: #29BD33;
     -fx-focus-traversable: false;
     -fx-border-style: hidden;
 }

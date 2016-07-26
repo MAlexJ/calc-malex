@@ -2,10 +2,12 @@ package com.malex.model.operation;
 
 import com.malex.model.enums.Operation;
 import com.malex.model.exception.UndefinedNumberException;
-import com.malex.model.operation.AbstractOperation;
 
 import java.math.BigDecimal;
 
+/**
+ * The {@code DivisionOperation} class represents the algorithm of the division of two numbers.
+ */
 public class DivisionOperation extends AbstractOperation {
 
     /**

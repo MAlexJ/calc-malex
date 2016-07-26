@@ -1,10 +1,12 @@
 package com.malex.model.operation;
 
 import com.malex.model.enums.Operation;
-import com.malex.model.operation.AbstractOperation;
 
 import java.math.BigDecimal;
 
+/**
+ * The {@code MultiplicationOperation} class represents an algorithm for multiplying two numbers.
+ */
 public class MultiplicationOperation extends AbstractOperation {
 
     /**

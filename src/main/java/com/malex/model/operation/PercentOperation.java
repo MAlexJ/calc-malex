@@ -1,10 +1,12 @@
 package com.malex.model.operation;
 
 import com.malex.model.enums.Operation;
-import com.malex.model.operation.AbstractOperation;
 
 import java.math.BigDecimal;
 
+/**
+ * The {@code PercentOperation} class represents the algorithm for find the percent.
+ */
 public class PercentOperation extends AbstractOperation {
     /**
      * Value is used to store of the number: ONE_HUNDRED.

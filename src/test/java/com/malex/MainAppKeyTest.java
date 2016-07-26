@@ -145,6 +145,14 @@ public class MainAppKeyTest {
     }
 
     @Test
+    public void testAfterEquals() {
+        testCalculateKeyCode("2+3=+2*3=", "11");
+        testCalculateKeyCode("0+1=+2+2+2*3/2=", "8");
+        testCalculateKeyCode("1/1=+2+2+2*3/2=", "8");
+        testCalculateKeyCode("1*1=+2+2+2*3/2=", "8");
+    }
+
+    @Test
     public void testLimitResultDivisionViewDisplay() {
         testCalculateKeyCode("4/6=", "0.66666666666667");
         testCalculateKeyCode("4~/6=", "-0.66666666666667");
@@ -164,6 +172,7 @@ public class MainAppKeyTest {
         testCalculateKeyCode("111111111*111111111=", "12345678987654321");
         testCalculateKeyCode("12345679*9=", "111111111");
         testCalculateKeyCode("10/3*3=", "9.99999999999999");
+        testCalculateKeyCode("10/3=*3=", "9.99999999999999");
         testCalculateKeyCode("9/7*7=", "9.00000000000003");
     }
 
@@ -291,6 +300,7 @@ public class MainAppKeyTest {
                 controller.push(KeyCode.MINUS);
                 return;
             case '*':
+                controller.sleep(20);
                 controller.push(KeyCode.DIGIT8, KeyCode.SHIFT);
                 return;
             case '/':

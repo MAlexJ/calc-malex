@@ -1,10 +1,12 @@
 package com.malex.model.operation;
 
 import com.malex.model.enums.Operation;
-import com.malex.model.operation.AbstractOperation;
 
 import java.math.BigDecimal;
 
+/**
+ * The {@code AddOperation} class represents the summation algorithm of two numbers.
+ */
 public class AddOperation extends AbstractOperation {
 
     /**
