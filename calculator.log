@@ -1,0 +1,3 @@
+12:59:15,783 ERROR main ViewController:handlerNumbersButton:401 - Exception -> handlerNumbersButton(Event event): Not on FX application thread; currentThread = main
+13:01:24,448 ERROR main ViewController:handlerNumbersButton:401 - Exception -> handlerNumbersButton(Event event): Not on FX application thread; currentThread = main
+13:01:44,954 ERROR main ViewController:handlerNumbersButton:401 - Exception -> handlerNumbersButton(Event event): Not on FX application thread; currentThread = main

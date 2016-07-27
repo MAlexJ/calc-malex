@@ -84,6 +84,7 @@ public class Calculator {
         validateInputParameters(operationName, numberOne, numberTwo);
 
         Operation name = Operation.get(operationName);
+
         ArithmeticOperation operation = operations.get(name);
         BigDecimal result = operation.execute(new BigDecimal(numberOne), new BigDecimal(numberTwo));
         return result.stripTrailingZeros().toPlainString();

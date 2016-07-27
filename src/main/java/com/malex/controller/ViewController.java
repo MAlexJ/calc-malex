@@ -164,7 +164,7 @@ public class ViewController {
     private static final String VALUE_BUTTON_RESET_AC = "AC";
 
     /**
-     * Value is used to store the indicator of a buttons. -> E
+     * Value is used to store the indicator of a buttons. --> Enum
      */
     private static final String ID_ZERO = "DIGIT0";
     private static final String ID_ONE = "DIGIT1";
@@ -428,12 +428,12 @@ public class ViewController {
                     this.operatorEqualsUsed = false;
                 } else {
 
-
                     if (this.replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
                         this.replaceOperator = true;
                         this.operator = operatorValue;
                         return;
                     }
+
                     if (!this.operator.isEmpty() && this.operatorInMemory.isEmpty()) {   // проверка на приоритет операций
                         if (getPriorityOperations(operatorValue, this.operator)) {
                             this.operatorInMemory = operatorValue;
@@ -443,6 +443,7 @@ public class ViewController {
                             return;
                         }
                     }
+
                     if (!this.isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
                         if (numberTwo.isEmpty() && operator.isEmpty()) {
                             this.operator = operatorValue;
