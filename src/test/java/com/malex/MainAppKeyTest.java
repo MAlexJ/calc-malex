@@ -53,6 +53,7 @@ public class MainAppKeyTest {
 
         testCalculateKeyCode("1-2-3-4-5-6=", "-19");
         testCalculateKeyCode("1-2-3-4-5-6==", "-25");
+        testCalculateKeyCode("0-2-3-4-5-6==", "-26");
 
         testCalculateKeyCode("1+2+3-5+1-3=", "-1");
         testCalculateKeyCode("1~-2+3-4-5=", "-9");
@@ -195,7 +196,7 @@ public class MainAppKeyTest {
     @Test
     public void testButtonMemory() {
         // simply operation
-        testCalculateKeyCode("r", "0");
+        testCalculateKeyCode("cr", "0");
         testCalculateKeyCode("56r", "0");
         testCalculateKeyCode("2pppppp", "2");
         testCalculateKeyCode("2mmmmmm", "2");
@@ -216,6 +217,13 @@ public class MainAppKeyTest {
         testCalculateKeyCode("c5p63+r=", "68");
         testCalculateKeyCode("c5m63+r=", "58");
         testCalculateKeyCode("c56p2+6-r=", "-48");
+    }
+
+    @Test
+    public void testArithmeticOperationAndButtonMemory() {
+        testCalculateKeyCode("c234p10/2+3-5+r=", "237");
+        testCalculateKeyCode("c14/2=p-7=7-r=", "0");
+        testCalculateKeyCode("c2*3=p-10=p-3=", "-7");
     }
 
     @Test
@@ -246,6 +254,7 @@ public class MainAppKeyTest {
         testCalculateKeyCode("2/0=", "Undefined");
         testCalculateKeyCode("2/0+45=", "90");
         testCalculateKeyCode("2/0*45=", "2025");
+        testCalculateKeyCode("0.99+3*4-2/0=", "Undefined");
     }
 
     private void testCalculateKeyCode(String arithmeticExpression, String expectedResult) {

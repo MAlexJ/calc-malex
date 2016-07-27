@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static com.malex.model.Calculator.calculator;
+import static com.malex.model.Calculator.CALCULATOR;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 
@@ -110,7 +110,7 @@ public class CalculatorTest {
     private void incorrectValues(String operationName, String numberOne, String numberTwo) {
         try {
             //when
-            calculator.calculate(operationName, numberOne, numberTwo);
+            CALCULATOR.calculate(operationName, numberOne, numberTwo);
             fail("Arithmetic expression: numberOne: " + numberOne + ", operation: " + operationName + ", numberTwo: " + numberTwo + " is valid!");
         } catch (UndefinedNumberException | NoSuchOperationException | IllegalArgumentException e) {
             //Ignore
@@ -121,7 +121,7 @@ public class CalculatorTest {
         //when
         String actualResult = null;
         try {
-            actualResult = calculator.calculate(operationName, numberOne, numberTwo);
+            actualResult = CALCULATOR.calculate(operationName, numberOne, numberTwo);
         } catch (UndefinedNumberException e) {
             fail("Fail test param: " + operationName + " " + numberOne + " " + numberTwo);
         }

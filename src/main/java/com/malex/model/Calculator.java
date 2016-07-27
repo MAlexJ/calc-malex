@@ -17,14 +17,12 @@ import java.util.regex.Pattern;
  * <p>
  * Here are some more examples of how this can be used:
  * <pre>
- * Calculator calculator = new Calculator();
- *
  * //Added arithmetic operation
- * calculator.addOperation(new AddOperation());
- * calculator.addOperation(new DivisionOperation());
- * calculator.addOperation(new SubtractionOperation());
- * calculator.addOperation(new MultiplicationOperation());
- * calculator.addOperation(new PercentOperation());
+ * Calculator.addOperation(new AddOperation());
+ * Calculator.addOperation(new DivisionOperation());
+ * Calculator.addOperation(new SubtractionOperation());
+ * Calculator.addOperation(new MultiplicationOperation());
+ * Calculator.addOperation(new PercentOperation());
  * </pre>
  *
  * @author MAlex
@@ -36,18 +34,18 @@ public class Calculator {
     /**
      * Value is used to store model  {@code Calculator}.
      */
-    public final static Calculator calculator;
+    public final static Calculator CALCULATOR;
 
     /**
-     * Initialization the model of a calculator.
+     * Initialization the model of a Calculator.
      */
     static {
-        calculator = new Calculator();
-        calculator.addOperation(new AddOperation());
-        calculator.addOperation(new DivisionOperation());
-        calculator.addOperation(new SubtractionOperation());
-        calculator.addOperation(new MultiplicationOperation());
-        calculator.addOperation(new PercentOperation());
+        CALCULATOR = new Calculator();
+        CALCULATOR.addOperation(new AddOperation());
+        CALCULATOR.addOperation(new DivisionOperation());
+        CALCULATOR.addOperation(new SubtractionOperation());
+        CALCULATOR.addOperation(new MultiplicationOperation());
+        CALCULATOR.addOperation(new PercentOperation());
     }
 
     /**

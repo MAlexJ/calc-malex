@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.malex.model.Calculator.calculator;
+import static com.malex.model.Calculator.CALCULATOR;
 
 /**
  * The {@code ViewController} class translate interactions with the view {@code layout.fxml}  into actions to be performed of the model {@code Calculator}.
@@ -164,7 +164,7 @@ public class ViewController {
     private static final String VALUE_BUTTON_RESET_AC = "AC";
 
     /**
-     * Value is used to store the indicator of a buttons. --> Enum
+     * Value is used to store the indicator of a buttons. --> E
      */
     private static final String ID_ZERO = "DIGIT0";
     private static final String ID_ONE = "DIGIT1";
@@ -277,6 +277,11 @@ public class ViewController {
     private String operator = "";
 
     /**
+     * Value is used to store the priority an operator in memory.
+     */
+    private String operatorInMemory = "";
+
+    /**
      * Value is used to indicate next a number.
      */
     private boolean nextNumber;
@@ -300,11 +305,6 @@ public class ViewController {
      * Value is used to indicate the priority operation.
      */
     private boolean isPriorityOperations;
-
-    /**
-     * Value is used to store the priority an operator in memory.
-     */
-    private String operatorInMemory = "";
 
     /**
      * Initialization the controller.
@@ -450,20 +450,20 @@ public class ViewController {
                             this.numberOne = this.DISPLAY.getText();
                             this.nextNumber = true;
                         } else {
-                            this.numberOne = calculator.calculate(this.operator, this.numberOne, this.DISPLAY.getText());
+                            this.numberOne = CALCULATOR.calculate(this.operator, this.numberOne, this.DISPLAY.getText());
                             this.DISPLAY.setText(this.numberOne);
                             this.operator = operatorValue;
                             this.nextNumber = true;
                         }
                     } else {
-                        this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, this.DISPLAY.getText());
+                        this.numberTwo = CALCULATOR.calculate(this.operatorInMemory, this.numberTwo, this.DISPLAY.getText());
                         this.DISPLAY.setText(this.numberTwo);
                         if (isHighPriorityOperation(this.operatorInMemory)) {
                             this.operatorInMemory = operatorValue;
                             this.isPriorityOperations = true;
                         } else {
                             this.operatorInMemory = RESET_NUMBER;
-                            this.numberOne = calculator.calculate(this.operator, this.numberOne, this.numberTwo);
+                            this.numberOne = CALCULATOR.calculate(this.operator, this.numberOne, this.numberTwo);
                             this.operator = operatorValue;
                             this.numberTwo = RESET_NUMBER;
                             this.isPriorityOperations = false;
@@ -483,7 +483,7 @@ public class ViewController {
 
                 String tempNumber = this.DISPLAY.getText();
                 if (this.isPriorityOperations) {
-                    this.numberTwo = calculator.calculate(this.operatorInMemory, this.numberTwo, tempNumber);
+                    this.numberTwo = CALCULATOR.calculate(this.operatorInMemory, this.numberTwo, tempNumber);
                 }
 
                 if (this.numberTwo.isEmpty()) {  // сброс чисел в памяти
@@ -494,7 +494,7 @@ public class ViewController {
                     this.numberOne = this.numberTwo;
                 }
 
-                String calculate = calculator.calculate(this.operator, this.numberOne, this.numberTwo);
+                String calculate = CALCULATOR.calculate(this.operator, this.numberOne, this.numberTwo);
                 this.operatorEqualsUsed = true;
                 if (!this.numberOne.isEmpty()) {
                     this.numberOne = calculate;
@@ -527,8 +527,8 @@ public class ViewController {
         String operatorValue = btn.getId();
         if (operatorValue.equals(ID_RESET)) {
             resetDisplay();
-            this.operator = RESET_NUMBER;
             btn.setText(VALUE_BUTTON_RESET_AC);
+            this.operator = RESET_NUMBER;
             this.startPosition = true;
             this.numberOne = RESET_NUMBER;
             this.numberTwo = RESET_NUMBER;
@@ -573,10 +573,10 @@ public class ViewController {
         String percent = btn.getId();
         try {
             if (this.numberOne.isEmpty()) {
-                String calculate = calculator.calculate(percent, PERCENT_NUMBER_DEFAULT, this.DISPLAY.getText());
+                String calculate = CALCULATOR.calculate(percent, PERCENT_NUMBER_DEFAULT, this.DISPLAY.getText());
                 this.DISPLAY.setText(calculate);
             } else {
-                String calculate = calculator.calculate(percent, this.numberOne, this.DISPLAY.getText());
+                String calculate = CALCULATOR.calculate(percent, this.numberOne, this.DISPLAY.getText());
                 this.DISPLAY.setText(calculate);
             }
         } catch (Exception e) {
@@ -599,11 +599,11 @@ public class ViewController {
                     this.numberInMemory = START_CURSOR_POSITION;
                     break;
                 case "M_PLUS":
-                    this.numberInMemory = calculator.calculate(ID_ADD, this.numberInMemory, this.DISPLAY.getText());
+                    this.numberInMemory = CALCULATOR.calculate(ID_ADD, this.numberInMemory, this.DISPLAY.getText());
                     this.nextNumber = true;
                     break;
                 case "M_MINUS":
-                    this.numberInMemory = calculator.calculate(ID_SUBTRACTION, this.numberInMemory, this.DISPLAY.getText());
+                    this.numberInMemory = CALCULATOR.calculate(ID_SUBTRACTION, this.numberInMemory, this.DISPLAY.getText());
                     this.nextNumber = true;
                     break;
                 case "MR":
@@ -741,7 +741,7 @@ public class ViewController {
      */
     private void changeDisplaySize(int length) {
         if (length < ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
-            this.DISPLAY.setStyle("-fx-font-size: " + MAX_FONT_SIZE_TEXT + "px;");
+            this.DISPLAY.setStyle("-fx-font-size: " + MAX_FONT_SIZE_TEXT + "px;");  //  this.DISPLAY.getStyleClass().add("custom_css_view");
         }
         if (length > ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
             if (length > ALLOWABLE_MAXIMUM_LENGTH_OF_DIGITS) {
@@ -796,7 +796,7 @@ public class ViewController {
      * @return true if number.
      */
     private boolean isNumber(String number) {
-        Pattern pattern = Pattern.compile("[0-9|.|-]+");
+        Pattern pattern = Pattern.compile("[0-9|.-]+");
         Matcher matcher = pattern.matcher(number);
         return matcher.matches();
     }
