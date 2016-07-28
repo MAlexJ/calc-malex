@@ -26,6 +26,6 @@ public class AddOperation extends AbstractOperation {
      */
     @Override
     public BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) {
-        return numberOne.add(numberTwo);
+        return numberOne.add(numberTwo, MATH_CONTEXT);
     }
 }

@@ -26,6 +26,6 @@ public class MultiplicationOperation extends AbstractOperation {
      */
     @Override
     public BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) {
-        return numberOne.multiply(numberTwo);
+        return numberOne.multiply(numberTwo, MATH_CONTEXT);
     }
 }

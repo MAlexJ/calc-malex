@@ -185,7 +185,7 @@ public class MainAppMouseTest {
 
     @Test
     public void testAccuracy() {
-        testCalculate("111111111*111111111=", "12345678987654321");
+        testCalculate("111111111*111111111=", "1.234567898765432E16");
         testCalculate("12345679*9=", "111111111");
     }
 

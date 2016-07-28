@@ -310,10 +310,10 @@ public class ViewController {
      * Initialization the controller.
      */
     public void init() {
-        this.DISPLAY.setEditable(false);
-        this.DISPLAY.setFont(new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT));
-        this.DISPLAY.setText(START_CURSOR_POSITION);
-        this.DISPLAY.lengthProperty().addListener((observable, oldValue, newValue) -> {
+        DISPLAY.setEditable(false);
+        DISPLAY.setFont(new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT));
+        DISPLAY.setText(START_CURSOR_POSITION);
+        DISPLAY.lengthProperty().addListener((observable, oldValue, newValue) -> {
             changeDisplaySize(newValue.intValue());
         });
     }
@@ -333,13 +333,13 @@ public class ViewController {
             }
 
             if (!isNumber(value)) {  // проверка входящего значения на число
-                this.DISPLAY.setText(RESET_NUMBER);
-                this.numberOne = RESET_NUMBER;
+                DISPLAY.setText(RESET_NUMBER);
+                numberOne = RESET_NUMBER;
             }
 
-            if (value.length() > 0) {  // поменять название кнопки
-                ESCAPE.setText("C");
-            }
+//            if (value.length() > 0) {  // поменять название кнопки
+//                ESCAPE.textProperty().setValue("C");
+//            }
             if (value.equals(START_CURSOR_POSITION) && startPosition) { // сброс дефолтного значения
                 DISPLAY.setText(RESET_NUMBER);
                 startPosition = false; // сброс стартовой позиции
@@ -351,7 +351,7 @@ public class ViewController {
                 DISPLAY.setText(RESET_NUMBER);
                 nextNumber = false;
             }
-            this.replaceOperator = false; // сброс повтора оператора при введении числа
+            replaceOperator = false; // сброс повтора оператора при введении числа
             Button btn = (Button) event.getSource();
             switch (btn.getId()) {
                 case ID_ZERO:
@@ -387,11 +387,11 @@ public class ViewController {
                     DISPLAY.appendText("9");
                     break;
                 case ID_COMMA:
-                    if (this.DISPLAY.getText().isEmpty()) {  // если первое значение пустое 0.00000
-                        this.DISPLAY.appendText(ZERO_COMMA);
+                    if (DISPLAY.getText().isEmpty()) {  // если первое значение пустое 0.00000
+                        DISPLAY.appendText(ZERO_COMMA);
                     }
-                    if (!this.DISPLAY.getText().contains(COMMA_VAL)) {  // Проверка на наличее только одной точки
-                        this.DISPLAY.appendText(COMMA_VAL);
+                    if (!DISPLAY.getText().contains(COMMA_VAL)) {  // Проверка на наличее только одной точки
+                        DISPLAY.appendText(COMMA_VAL);
                     }
                     break;
                 default:
@@ -415,102 +415,102 @@ public class ViewController {
             if (!ID_EQUALS.equals(operatorValue)) {
                 if (operatorEqualsUsed) {
 
-                    if (this.replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
-                        this.replaceOperator = true;
-                        this.operator = operatorValue;
+                    if (replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
+                        replaceOperator = true;
+                        operator = operatorValue;
                         return;
                     }
 
-                    this.numberOne = this.DISPLAY.getText();
-                    this.numberTwo = RESET_NUMBER;
-                    this.operator = operatorValue;
-                    this.nextNumber = true;
-                    this.operatorEqualsUsed = false;
+                    numberOne = DISPLAY.getText();
+                    numberTwo = RESET_NUMBER;
+                    operator = operatorValue;
+                    nextNumber = true;
+                    operatorEqualsUsed = false;
                 } else {
 
-                    if (this.replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
-                        this.replaceOperator = true;
-                        this.operator = operatorValue;
+                    if (replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
+                        replaceOperator = true;
+                        operator = operatorValue;
                         return;
                     }
 
-                    if (!this.operator.isEmpty() && this.operatorInMemory.isEmpty()) {   // проверка на приоритет операций
-                        if (getPriorityOperations(operatorValue, this.operator)) {
-                            this.operatorInMemory = operatorValue;
-                            this.isPriorityOperations = true;
-                            this.numberTwo = this.DISPLAY.getText();
-                            this.nextNumber = true;
+                    if (!operator.isEmpty() && operatorInMemory.isEmpty()) {   // проверка на приоритет операций
+                        if (getPriorityOperations(operatorValue, operator)) {
+                            operatorInMemory = operatorValue;
+                            isPriorityOperations = true;
+                            numberTwo = DISPLAY.getText();
+                            nextNumber = true;
                             return;
                         }
                     }
 
-                    if (!this.isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
+                    if (!isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
                         if (numberTwo.isEmpty() && operator.isEmpty()) {
-                            this.operator = operatorValue;
-                            this.numberOne = this.DISPLAY.getText();
-                            this.nextNumber = true;
+                            operator = operatorValue;
+                            numberOne = DISPLAY.getText();
+                            nextNumber = true;
                         } else {
-                            this.numberOne = CALCULATOR.calculate(this.operator, this.numberOne, this.DISPLAY.getText());
-                            this.DISPLAY.setText(this.numberOne);
-                            this.operator = operatorValue;
-                            this.nextNumber = true;
+                            numberOne = CALCULATOR.calculate(operator, numberOne, DISPLAY.getText());
+                            DISPLAY.setText(numberOne);
+                            operator = operatorValue;
+                            nextNumber = true;
                         }
                     } else {
-                        this.numberTwo = CALCULATOR.calculate(this.operatorInMemory, this.numberTwo, this.DISPLAY.getText());
-                        this.DISPLAY.setText(this.numberTwo);
-                        if (isHighPriorityOperation(this.operatorInMemory)) {
-                            this.operatorInMemory = operatorValue;
-                            this.isPriorityOperations = true;
+                        numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, DISPLAY.getText());
+                        DISPLAY.setText(numberTwo);
+                        if (isHighPriorityOperation(operatorInMemory)) {
+                            operatorInMemory = operatorValue;
+                            isPriorityOperations = true;
                         } else {
-                            this.operatorInMemory = RESET_NUMBER;
-                            this.numberOne = CALCULATOR.calculate(this.operator, this.numberOne, this.numberTwo);
-                            this.operator = operatorValue;
-                            this.numberTwo = RESET_NUMBER;
-                            this.isPriorityOperations = false;
+                            operatorInMemory = RESET_NUMBER;
+                            numberOne = CALCULATOR.calculate(operator, numberOne, numberTwo);
+                            operator = operatorValue;
+                            numberTwo = RESET_NUMBER;
+                            isPriorityOperations = false;
                         }
-                        this.nextNumber = true;
+                        nextNumber = true;
                     }
-                    this.replaceOperator = true;
+                    replaceOperator = true;
                 }
             } else {
-                if (this.operator.isEmpty()) {
-                    String number = this.DISPLAY.getText();
+                if (operator.isEmpty()) {
+                    String number = DISPLAY.getText();
                     if (validateNumberAvailableInsideComma(number)) {
-                        this.DISPLAY.setText(START_CURSOR_POSITION);
+                        DISPLAY.setText(START_CURSOR_POSITION);
                     }
                     return;
                 }
 
-                String tempNumber = this.DISPLAY.getText();
-                if (this.isPriorityOperations) {
-                    this.numberTwo = CALCULATOR.calculate(this.operatorInMemory, this.numberTwo, tempNumber);
+                String tempNumber = DISPLAY.getText();
+                if (isPriorityOperations) {
+                    numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, tempNumber);
                 }
 
-                if (this.numberTwo.isEmpty()) {  // сброс чисел в памяти
-                    this.numberTwo = this.DISPLAY.getText();
+                if (numberTwo.isEmpty()) {  // сброс чисел в памяти
+                    numberTwo = DISPLAY.getText();
                 }
 
-                if (this.numberOne.equals(RESET_NUMBER)) {
-                    this.numberOne = this.numberTwo;
+                if (numberOne.equals(RESET_NUMBER)) {
+                    numberOne = numberTwo;
                 }
 
-                String calculate = CALCULATOR.calculate(this.operator, this.numberOne, this.numberTwo);
-                this.operatorEqualsUsed = true;
-                if (!this.numberOne.isEmpty()) {
-                    this.numberOne = calculate;
+                String calculate = CALCULATOR.calculate(operator, numberOne, numberTwo);
+                operatorEqualsUsed = true;
+                if (!numberOne.isEmpty()) {
+                    numberOne = calculate;
                 }
                 if (isPriorityOperations) {
-                    this.operator = this.operatorInMemory;
-                    this.numberOne = tempNumber;
-                    this.numberTwo = RESET_NUMBER;
-                    this.operatorInMemory = RESET_NUMBER;
-                    this.isPriorityOperations = false;
+                    operator = operatorInMemory;
+                    numberOne = tempNumber;
+                    numberTwo = RESET_NUMBER;
+                    operatorInMemory = RESET_NUMBER;
+                    isPriorityOperations = false;
                 }
-                this.DISPLAY.setText(calculate);
+                DISPLAY.setText(calculate);
             }
         } catch (UndefinedNumberException e) {
-            this.DISPLAY.setText("Undefined");
-            this.operator = operatorValue;
+            DISPLAY.setText("Undefined");
+            operator = operatorValue;
         } catch (Exception e) {
             logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerOperationButton(Event event): " + e.getMessage());
         }
@@ -528,12 +528,12 @@ public class ViewController {
         if (operatorValue.equals(ID_RESET)) {
             resetDisplay();
             btn.setText(VALUE_BUTTON_RESET_AC);
-            this.operator = RESET_NUMBER;
-            this.startPosition = true;
-            this.numberOne = RESET_NUMBER;
-            this.numberTwo = RESET_NUMBER;
-            this.isPriorityOperations = false;
-            this.operatorEqualsUsed = false;
+            operator = RESET_NUMBER;
+            startPosition = true;
+            numberOne = RESET_NUMBER;
+            numberTwo = RESET_NUMBER;
+            isPriorityOperations = false;
+            operatorEqualsUsed = false;
         }
     }
 
@@ -547,15 +547,15 @@ public class ViewController {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
         if (operatorValue.equals(ID_SIGN)) {
-            String number = this.DISPLAY.getText();
+            String number = DISPLAY.getText();
             if (!number.equals(START_CURSOR_POSITION)) {
                 if (validateNumberAvailableInsideComma(number)) {
-                    this.DISPLAY.setText(START_CURSOR_POSITION);
+                    DISPLAY.setText(START_CURSOR_POSITION);
                 } else {
                     if (number.startsWith(SIGN_VAL)) {
-                        this.DISPLAY.setText(number.substring(0, 0) + number.substring(1));
+                        DISPLAY.setText(number.substring(0, 0) + number.substring(1));
                     } else {
-                        this.DISPLAY.setText(SIGN_VAL + number);
+                        DISPLAY.setText(SIGN_VAL + number);
                     }
                 }
             }
@@ -572,12 +572,12 @@ public class ViewController {
         Button btn = (Button) event.getSource();
         String percent = btn.getId();
         try {
-            if (this.numberOne.isEmpty()) {
-                String calculate = CALCULATOR.calculate(percent, PERCENT_NUMBER_DEFAULT, this.DISPLAY.getText());
-                this.DISPLAY.setText(calculate);
+            if (numberOne.isEmpty()) {
+                String calculate = CALCULATOR.calculate(percent, PERCENT_NUMBER_DEFAULT, DISPLAY.getText());
+                DISPLAY.setText(calculate);
             } else {
-                String calculate = CALCULATOR.calculate(percent, this.numberOne, this.DISPLAY.getText());
-                this.DISPLAY.setText(calculate);
+                String calculate = CALCULATOR.calculate(percent, numberOne, DISPLAY.getText());
+                DISPLAY.setText(calculate);
             }
         } catch (Exception e) {
             logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerPercentButton(Event event): " + e.getMessage());
@@ -596,18 +596,18 @@ public class ViewController {
         try {
             switch (memory) {
                 case "MC":
-                    this.numberInMemory = START_CURSOR_POSITION;
+                    numberInMemory = START_CURSOR_POSITION;
                     break;
                 case "M_PLUS":
-                    this.numberInMemory = CALCULATOR.calculate(ID_ADD, this.numberInMemory, this.DISPLAY.getText());
-                    this.nextNumber = true;
+                    numberInMemory = CALCULATOR.calculate(ID_ADD, numberInMemory, DISPLAY.getText());
+                    nextNumber = true;
                     break;
                 case "M_MINUS":
-                    this.numberInMemory = CALCULATOR.calculate(ID_SUBTRACTION, this.numberInMemory, this.DISPLAY.getText());
-                    this.nextNumber = true;
+                    numberInMemory = CALCULATOR.calculate(ID_SUBTRACTION, numberInMemory, DISPLAY.getText());
+                    nextNumber = true;
                     break;
                 case "MR":
-                    this.DISPLAY.setText(numberInMemory);
+                    DISPLAY.setText(numberInMemory);
                     break;
                 default:
                     break;
@@ -623,11 +623,11 @@ public class ViewController {
     @FXML
     public void handlerDragMouse() {
         Stage stage = (Stage) DISPLAY.getScene().getWindow();
-        this.DISPLAY.setOnMousePressed(mouseEvent -> {
+        DISPLAY.setOnMousePressed(mouseEvent -> {
             POSITION_X = stage.getX() - mouseEvent.getScreenX();
             POSITION_Y = stage.getY() - mouseEvent.getScreenY();
         });
-        this.DISPLAY.setOnMouseDragged(mouseEvent -> {
+        DISPLAY.setOnMouseDragged(mouseEvent -> {
             stage.setX(mouseEvent.getScreenX() + POSITION_X);
             stage.setY(mouseEvent.getScreenY() + POSITION_Y);
         });
@@ -741,14 +741,14 @@ public class ViewController {
      */
     private void changeDisplaySize(int length) {
         if (length < ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
-            this.DISPLAY.setStyle("-fx-font-size: " + MAX_FONT_SIZE_TEXT + "px;");  //  this.DISPLAY.getStyleClass().add("custom_css_view");
+            DISPLAY.setStyle("-fx-font-size: " + MAX_FONT_SIZE_TEXT + "px;");  //  DISPLAY.getStyleClass().add("custom_css_view");
         }
         if (length > ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
             if (length > ALLOWABLE_MAXIMUM_LENGTH_OF_DIGITS) {
-                this.DISPLAY.setStyle("-fx-font-size: " + MIN_FONT_SIZE_TEXT + "px;");
+                DISPLAY.setStyle("-fx-font-size: " + MIN_FONT_SIZE_TEXT + "px;");
             } else {
                 int size = MAX_FONT_SIZE_TEXT * ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS / length;
-                this.DISPLAY.setStyle("-fx-font-size: " + size + "px;");
+                DISPLAY.setStyle("-fx-font-size: " + size + "px;");
             }
         }
     }
@@ -796,7 +796,7 @@ public class ViewController {
      * @return true if number.
      */
     private boolean isNumber(String number) {
-        Pattern pattern = Pattern.compile("[0-9|.-]+");
+        Pattern pattern = Pattern.compile("[-+0-9|.E]+");
         Matcher matcher = pattern.matcher(number);
         return matcher.matches();
     }
@@ -827,8 +827,8 @@ public class ViewController {
      * Reset the cursor position of the screen.
      */
     private void resetDisplay() {
-        this.DISPLAY.setFont(new Font(MAX_FONT_SIZE_TEXT));
-        this.DISPLAY.setText(START_CURSOR_POSITION);
+        DISPLAY.setFont(new Font(MAX_FONT_SIZE_TEXT));
+        DISPLAY.setText(START_CURSOR_POSITION);
     }
 
     /**

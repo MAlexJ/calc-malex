@@ -24,11 +24,40 @@ public class MainAppKeyTest {
             }
         };
     }
+    @Test
+    public void testSimply(){
+        testCalculateKeyCode("1234567890", "1234567890");
+        testCalculateKeyCode("1", "1");
+        testCalculateKeyCode("2", "2");
+        testCalculateKeyCode("3", "3");
+        testCalculateKeyCode("4", "4");
+        testCalculateKeyCode("5", "5");
+        testCalculateKeyCode("6", "6");
+        testCalculateKeyCode("7", "7");
+        testCalculateKeyCode("8", "8");
+        testCalculateKeyCode("9", "9");
+        testCalculateKeyCode("0", "0");
+    }
+
+    @Test
+    public void testEngineeringPreview(){
+        testCalculateKeyCode("999999999999999+1=", "1000000000000000");
+        testCalculateKeyCode("9999999999999999+1=", "1E16");
+
+        testCalculateKeyCode("66666666*666666666=", "4.444444395555556E16");
+        testCalculateKeyCode("123456789*=================", "4.438841002465506E145");
+        testCalculateKeyCode("4444444*===", "3.90184267032488E26");
+        testCalculateKeyCode("0.123*0.23=====================", "0");
+
+        testCalculateKeyCode("1/999/999/999/999/999=", "0");
+
+
+
+    }
 
     @Test
     public void testSimplyArithmeticOperations() {
         // positive numbers
-        testCalculateKeyCode("1234567890", "1234567890");
         testCalculateKeyCode("1+1=", "2");
         testCalculateKeyCode("1-1=", "0");
         testCalculateKeyCode("1-3=", "-2");
@@ -136,6 +165,8 @@ public class MainAppKeyTest {
         testCalculateKeyCode("11111111-50%", "5555555.5");
         testCalculateKeyCode("2~-50%", "-1");
         testCalculateKeyCode("2-50~%", "-1");
+
+        testCalculateKeyCode("33333333/88888888====", "0");
     }
 
     @Test
@@ -172,7 +203,7 @@ public class MainAppKeyTest {
 
     @Test
     public void testAccuracy() {
-        testCalculateKeyCode("111111111*111111111=", "12345678987654321");
+        testCalculateKeyCode("111111111*111111111=", "1.234567898765432E16");
         testCalculateKeyCode("12345679*9=", "111111111");
         testCalculateKeyCode("10/3*3=", "9.99999999999999");
         testCalculateKeyCode("10/3=*3=", "9.99999999999999");

@@ -1,6 +1,5 @@
 package com.malex.model;
 
-import com.malex.model.exception.NoSuchOperationException;
 import com.malex.model.exception.UndefinedNumberException;
 import org.junit.Test;
 
@@ -44,8 +43,8 @@ public class CalculatorTest {
         test("ADD", bigNumMAX.toString(), bigNumMIN.toString(), "-1");
         test("ADD", bigNumMIN.toString(), bigNumMAX.toString(), "-1");
 
-        test("MULTIPLICATION", bigNumMAX.toString(), bigNumMAX.toString(), bigNumMAX.multiply(bigNumMAX).toString());
-        test("MULTIPLICATION", bigNumMAX.toString(), bigNumMIN.toString(), bigNumMAX.multiply(bigNumMIN).toString());
+        test("MULTIPLICATION", bigNumMAX.toString(), bigNumMAX.toString(), "4.611686014132421E18");
+        test("MULTIPLICATION", bigNumMAX.toString(), bigNumMIN.toString(), "-4.611686016279904E18");
 
         test("SUBTRACTION", bigNumMAX.toString(), bigNumMIN.toString(), bigNumMAX.subtract(bigNumMIN).toString());
         test("SUBTRACTION", bigNumMIN.toString(), bigNumMIN.toString(), bigNumMIN.subtract(bigNumMIN).toString());
@@ -53,11 +52,33 @@ public class CalculatorTest {
         BigDecimal bigDecimalMAX = new BigDecimal(String.valueOf(Double.MAX_VALUE));
         BigDecimal bigDecimalMIN = new BigDecimal(String.valueOf(Double.MIN_VALUE));
 
-        test("ADD", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.add(bigDecimalMIN).toPlainString());
-        test("SUBTRACTION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.subtract(bigDecimalMIN).toPlainString());
-        test("MULTIPLICATION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.multiply(bigDecimalMIN).toPlainString());
+        test("ADD", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), "1.797693134862316E308");
+        test("SUBTRACTION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), "1.797693134862316E308");
+        test("MULTIPLICATION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), "0");
         test("DIVISION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.divide(bigDecimalMIN, 14, BigDecimal.ROUND_HALF_UP).toPlainString());
     }
+
+    @Test
+    public void testTransitionToEngineeringView() {
+        test("ADD", "9999999999999999", "1", "1E16"); // Limit 1E16
+        test("ADD", "1E18", "66666666", "1.000000000066667E18");
+        test("ADD", "00.0000000000", "0E-10", "0");
+        test("ADD", "13.300000000000000710542735760100185871124267578125", "0E-10", "13.3");
+
+        test("SUBTRACTION", "-9999999999999999", "1", "-1E16"); // Limit -1E16
+        test("SUBTRACTION", "99999", "1E18", "-9.999999999999E17");
+        test("SUBTRACTION", "13.300000000000000710542735760100185871124267578125", "0.1", "13.2");
+
+        test("DIVISION", "1", "99999999999999", "0.00000000000001"); // Limit 0.00000000000001
+        test("DIVISION", "13.300000000000000710542735760100185871124267578125", "1", "13.3");
+        test("DIVISION", "13.300000000000000710542735760100185871124267578125", "1", "13.3");
+        test("DIVISION", "26.00000000000000710542735760100185871124267578125", "4", "6.5");
+
+        test("MULTIPLICATION", "13.300000000000000710542735760100185871124267578125", "1", "13.3");
+        test("MULTIPLICATION", "0.000000000000004855004846845542", "1", "0");
+        test("MULTIPLICATION", "0.000000000000044550048462", "1", "0.00000000000004");
+    }
+
 
     @Test
     public void testPercent() {
@@ -103,7 +124,7 @@ public class CalculatorTest {
 
     @Test
     public void testAccuracy() {
-        test("MULTIPLICATION", "111111111", "111111111", "12345678987654321");
+        test("MULTIPLICATION", "111111111", "111111111", "1.234567898765432E16");
         test("MULTIPLICATION", "12345679", "9", "111111111");
     }
 
@@ -112,7 +133,7 @@ public class CalculatorTest {
             //when
             CALCULATOR.calculate(operationName, numberOne, numberTwo);
             fail("Arithmetic expression: numberOne: " + numberOne + ", operation: " + operationName + ", numberTwo: " + numberTwo + " is valid!");
-        } catch (UndefinedNumberException | NoSuchOperationException | IllegalArgumentException e) {
+        } catch (UndefinedNumberException | IllegalArgumentException e) {
             //Ignore
         }
     }

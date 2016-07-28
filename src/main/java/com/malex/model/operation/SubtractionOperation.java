@@ -26,6 +26,6 @@ public class SubtractionOperation extends AbstractOperation {
      */
     @Override
     public BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) {
-        return numberOne.subtract(numberTwo);
+        return numberOne.subtract(numberTwo, MATH_CONTEXT);
     }
 }

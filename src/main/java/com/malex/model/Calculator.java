@@ -1,7 +1,6 @@
 package com.malex.model;
 
 import com.malex.model.enums.Operation;
-import com.malex.model.exception.NoSuchOperationException;
 import com.malex.model.exception.UndefinedNumberException;
 import com.malex.model.operation.*;
 
@@ -32,9 +31,25 @@ import java.util.regex.Pattern;
 public class Calculator {
 
     /**
+     * Value is used to store the maximum number for engineering calculations.
+     */
+    private final static BigDecimal MAX_VALUE;
+
+    /**
+     * Value is used to store the minimum number for engineering calculations.
+     */
+    private final static BigDecimal MIN_VALUE;
+
+    /**
      * Value is used to store model  {@code Calculator}.
      */
     public final static Calculator CALCULATOR;
+
+    /**
+     * Value is used to store scale of the number.
+     */
+    private static final int SCALE = 14;
+
 
     /**
      * Initialization the model of a Calculator.
@@ -46,6 +61,9 @@ public class Calculator {
         CALCULATOR.addOperation(new SubtractionOperation());
         CALCULATOR.addOperation(new MultiplicationOperation());
         CALCULATOR.addOperation(new PercentOperation());
+        MAX_VALUE = new BigDecimal("9999999999999998");
+        MIN_VALUE = new BigDecimal("-999999999999999");
+
     }
 
     /**
@@ -85,6 +103,20 @@ public class Calculator {
 
         ArithmeticOperation operation = operations.get(name);
         BigDecimal result = operation.execute(new BigDecimal(numberOne), new BigDecimal(numberTwo));
+
+        if (result.compareTo(MAX_VALUE) > 0 || result.compareTo(MIN_VALUE) < 0) {
+            return convertingNumberString(result);
+        }
+        return convertingNumberStringPlain(result);
+    }
+
+    private String convertingNumberString(BigDecimal number) {
+        BigDecimal result = number.setScale(SCALE, BigDecimal.ROUND_HALF_UP);
+        return result.stripTrailingZeros().toString().replace("E+", "E"); //TODO constant
+    }
+
+    private String convertingNumberStringPlain(BigDecimal number) {
+        BigDecimal result = number.setScale(SCALE, BigDecimal.ROUND_HALF_UP);
         return result.stripTrailingZeros().toPlainString();
     }
 
@@ -94,12 +126,12 @@ public class Calculator {
      * @param operationName the arithmetic operator.
      * @param numberOne     the first number.
      * @param numberTwo     the second number.
-     * @throws NoSuchOperationException if incorrect arithmetic operation.
+     * @throws IllegalArgumentException if incorrect arithmetic operation.
      * @throws IllegalArgumentException if incorrect the first number or the second number.
      */
     private void validateInputParameters(String operationName, String numberOne, String numberTwo) {
         if (operationName == null || operationName.equals("")) {
-            throw new NoSuchOperationException("Incorrect arithmetic operation !");
+            throw new IllegalArgumentException("Incorrect arithmetic operation !");
         }
 
         if (numberOne == null || numberTwo == null) {
@@ -124,7 +156,7 @@ public class Calculator {
      * @return true if the input parameter is the number.
      */
     private boolean verificationNumber(String number) {
-        Pattern pattern = Pattern.compile("[0-9|.|-]+");
+        Pattern pattern = Pattern.compile("[-+0-9|.E]+");
         Matcher matcher = pattern.matcher(number);
         return matcher.matches();
     }
