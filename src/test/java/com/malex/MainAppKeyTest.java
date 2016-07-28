@@ -24,8 +24,9 @@ public class MainAppKeyTest {
             }
         };
     }
+
     @Test
-    public void testSimply(){
+    public void testSimply() {
         testCalculateKeyCode("1234567890", "1234567890");
         testCalculateKeyCode("1", "1");
         testCalculateKeyCode("2", "2");
@@ -37,22 +38,6 @@ public class MainAppKeyTest {
         testCalculateKeyCode("8", "8");
         testCalculateKeyCode("9", "9");
         testCalculateKeyCode("0", "0");
-    }
-
-    @Test
-    public void testEngineeringPreview(){
-        testCalculateKeyCode("999999999999999+1=", "1000000000000000");
-        testCalculateKeyCode("9999999999999999+1=", "1E16");
-
-        testCalculateKeyCode("66666666*666666666=", "4.444444395555556E16");
-        testCalculateKeyCode("123456789*=================", "4.438841002465506E145");
-        testCalculateKeyCode("4444444*===", "3.90184267032488E26");
-        testCalculateKeyCode("0.123*0.23=====================", "0");
-
-        testCalculateKeyCode("1/999/999/999/999/999=", "0");
-
-
-
     }
 
     @Test
@@ -135,6 +120,10 @@ public class MainAppKeyTest {
         testCalculateKeyCode(".00=", "0");
         testCalculateKeyCode("000.00", "0.00");
         testCalculateKeyCode("01234", "1234");
+
+        testCalculateKeyCode("11111111111111111111111111111111111111111999999..............", "111111111111111111111111111111");
+        testCalculateKeyCode("11111111111111111111111111111111111111111999999~..............", "-111111111111111111111111111111");
+        testCalculateKeyCode("11111111111111111111111111111111111111111999999..............=", "111111111111111111111111111111");
     }
 
     @Test
@@ -167,6 +156,9 @@ public class MainAppKeyTest {
         testCalculateKeyCode("2-50~%", "-1");
 
         testCalculateKeyCode("33333333/88888888====", "0");
+        testCalculateKeyCode("999999999999999999999999999999%=", "1E28");
+        testCalculateKeyCode("1-999999999999999999999999999999%=", "-1E28");
+        testCalculateKeyCode("11111111111111111111111111111111231242355353345345345435356363%=", "1.111111111111111E27");
     }
 
     @Test
@@ -225,6 +217,36 @@ public class MainAppKeyTest {
     }
 
     @Test
+    public void testEngineeringPreview() {
+        testCalculateKeyCode("999999999999999+1=", "1000000000000000");
+        testCalculateKeyCode("9999999999999999+1=", "1E16");
+
+        testCalculateKeyCode("66666666*666666666=", "4.444444395555556E16");
+        testCalculateKeyCode("123456789*=================", "4.438841002465506E145");
+        testCalculateKeyCode("4444444*===", "3.90184267032488E26");
+        testCalculateKeyCode("0.123*0.23=====================", "0");
+
+        testCalculateKeyCode("1/999/999/999/999/999=", "0");
+    }
+
+    @Test
+    public void testLimitInput() {
+        // positive number
+        testCalculateKeyCode("999999999999999999999999999991224233223432+1=", "1E30");
+        testCalculateKeyCode("999999999999999999999999999999991224233223432*11111111111111111111111111111111111111111-222222222222222222222222222222222222=", "1.111111111111111E59");
+        testCalculateKeyCode("1~*2+3+99999999999999999999999999999999999999999=", "1E30");
+        testCalculateKeyCode("9.999999999999999999999999999934224233223432+1=", "11");
+        testCalculateKeyCode("0.0000000000000000000000000001+1=", "1");
+        testCalculateKeyCode("0.0000000000000000000000000001+1=====", "5");
+
+        // negentive number
+        testCalculateKeyCode("2222222222222222222222222222222222~+222222222222222222222222222222222222222=", "0");
+        testCalculateKeyCode("222222222222222222~2222222222222222+222222222222222222222222222222222222222=", "2E29");
+        testCalculateKeyCode("0.0000000000000000000000000001~-1=", "-1");
+        testCalculateKeyCode("0.0000000000000000000000000001~-1==", "-2");
+    }
+
+    @Test
     public void testButtonMemory() {
         // simply operation
         testCalculateKeyCode("cr", "0");
@@ -248,6 +270,8 @@ public class MainAppKeyTest {
         testCalculateKeyCode("c5p63+r=", "68");
         testCalculateKeyCode("c5m63+r=", "58");
         testCalculateKeyCode("c56p2+6-r=", "-48");
+        testCalculateKeyCode("c99999999999999999999999999999999999999999999999999999p1+r=", "1E30");
+        testCalculateKeyCode("c99999999999999999999999999999999999999999999999999999p1pr", "1E30");
     }
 
     @Test

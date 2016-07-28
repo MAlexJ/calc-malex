@@ -49,9 +49,13 @@ public class ViewController {
      */
     private static final int ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS = 7;
     /**
-     * Value is used to store allowable minimum length of digits.
+     * Value is used to store allowable maximum length of digits.
      */
     private static final int ALLOWABLE_MAXIMUM_LENGTH_OF_DIGITS = 40;
+    /**
+     * Value is used to store maximum length of digits.
+     */
+    private static final int MAXIMUM_LENGTH = 30;
 
     /**
      * Value is used to store the cursor.
@@ -329,7 +333,7 @@ public class ViewController {
             String value = DISPLAY.getText();
 
             if (value == null) {
-                throw new UndefinedNumberException("Incorrect value received from the controller !");
+                throw new IllegalArgumentException("Incorrect value received from the controller !");
             }
 
             if (!isNumber(value)) {  // проверка входящего значения на число
@@ -340,6 +344,7 @@ public class ViewController {
 //            if (value.length() > 0) {  // поменять название кнопки
 //                ESCAPE.textProperty().setValue("C");
 //            }
+
             if (value.equals(START_CURSOR_POSITION) && startPosition) { // сброс дефолтного значения
                 DISPLAY.setText(RESET_NUMBER);
                 startPosition = false; // сброс стартовой позиции
@@ -351,7 +356,12 @@ public class ViewController {
                 DISPLAY.setText(RESET_NUMBER);
                 nextNumber = false;
             }
-            replaceOperator = false; // сброс повтора оператора при введении числа
+            replaceOperator = false;
+
+            if (DISPLAY.getText().length() >= MAXIMUM_LENGTH) {
+                return;
+            }
+
             Button btn = (Button) event.getSource();
             switch (btn.getId()) {
                 case ID_ZERO:

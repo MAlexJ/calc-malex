@@ -61,7 +61,7 @@ public class Calculator {
         CALCULATOR.addOperation(new SubtractionOperation());
         CALCULATOR.addOperation(new MultiplicationOperation());
         CALCULATOR.addOperation(new PercentOperation());
-        MAX_VALUE = new BigDecimal("9999999999999998");
+        MAX_VALUE = new BigDecimal("9999999999999999");
         MIN_VALUE = new BigDecimal("-999999999999999");
 
     }

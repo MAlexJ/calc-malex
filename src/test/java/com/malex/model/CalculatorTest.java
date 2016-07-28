@@ -79,7 +79,6 @@ public class CalculatorTest {
         test("MULTIPLICATION", "0.000000000000044550048462", "1", "0.00000000000004");
     }
 
-
     @Test
     public void testPercent() {
         test("PERCENT", "0", "2", "0");

@@ -36,7 +36,7 @@ public class PercentOperation extends AbstractOperation {
      */
     @Override
     public BigDecimal execute(BigDecimal number, BigDecimal percentNumber) {
-        return number.multiply(percentNumber).divide(ONE_HUNDRED, SCALE, BigDecimal.ROUND_HALF_UP);
+        return number.multiply(percentNumber, MATH_CONTEXT).divide(ONE_HUNDRED, SCALE, BigDecimal.ROUND_HALF_UP);
     }
 
 }

@@ -190,6 +190,12 @@ public class MainAppMouseTest {
     }
 
     @Test
+    public void testLimit(){
+        testCalculate("999999999999999999999999999991224233223432+1=", "1E30");
+        testCalculate("1~*2+3+99999999999999999999999999999999999999999=", "1E30");
+    }
+
+    @Test
     public void testNumberAndMoreOperators() {
         testCalculate("1---", "1");
         testCalculate("1+++", "1");
