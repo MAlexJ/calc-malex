@@ -41,6 +41,17 @@ public class Calculator {
     private final static BigDecimal MIN_VALUE;
 
     /**
+     * Value is used to store the maximum limit number for calculations.
+     */
+    private final static BigDecimal MAX_LIMIT_VALUE;
+
+
+    /**
+     * Value is used to store the minimum limit number for calculations.
+     */
+    private final static BigDecimal MIN_LIMIT_VALUE;
+
+    /**
      * Value is used to store model  {@code Calculator}.
      */
     public final static Calculator CALCULATOR;
@@ -49,6 +60,11 @@ public class Calculator {
      * Value is used to store scale of the number.
      */
     private static final int SCALE = 14;
+
+    /**
+     * Value is used to store exponent.
+     */
+    private final static String EXPONENT_VAL = "E";
 
 
     /**
@@ -63,7 +79,8 @@ public class Calculator {
         CALCULATOR.addOperation(new PercentOperation());
         MAX_VALUE = new BigDecimal("9999999999999999");
         MIN_VALUE = new BigDecimal("-999999999999999");
-
+        MIN_LIMIT_VALUE = new BigDecimal("-1E150");
+        MAX_LIMIT_VALUE = new BigDecimal("1E150");
     }
 
     /**
@@ -104,19 +121,44 @@ public class Calculator {
         ArithmeticOperation operation = operations.get(name);
         BigDecimal result = operation.execute(new BigDecimal(numberOne), new BigDecimal(numberTwo));
 
+        validateResultPermissLimitCalculations(result);
+
         if (result.compareTo(MAX_VALUE) > 0 || result.compareTo(MIN_VALUE) < 0) {
             return convertingNumberString(result);
         }
         return convertingNumberStringPlain(result);
     }
 
-    private String convertingNumberString(BigDecimal number) {
-        BigDecimal result = number.setScale(SCALE, BigDecimal.ROUND_HALF_UP);
-        return result.stripTrailingZeros().toString().replace("E+", "E"); //TODO constant
+    /**
+     * Validate the result exceeding the permissible limit calculations.
+     *
+     * @param result the calculation result.
+     */
+    private void validateResultPermissLimitCalculations(BigDecimal result) throws UndefinedNumberException {
+        if (result.compareTo(MAX_LIMIT_VALUE) >= 0 || result.compareTo(MIN_LIMIT_VALUE) <= 0) {
+            throw new UndefinedNumberException("Exceeded the allowable limit: 1E150");
+        }
     }
 
-    private String convertingNumberStringPlain(BigDecimal number) {
-        BigDecimal result = number.setScale(SCALE, BigDecimal.ROUND_HALF_UP);
+    /**
+     * Converts the number to an engineering format.
+     *
+     * @param numberResult the calculation result.
+     * @return representation of the number in the engineer format.
+     */
+    private String convertingNumberString(BigDecimal numberResult) {
+        BigDecimal result = numberResult.setScale(SCALE, BigDecimal.ROUND_HALF_UP);
+        return result.stripTrailingZeros().toString().replace("E+", EXPONENT_VAL);
+    }
+
+    /**
+     * Converts the number to an usual format.
+     *
+     * @param numberResult the calculation result.
+     * @return representation of the number in the usual format.
+     */
+    private String convertingNumberStringPlain(BigDecimal numberResult) {
+        BigDecimal result = numberResult.setScale(SCALE, BigDecimal.ROUND_HALF_UP);
         return result.stripTrailingZeros().toPlainString();
     }
 

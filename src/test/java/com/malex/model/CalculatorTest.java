@@ -1,6 +1,7 @@
 package com.malex.model;
 
 import com.malex.model.exception.UndefinedNumberException;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -11,6 +12,15 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 
 public class CalculatorTest {
+
+    private BigDecimal bigDecimalMAX;
+    private BigDecimal bigDecimalMIN;
+
+    @Before
+    public void init() {
+        bigDecimalMAX = new BigDecimal(String.valueOf(Double.MAX_VALUE));
+        bigDecimalMIN = new BigDecimal(String.valueOf(Double.MIN_VALUE));
+    }
 
     /**
      * Arithmetic operations:
@@ -49,13 +59,7 @@ public class CalculatorTest {
         test("SUBTRACTION", bigNumMAX.toString(), bigNumMIN.toString(), bigNumMAX.subtract(bigNumMIN).toString());
         test("SUBTRACTION", bigNumMIN.toString(), bigNumMIN.toString(), bigNumMIN.subtract(bigNumMIN).toString());
 
-        BigDecimal bigDecimalMAX = new BigDecimal(String.valueOf(Double.MAX_VALUE));
-        BigDecimal bigDecimalMIN = new BigDecimal(String.valueOf(Double.MIN_VALUE));
-
-        test("ADD", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), "1.797693134862316E308");
-        test("SUBTRACTION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), "1.797693134862316E308");
         test("MULTIPLICATION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), "0");
-        test("DIVISION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString(), bigDecimalMAX.divide(bigDecimalMIN, 14, BigDecimal.ROUND_HALF_UP).toPlainString());
     }
 
     @Test
@@ -77,6 +81,27 @@ public class CalculatorTest {
         test("MULTIPLICATION", "13.300000000000000710542735760100185871124267578125", "1", "13.3");
         test("MULTIPLICATION", "0.000000000000004855004846845542", "1", "0");
         test("MULTIPLICATION", "0.000000000000044550048462", "1", "0.00000000000004");
+
+        test("ADD", "1E149", "1", "1E149");
+        test("SUBTRACTION", "1E149", "1", "1E149");
+        test("MULTIPLICATION", "1E149", "1", "1E149");
+        test("DIVISION", "1E149", "1", "1E149");
+
+        test("ADD", "-1E149", "1", "-1E149");
+        test("SUBTRACTION", "-1E149", "1", "-1E149");
+        test("MULTIPLICATION", "-1E149", "1", "-1E149");
+        test("DIVISION", "-1E149", "1", "-1E149");
+
+        test("ADD", "9E149", "1", "9E149");
+        test("SUBTRACTION", "-9E149", "1", "-9E149");
+
+        test("SUBTRACTION", "1E150", "1E150", "0");
+        test("ADD", "1E150", "-1E150", "0");
+
+        test("DIVISION", "0", "1E150", "0");
+        test("DIVISION", "0", "-1E150", "0");
+        test("MULTIPLICATION", "0", "1E150", "0");
+        test("MULTIPLICATION", "0", "-1E150", "0");
     }
 
     @Test
@@ -92,6 +117,25 @@ public class CalculatorTest {
         test("PERCENT", "11111111", "50", "5555555.5");
         test("PERCENT", "-2", "50", "-1");
         test("PERCENT", "2", "-50", "-1");
+    }
+
+    @Test
+    public void testIncorrectInputPermissLimitCalculations() {
+        incorrectValues("ADD", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString());
+        incorrectValues("SUBTRACTION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString());
+        incorrectValues("DIVISION", bigDecimalMAX.toPlainString(), bigDecimalMIN.toPlainString());
+
+        incorrectValues("ADD", "1E150", "1");
+        incorrectValues("ADD", "1E150", "-1E300");
+
+        incorrectValues("SUBTRACTION", "1E151", "1E1");
+        incorrectValues("SUBTRACTION", "1E300", "1E150");
+
+        incorrectValues("MULTIPLICATION", "1E300", "1E150");
+        incorrectValues("DIVISION", "1E1000", "1E150");
+
+        incorrectValues("DIVISION", "1E149", "0");
+        incorrectValues("DIVISION", "-1E149", "0");
     }
 
     @Test

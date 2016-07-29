@@ -244,7 +244,7 @@ public class MainAppMouseTest {
 
     /**
      * Search by ID button.
-     *
+     * <p>
      * The designations:
      * Value '+/-' equals '~'
      * Value 'a' equals 'reset'

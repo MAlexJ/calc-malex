@@ -49,10 +49,6 @@ public class ViewController {
      */
     private static final int ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS = 7;
     /**
-     * Value is used to store allowable maximum length of digits.
-     */
-    private static final int ALLOWABLE_MAXIMUM_LENGTH_OF_DIGITS = 40;
-    /**
      * Value is used to store maximum length of digits.
      */
     private static final int MAXIMUM_LENGTH = 30;
@@ -336,7 +332,7 @@ public class ViewController {
                 throw new IllegalArgumentException("Incorrect value received from the controller !");
             }
 
-            if (!isNumber(value)) {  // проверка входящего значения на число
+            if (!isNumber(value)) {
                 DISPLAY.setText(RESET_NUMBER);
                 numberOne = RESET_NUMBER;
             }
@@ -345,14 +341,14 @@ public class ViewController {
 //                ESCAPE.textProperty().setValue("C");
 //            }
 
-            if (value.equals(START_CURSOR_POSITION) && startPosition) { // сброс дефолтного значения
+            if (value.equals(START_CURSOR_POSITION) && startPosition) {
                 DISPLAY.setText(RESET_NUMBER);
-                startPosition = false; // сброс стартовой позиции
+                startPosition = false;
             }
-            if (value.startsWith(START_CURSOR_POSITION) && DISPLAY.getText().length() == 1) { // проверка на не допущения 012345
+            if (value.startsWith(START_CURSOR_POSITION) && DISPLAY.getText().length() == 1) {
                 DISPLAY.setText(RESET_NUMBER);
             }
-            if (nextNumber) {   //проверка на начало следующего числа
+            if (nextNumber) {
                 DISPLAY.setText(RESET_NUMBER);
                 nextNumber = false;
             }
@@ -397,10 +393,10 @@ public class ViewController {
                     DISPLAY.appendText("9");
                     break;
                 case ID_COMMA:
-                    if (DISPLAY.getText().isEmpty()) {  // если первое значение пустое 0.00000
+                    if (DISPLAY.getText().isEmpty()) {
                         DISPLAY.appendText(ZERO_COMMA);
                     }
-                    if (!DISPLAY.getText().contains(COMMA_VAL)) {  // Проверка на наличее только одной точки
+                    if (!DISPLAY.getText().contains(COMMA_VAL)) {
                         DISPLAY.appendText(COMMA_VAL);
                     }
                     break;
@@ -425,7 +421,7 @@ public class ViewController {
             if (!ID_EQUALS.equals(operatorValue)) {
                 if (operatorEqualsUsed) {
 
-                    if (replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
+                    if (replaceOperator) {
                         replaceOperator = true;
                         operator = operatorValue;
                         return;
@@ -438,13 +434,13 @@ public class ViewController {
                     operatorEqualsUsed = false;
                 } else {
 
-                    if (replaceOperator) {    // проверка на исключения проведения операций при повторном использованиии
+                    if (replaceOperator) {
                         replaceOperator = true;
                         operator = operatorValue;
                         return;
                     }
 
-                    if (!operator.isEmpty() && operatorInMemory.isEmpty()) {   // проверка на приоритет операций
+                    if (!operator.isEmpty() && operatorInMemory.isEmpty()) {
                         if (getPriorityOperations(operatorValue, operator)) {
                             operatorInMemory = operatorValue;
                             isPriorityOperations = true;
@@ -454,7 +450,7 @@ public class ViewController {
                         }
                     }
 
-                    if (!isPriorityOperations) {  // блок выполняеться при срабатывании приоритета операций
+                    if (!isPriorityOperations) {
                         if (numberTwo.isEmpty() && operator.isEmpty()) {
                             operator = operatorValue;
                             numberOne = DISPLAY.getText();
@@ -496,7 +492,7 @@ public class ViewController {
                     numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, tempNumber);
                 }
 
-                if (numberTwo.isEmpty()) {  // сброс чисел в памяти
+                if (numberTwo.isEmpty()) {
                     numberTwo = DISPLAY.getText();
                 }
 
@@ -504,19 +500,22 @@ public class ViewController {
                     numberOne = numberTwo;
                 }
 
-                String calculate = CALCULATOR.calculate(operator, numberOne, numberTwo);
-                operatorEqualsUsed = true;
-                if (!numberOne.isEmpty()) {
-                    numberOne = calculate;
+                if (!operator.equals(ID_EQUALS)) {
+                    String calculate = CALCULATOR.calculate(operator, numberOne, numberTwo);
+
+                    operatorEqualsUsed = true;
+                    if (!numberOne.isEmpty()) {
+                        numberOne = calculate;
+                    }
+                    if (isPriorityOperations) {
+                        operator = operatorInMemory;
+                        numberOne = tempNumber;
+                        numberTwo = RESET_NUMBER;
+                        operatorInMemory = RESET_NUMBER;
+                        isPriorityOperations = false;
+                    }
+                    DISPLAY.setText(calculate);
                 }
-                if (isPriorityOperations) {
-                    operator = operatorInMemory;
-                    numberOne = tempNumber;
-                    numberTwo = RESET_NUMBER;
-                    operatorInMemory = RESET_NUMBER;
-                    isPriorityOperations = false;
-                }
-                DISPLAY.setText(calculate);
             }
         } catch (UndefinedNumberException e) {
             DISPLAY.setText("Undefined");
@@ -754,12 +753,8 @@ public class ViewController {
             DISPLAY.setStyle("-fx-font-size: " + MAX_FONT_SIZE_TEXT + "px;");  //  DISPLAY.getStyleClass().add("custom_css_view");
         }
         if (length > ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
-            if (length > ALLOWABLE_MAXIMUM_LENGTH_OF_DIGITS) {
-                DISPLAY.setStyle("-fx-font-size: " + MIN_FONT_SIZE_TEXT + "px;");
-            } else {
                 int size = MAX_FONT_SIZE_TEXT * ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS / length;
                 DISPLAY.setStyle("-fx-font-size: " + size + "px;");
-            }
         }
     }
 

@@ -239,11 +239,26 @@ public class MainAppKeyTest {
         testCalculateKeyCode("0.0000000000000000000000000001+1=", "1");
         testCalculateKeyCode("0.0000000000000000000000000001+1=====", "5");
 
-        // negentive number
+        // negative number
         testCalculateKeyCode("2222222222222222222222222222222222~+222222222222222222222222222222222222222=", "0");
         testCalculateKeyCode("222222222222222222~2222222222222222+222222222222222222222222222222222222222=", "2E29");
         testCalculateKeyCode("0.0000000000000000000000000001~-1=", "-1");
         testCalculateKeyCode("0.0000000000000000000000000001~-1==", "-2");
+    }
+
+    @Test
+    public void testLimitInputUndefinedNumber(){
+        testCalculateKeyCode("99999999999999999*99999999999999999999=============", "Undefined"); // Up Limit 1E150
+        testCalculateKeyCode("99999999999.999999999999*9999999.9999999999999=====================", "Undefined");
+        testCalculateKeyCode("0.1111112*9999999.9999999999999+923849235958985*777732372373727327237=====================", "Undefined");
+
+        testCalculateKeyCode("1111111111111111111~*99999999999999999999============", "Undefined"); // DOWN Limit -1E150
+        testCalculateKeyCode("1111111111111111111~*99999999999999999999/322222222222222*88887777723737737373737============", "Undefined");
+        testCalculateKeyCode("1111111111111111111~*99999999999999999999/322222222222222*88887777723737737373737============", "Undefined");
+
+        testCalculateKeyCode("99999999999999999*99999999999999999999============+1=", "2");
+        testCalculateKeyCode("99999999999999999*99999999999999999999============*1=", "1");
+        testCalculateKeyCode("99999999999999999*99999999999999999999============/1=", "1");
     }
 
     @Test
