@@ -72,7 +72,7 @@ public class ViewController {
     /**
      * The value is used to store the value of the PAUSE of the animation.
      */
-    private static final double PAUSE_ANIMATION = 0.08;
+    private static final double PAUSE_ANIMATION = 0.1;
 
     /**
      * Value is used to store the value the default percent of number '1'.
@@ -105,7 +105,7 @@ public class ViewController {
     private final static Font FONT_APP;
 
     /**
-     * Init controller.
+     * Initialization.
      */
     static {
         FONT_APP = new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT);
@@ -163,10 +163,6 @@ public class ViewController {
      */
     private static final String ENTER_VALUE = "ENTER";
     /**
-     * Value is used to store the value 'PERIOD'.
-     */
-    private static final String PERIOD_VALUE = "PERIOD";
-    /**
      * Value is used to store the value 'C'.
      */
     private static final String C_VALUE = "C";
@@ -204,10 +200,6 @@ public class ViewController {
     private static final String ID_SIGN = "SIGN";
     private static final String ID_COMMA = "COMMA";
     private static final String ID_EQUALS = "EQUALS";
-    private static final String ID_MR = "MR";
-    private static final String ID_MC = "MC";
-    private static final String ID_M_PLUS = "M_PLUS";
-    private static final String ID_M_MINUS = "M_MINUS";
     private static final String ID_RESET = "ESCAPE";
 
     /**
@@ -762,7 +754,7 @@ public class ViewController {
      * @param button the button.
      */
     private void clickOnButton(Button button) {
-        PauseTransition pause = new PauseTransition(Duration.seconds(PAUSE_ANIMATION)); //TODO need fix!!!!!
+        PauseTransition pause = new PauseTransition(Duration.seconds(PAUSE_ANIMATION));
         button.arm();
         button.fire();
         pause.setOnFinished(e -> button.disarm());
