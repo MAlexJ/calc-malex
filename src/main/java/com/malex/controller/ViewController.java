@@ -12,8 +12,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
 
-import java.util.regex.Pattern;
-
 import static com.malex.model.Calculator.CALCULATOR;
 
 /**
@@ -81,18 +79,36 @@ public class ViewController {
      */
     private static final String PERCENT_NUMBER_DEFAULT = "1";
 
-    private final static String PATTERN_NUMBER = "[-+0-9|.E]+"; //TODO ok
+    /**
+     * Value is used to store the pattern of validate the number.
+     */
+    private final static String PATTERN_NUMBER = "[-+0-9|.E]+";
 
-    private final static String PATTERN_COMA = "^0.[0]+|(0.)??"; //TODO ok
+    /**
+     * Value is used to store the pattern of validate the number.
+     */
+    private final static String PATTERN_COMA = "^0.[0]+|(0.)??";
 
-    private final static String FX_FONT_SIZE = "-fx-font-size: "; //TODo OK
+    /**
+     * Value is used to store the style font size.
+     */
+    private final static String FX_FONT_SIZE = "-fx-font-size: ";
 
-    private final static String FONT_SIZE = "px;"; //TODo OK
+    /**
+     * Value is used to store the font size.
+     */
+    private final static String FONT_SIZE = "px;";
 
-    private final static Font FONT_APP; // TODO -> ok
+    /**
+     * Value is used to store the font.
+     */
+    private final static Font FONT_APP;
 
+    /**
+     * Init controller.
+     */
     static {
-        FONT_APP = new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT); // TODO -> ok
+        FONT_APP = new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT);
     }
 
     /**
@@ -103,69 +119,69 @@ public class ViewController {
     /**
      * Value is used to store the value '.'.
      */
-    private static final String COMMA_VAL = ".";
+    private static final String COMMA_VALUE = ".";
 
     /**
      * Value is used to store the value '-'.
      */
-    private static final String SIGN_VAL = "-";
+    private static final String SIGN_VALUE = "-";
 
     /**
-     * Value is used to store the value '_'.
+     * Value is used to store the value '*DIGIT8'.
      */
-    private static final String UNDERSCORE_VAL = "_";
+    private static final String MULTIPLICATION_VALUE_ENG = "*DIGIT8";
     /**
-     * Value is used to store the value '*'.
+     * Value is used to store the value ';DIGIT8'.
      */
-    private static final String STAR_VAL = "*";
+    private static final String MULTIPLICATION_VALUE_RU = ";DIGIT8";
     /**
-     * Value is used to store the value ';'.
+     * Value is used to store the value '+EQUALS'.
      */
-    private static final String SEMICOLON_VAL = ";";
+    private static final String ADD_VALUE = "+EQUALS";
     /**
-     * Value is used to store the value '%'.
+     * Value is used to store the value '_MINUS'.
      */
-    private static final String PERCENT_VAL = "%";
+    private static final String SIGN_VALUE_NEW = "_MINUS";
     /**
-     * Value is used to store the value ':'.
+     * Value is used to store the value '-MINUS'.
      */
-    private static final String COLON_VAL = ":";
+    private static final String SUBTR_VALUE = "-MINUS";
     /**
-     * Value is used to store the value '+'.
+     * Value is used to store the value '%DIGIT5'.
      */
-    private static final String PLUS_VAL = "+";
+    private static final String PERCENT_VALUE_ENG = "%DIGIT5";
     /**
-     * Value is used to store the value 'MINUS'.
+     * Value is used to store the value ':DIGIT5'.
      */
-    private static final String MINUS_VAL = "MINUS";
+    private static final String PERCENT_VALUE_RU = ":DIGIT5";
     /**
      * Value is used to store the value 'SLASH'.
      */
-    private static final String SLASH_VAL = "SLASH";
+    private static final String SLASH_VALUE = "SLASH";
     /**
      * Value is used to store the value 'ENTER'.
      */
-    private static final String ENTER_VAL = "ENTER";
+    private static final String ENTER_VALUE = "ENTER";
     /**
      * Value is used to store the value 'PERIOD'.
      */
-    private static final String PERIOD_VAL = "PERIOD";
+    private static final String PERIOD_VALUE = "PERIOD";
     /**
      * Value is used to store the value 'C'.
      */
-    private static final String C_VAL = "C";
+    private static final String C_VALUE = "C";
     /**
      * Value is used to store the value 'R'.
      */
-    private static final String R_VAL = "R";
+    private static final String R_VALUE = "R";
     /**
      * Value is used to store the value 'P'.
      */
-    private static final String P_VAL = "P";
+    private static final String P_VALUE = "P";
     /**
      * Value is used to store the value 'M'.
      */
-    private static final String M_VAL = "M";
+    private static final String M_VALUE = "M";
 
     /**
      * Value is used to store the indicator of a buttons.
@@ -331,80 +347,67 @@ public class ViewController {
     public void handlerNumbersButton(Event event) {
         String value = DISPLAY.getText();
         if (!isNumber(value)) {
-            DISPLAY.setText(RESET_NUMBER);
+            value = RESET_NUMBER;
             numberOne = RESET_NUMBER;
-        }
-
-        if (value.equals(START_CURSOR_POSITION) && startPosition) {
-            DISPLAY.setText(RESET_NUMBER);
-            startPosition = false;
-        }
-        if (value.startsWith(START_CURSOR_POSITION) && DISPLAY.getText().length() == 1) {
-            DISPLAY.setText(RESET_NUMBER);
+        } else {
+            if (value.equals(START_CURSOR_POSITION) && startPosition) {
+                value = RESET_NUMBER;
+                startPosition = false;
+            } else if (value.startsWith(START_CURSOR_POSITION) && value.length() == 1) {
+                value = RESET_NUMBER;
+            }
         }
         if (nextNumber) {
-            DISPLAY.setText(RESET_NUMBER);
+            value = RESET_NUMBER;
             nextNumber = false;
         }
+        DISPLAY.setText(value);
         replaceOperator = false;
-
-        if (DISPLAY.getText().length() >= MAXIMUM_LENGTH) {
-            return;
-        } // TODO else ->>>>>
-
-        Button btn = (Button) event.getSource();
-        switch (btn.getId()) {
-            case ID_ZERO:
-                if (validateLimitNumberZeros()) {
-                    DISPLAY.appendText(START_CURSOR_POSITION);
-                }
-                break;
-            case ID_ONE:
-                DISPLAY.appendText("1");
-                break;
-            case ID_TWO:
-                DISPLAY.appendText("2");
-                break;
-            case ID_THREE:
-                DISPLAY.appendText("3");
-                break;
-            case ID_FOUR:
-                DISPLAY.appendText("4");
-                break;
-            case ID_FIVE:
-                DISPLAY.appendText("5");
-                break;
-            case ID_SIX:
-                DISPLAY.appendText("6");
-                break;
-            case ID_SEVEN:
-                DISPLAY.appendText("7");
-                break;
-            case ID_EIGHT:
-                DISPLAY.appendText("8");
-                break;
-            case ID_NINE:
-                DISPLAY.appendText("9");
-                break;
-            case ID_COMMA:
-
-//                if (DISPLAY.getText().isEmpty()) {
-//                    DISPLAY.appendText(ZERO_COMMA);
-//                }
-//                if (!DISPLAY.getText().contains(COMMA_VAL)) {
-//                    DISPLAY.appendText(COMMA_VAL);
-//                }
-
-                if (DISPLAY.getText().isEmpty()) {
-                    DISPLAY.appendText(ZERO_COMMA);
-                }
-                if (!DISPLAY.getText().contains(COMMA_VAL)) {
-                    DISPLAY.appendText(COMMA_VAL);
-                }
-
-                break;
-            default:
-                break;
+        if (value.length() < MAXIMUM_LENGTH) {
+            Button btn = (Button) event.getSource();
+            switch (btn.getId()) {
+                case ID_ZERO:
+                    if (validateLimitNumberZeros(value)) {
+                        DISPLAY.appendText(START_CURSOR_POSITION);
+                    }
+                    break;
+                case ID_ONE:
+                    DISPLAY.appendText("1");
+                    break;
+                case ID_TWO:
+                    DISPLAY.appendText("2");
+                    break;
+                case ID_THREE:
+                    DISPLAY.appendText("3");
+                    break;
+                case ID_FOUR:
+                    DISPLAY.appendText("4");
+                    break;
+                case ID_FIVE:
+                    DISPLAY.appendText("5");
+                    break;
+                case ID_SIX:
+                    DISPLAY.appendText("6");
+                    break;
+                case ID_SEVEN:
+                    DISPLAY.appendText("7");
+                    break;
+                case ID_EIGHT:
+                    DISPLAY.appendText("8");
+                    break;
+                case ID_NINE:
+                    DISPLAY.appendText("9");
+                    break;
+                case ID_COMMA:
+                    if (value.isEmpty()) {
+                        DISPLAY.appendText(ZERO_COMMA);
+                    } else if (!value.contains(COMMA_VALUE)) {
+                        DISPLAY.appendText(COMMA_VALUE);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -431,7 +434,6 @@ public class ViewController {
                         replaceOperator = true;
                         operator = operatorValue;
                     } else {
-
                         if (!operator.isEmpty() && operatorInMemory.isEmpty()) {
                             if (getPriorityOperations(operatorValue, operator)) {
                                 operatorInMemory = operatorValue;
@@ -439,11 +441,8 @@ public class ViewController {
                                 numberTwo = tempNumber;
                                 nextNumber = true;
                                 return;
-                            }else{
-                                // there
                             }
                         }
-
                         if (!isPriorityOperations) {
                             if (numberTwo.isEmpty() && operator.isEmpty()) {
                                 operator = operatorValue;
@@ -538,10 +537,10 @@ public class ViewController {
         if (!number.equals(START_CURSOR_POSITION)) {
             String textDisplay = START_CURSOR_POSITION;
             if (!validateNumberAvailableInsideComma(number)) {
-                if (number.startsWith(SIGN_VAL)) {
+                if (number.startsWith(SIGN_VALUE)) {
                     textDisplay = number.substring(0, 0) + number.substring(1);
                 } else {
-                    textDisplay = SIGN_VAL + number;
+                    textDisplay = SIGN_VALUE + number;
                 }
             }
             DISPLAY.setText(textDisplay);
@@ -668,7 +667,7 @@ public class ViewController {
             case ID_MULTIPLICATION:
                 clickOnButton(MULTIPLICATION);
                 break;
-            case SLASH_VAL:
+            case SLASH_VALUE:
                 clickOnButton(DIVISION);
                 break;
             case ID_SUBTRACTION:
@@ -689,42 +688,61 @@ public class ViewController {
             case ID_RESET:
                 clickOnButton(ESCAPE);
                 break;
-            case ID_MC:
-                clickOnButton(MC);
-                break;
-            case ID_MR:
-                clickOnButton(MR);
-                break;
-            case ID_M_MINUS:
-                clickOnButton(M_MINUS);
-                break;
-            case ID_M_PLUS:
-                clickOnButton(M_PLUS);
-                break;
-            case ENTER_VAL:
+            case ENTER_VALUE:
                 clickOnButton(EQUALS);
                 break;
-
-
-//            if (nameKey.equals(PERIOD_VAL)) { //TODO in CASE
-//                return ID_COMMA;
-//            }
-//            if (nameKey.equals(C_VAL)) { //TODO in CASE
-//                return ID_MC;
-//            }
-//            if (nameKey.equals(R_VAL)) {  //TODO in CASE
-//                return ID_MR;
-//            }
-//            if (nameKey.equals(M_VAL)) { //TODO in CASE
-//                return ID_M_MINUS;
-//            }
-//            if (nameKey.equals(P_VAL)) { //TODO in CASE
-//                return ID_M_PLUS;
-//            }
-
+            case C_VALUE:
+                clickOnButton(MC);
+                break;
+            case R_VALUE:
+                clickOnButton(MR);
+                break;
+            case M_VALUE:
+                clickOnButton(M_MINUS);
+                break;
+            case P_VALUE:
+                clickOnButton(M_PLUS);
+                break;
             default:
                 break;
         }
+    }
+
+    /**
+     * The method determines the Shortcuts.
+     *
+     * @param event this event is generated when a key is pressed, released, or typed.
+     * @return the id button.
+     */
+    private String shortcuts(KeyEvent event) {
+        String nameKey = event.getCode().toString();
+        String codeKey = event.getText() + nameKey;
+        switch (codeKey) {
+            case MULTIPLICATION_VALUE_ENG:
+                nameKey = ID_MULTIPLICATION;
+                break;
+            case MULTIPLICATION_VALUE_RU:
+                nameKey = ID_MULTIPLICATION;
+                break;
+            case ADD_VALUE:
+                nameKey = ID_ADD;
+                break;
+            case SIGN_VALUE_NEW:
+                nameKey = ID_SIGN;
+                break;
+            case SUBTR_VALUE:
+                nameKey = ID_SUBTRACTION;
+                break;
+            case PERCENT_VALUE_ENG:
+                nameKey = ID_PERCENT;
+                break;
+            case PERCENT_VALUE_RU:
+                nameKey = ID_PERCENT;
+                break;
+            default:
+                break;
+        }
+        return nameKey;
     }
 
     /**
@@ -744,11 +762,11 @@ public class ViewController {
      * @param button the button.
      */
     private void clickOnButton(Button button) {
-        PauseTransition PAUSE = new PauseTransition(Duration.seconds(PAUSE_ANIMATION)); //TODO need fix!!!!!
+        PauseTransition pause = new PauseTransition(Duration.seconds(PAUSE_ANIMATION)); //TODO need fix!!!!!
         button.arm();
         button.fire();
-        PAUSE.setOnFinished(e -> button.disarm());
-        PAUSE.play();
+        pause.setOnFinished(e -> button.disarm());
+        pause.play();
     }
 
     /**
@@ -788,8 +806,7 @@ public class ViewController {
      *
      * @return true if the count of zeros in the permitted limit.
      */
-    private boolean validateLimitNumberZeros() {
-        String textDisplay = DISPLAY.getText();  //TODO -> возможно можно передать текст
+    private boolean validateLimitNumberZeros(String textDisplay) {
         return !textDisplay.startsWith(START_CURSOR_POSITION) || textDisplay.startsWith(ZERO_COMMA);
     }
 
@@ -801,61 +818,6 @@ public class ViewController {
      */
     private boolean validateNumberAvailableInsideComma(String number) {
         return number.matches(PATTERN_COMA);
-    }
-
-    /**
-     * The method determines the Shortcuts.
-     *
-     * @param event this event is generated when a key is pressed, released, or typed.
-     * @return the id button.
-     */
-    private String shortcuts(KeyEvent event) {
-        String nameKey = event.getCode().toString();
-        String code = event.getText();
-
-        if (code.equals(SEMICOLON_VAL) && nameKey.equals(ID_EIGHT)) {
-            return ID_MULTIPLICATION;
-        }
-        if (code.equals(STAR_VAL) && nameKey.equals(ID_EIGHT)) {
-            return ID_MULTIPLICATION;
-        }
-        if (code.equals(PLUS_VAL) && nameKey.equals(ID_EQUALS)) {
-            return ID_ADD;
-        }
-        if (code.equals(UNDERSCORE_VAL) && nameKey.equals(MINUS_VAL)) {
-            return ID_SIGN;
-        }
-        if (code.equals(SIGN_VAL) && nameKey.equals(MINUS_VAL)) {
-            return ID_SUBTRACTION;
-        }
-        if (code.equals(COLON_VAL) && nameKey.equals(ID_FIVE)) {
-            return ID_PERCENT;
-        }
-        if (code.equals(PERCENT_VAL) && nameKey.equals(ID_FIVE)) {
-            return ID_PERCENT;
-        }
-//        if (nameKey.equals(SLASH_VAL)) { //TODO in CASE
-//            return ID_DIVISION;
-//        }
-//        if (nameKey.equals(ENTER_VAL)) { //TODO in CASE
-//            return ID_EQUALS;
-//        }
-        if (nameKey.equals(PERIOD_VAL)) { //TODO in CASE
-            return ID_COMMA;
-        }
-        if (nameKey.equals(C_VAL)) { //TODO in CASE
-            return ID_MC;
-        }
-        if (nameKey.equals(R_VAL)) {  //TODO in CASE
-            return ID_MR;
-        }
-        if (nameKey.equals(M_VAL)) { //TODO in CASE
-            return ID_M_MINUS;
-        }
-        if (nameKey.equals(P_VAL)) { //TODO in CASE
-            return ID_M_PLUS;
-        }
-        return nameKey;
     }
 }
 

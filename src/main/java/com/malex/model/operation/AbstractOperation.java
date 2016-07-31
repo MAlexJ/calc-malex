@@ -17,6 +17,14 @@ abstract class AbstractOperation implements ArithmeticOperation {
      */
     private static final int PRECISION = 16;
 
+    /**
+     * Value is used to store scale of the number.
+     */
+    static final int SCALE = 14;
+
+    /**
+     * Initialization.
+     */
     static {
         MATH_CONTEXT = new MathContext(PRECISION, RoundingMode.HALF_UP);
     }

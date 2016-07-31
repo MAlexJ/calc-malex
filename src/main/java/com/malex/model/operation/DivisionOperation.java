@@ -11,11 +11,6 @@ import java.math.BigDecimal;
 public class DivisionOperation extends AbstractOperation {
 
     /**
-     * Value is used to store scale of the number.
-     */
-    private static final int SCALE = 14;
-
-    /**
      * Initializes a newly created {@code DivisionOperation} object.
      * {@code Operation}
      */

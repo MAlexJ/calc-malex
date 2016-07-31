@@ -7,8 +7,6 @@ import com.malex.model.operation.*;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * The {@code Calculator} class represents the arithmetic algorithm of two numbers.
@@ -65,6 +63,15 @@ public class Calculator {
      * Value is used to store exponent.
      */
     private final static String EXPONENT_VAL = "E";
+    /**
+     * Value is used to store exponent.
+     */
+    private final static String EXPONENT_PLUS_VAL = "E+";
+
+    /**
+     * Value is used to store the pattern of validate the number.
+     */
+    private final static String PATTERN_NUMBER = "[-+0-9|.E]+";
 
 
     /**
@@ -147,8 +154,8 @@ public class Calculator {
      * @return representation of the number in the engineer format.
      */
     private String convertingNumberString(BigDecimal numberResult) {
-        BigDecimal result = numberResult.setScale(SCALE, BigDecimal.ROUND_HALF_UP);
-        return result.stripTrailingZeros().toString().replace("E+", EXPONENT_VAL);
+        numberResult = numberResult.setScale(SCALE, BigDecimal.ROUND_HALF_UP);
+        return numberResult.stripTrailingZeros().toString().replace(EXPONENT_PLUS_VAL, EXPONENT_VAL);
     }
 
     /**
@@ -158,8 +165,8 @@ public class Calculator {
      * @return representation of the number in the usual format.
      */
     private String convertingNumberStringPlain(BigDecimal numberResult) {
-        BigDecimal result = numberResult.setScale(SCALE, BigDecimal.ROUND_HALF_UP);
-        return result.stripTrailingZeros().toPlainString();
+        numberResult = numberResult.setScale(SCALE, BigDecimal.ROUND_HALF_UP);
+        return numberResult.stripTrailingZeros().toPlainString();
     }
 
     /**
@@ -198,8 +205,7 @@ public class Calculator {
      * @return true if the input parameter is the number.
      */
     private boolean verificationNumber(String number) {
-        Pattern pattern = Pattern.compile("[-+0-9|.E]+");
-        Matcher matcher = pattern.matcher(number);
-        return matcher.matches();
+        return number.matches(PATTERN_NUMBER);
     }
+
 }

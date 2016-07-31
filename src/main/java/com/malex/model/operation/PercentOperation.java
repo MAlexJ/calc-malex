@@ -14,11 +14,6 @@ public class PercentOperation extends AbstractOperation {
     private static final BigDecimal ONE_HUNDRED = new BigDecimal(100);
 
     /**
-     * Value is used to store scale of the number.
-     */
-    private static final int SCALE = 14;
-
-    /**
      * Initializes a newly created {@code PercentOperation} object.
      * {@code Operation}
      */

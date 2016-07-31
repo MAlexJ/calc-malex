@@ -361,75 +361,77 @@ public class MainAppKeyTest {
         switch (value) {
             case '0':
                 controller.push(KeyCode.DIGIT0);
-                return;
+                break;
             case '1':
                 controller.push(KeyCode.DIGIT1);
-                return;
+                break;
             case '2':
                 controller.push(KeyCode.DIGIT2);
-                return;
+                break;
             case '3':
                 controller.push(KeyCode.DIGIT3);
-                return;
+                break;
             case '4':
                 controller.push(KeyCode.DIGIT4);
-                return;
+                break;
             case '5':
                 controller.push(KeyCode.DIGIT5);
-                return;
+                break;
             case '6':
                 controller.push(KeyCode.DIGIT6);
-                return;
+                break;
             case '7':
                 controller.push(KeyCode.DIGIT7);
-                return;
+                break;
             case '8':
                 controller.push(KeyCode.DIGIT8);
-                return;
+                break;
             case '9':
                 controller.push(KeyCode.DIGIT9);
-                return;
+                break;
             case '+':
                 controller.push(KeyCode.EQUALS, KeyCode.SHIFT);
-                return;
+                break;
             case '-':
                 controller.push(KeyCode.MINUS);
-                return;
+                break;
             case '*':
                 controller.sleep(20);
                 controller.push(KeyCode.DIGIT8, KeyCode.SHIFT);
-                return;
+                break;
             case '/':
                 controller.push(KeyCode.SLASH);
-                return;
+                break;
             case '=':
                 controller.push(KeyCode.ENTER);
-                return;
+                break;
             case '%':
                 controller.push(KeyCode.DIGIT5, KeyCode.SHIFT);
-                return;
+                break;
             case '~':
                 controller.push(KeyCode.MINUS, KeyCode.SHIFT);
-                return;
+                break;
             case '.':
                 controller.push(KeyCode.COMMA);
-                return;
+                break;
             case 'a':
                 controller.push(KeyCode.ESCAPE);
-                return;
+                break;
             case 'p':
                 controller.push(KeyCode.P);
-                return;
+                break;
             case 'm':
                 controller.push(KeyCode.M);
-                return;
+                break;
             case 'c':
                 controller.push(KeyCode.C);
-                return;
+                break;
             case 'r':
                 controller.push(KeyCode.R);
-                return;
+                break;
+            default:
+                throw new IllegalArgumentException("The button : \'" + value + "\'" + " cannot be found!!!");
         }
-        throw new IllegalArgumentException("The button : \'" + value + "\'" + " cannot be found!!!");
+
     }
 }
