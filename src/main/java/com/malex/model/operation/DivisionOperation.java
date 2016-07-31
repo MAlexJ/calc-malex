@@ -19,7 +19,7 @@ public class DivisionOperation extends AbstractOperation {
      * Initializes a newly created {@code DivisionOperation} object.
      * {@code Operation}
      */
-    public DivisionOperation() {
+     public DivisionOperation() {
         super(Operation.DIVISION);
     }
 

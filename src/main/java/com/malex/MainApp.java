@@ -72,13 +72,13 @@ public class MainApp extends Application {
     /**
      * This method is called on the JavaFX Application Thread.
      *
-     * @param primaryStage value of the stage.
+     * @param stage value of the stage.
      */
     @Override
-    public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        this.primaryStage.initStyle(StageStyle.TRANSPARENT);
-        this.primaryStage.setResizable(false);
+    public void start(Stage stage) {
+        primaryStage = stage;
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setResizable(false);
         mainView();
     }
 
@@ -97,8 +97,8 @@ public class MainApp extends Application {
             Scene scene = new Scene(anchorPane);
             scene.setFill(Color.TRANSPARENT);
 
-            this.primaryStage.setScene(scene);
-            this.primaryStage.show();
+            primaryStage.setScene(scene);
+            primaryStage.show();
         } catch (Exception e) {
             logger.error("Error -> mainView()" + e.getMessage());
         }

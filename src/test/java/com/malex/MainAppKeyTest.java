@@ -247,7 +247,7 @@ public class MainAppKeyTest {
     }
 
     @Test
-    public void testLimitInputUndefinedNumber(){
+    public void testLimitInputUndefinedNumber() {
         testCalculateKeyCode("99999999999999999*99999999999999999999=============", "Undefined"); // Up Limit 1E150
         testCalculateKeyCode("99999999999.999999999999*9999999.9999999999999=====================", "Undefined");
         testCalculateKeyCode("0.1111112*9999999.9999999999999+923849235958985*777732372373727327237=====================", "Undefined");
@@ -260,6 +260,7 @@ public class MainAppKeyTest {
         testCalculateKeyCode("99999999999999999*99999999999999999999============*1=", "1");
         testCalculateKeyCode("99999999999999999*99999999999999999999============/1=", "1");
     }
+
 
     @Test
     public void testButtonMemory() {
@@ -298,6 +299,7 @@ public class MainAppKeyTest {
 
     @Test
     public void testNumberAndMoreOperators() {
+        testCalculateKeyCode("1~~~~", "1");
         testCalculateKeyCode("1---", "1");
         testCalculateKeyCode("1+++", "1");
         testCalculateKeyCode("1***", "1");
@@ -430,5 +432,4 @@ public class MainAppKeyTest {
         }
         throw new IllegalArgumentException("The button : \'" + value + "\'" + " cannot be found!!!");
     }
-
 }

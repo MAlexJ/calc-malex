@@ -6,14 +6,12 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.malex.model.Calculator.CALCULATOR;
@@ -67,10 +65,6 @@ public class ViewController {
      * Value is used to store the maximum font size a text.
      */
     private static final int MAX_FONT_SIZE_TEXT = 46;
-    /**
-     * Value is used to store the minimum font size a text.
-     */
-    private static final int MIN_FONT_SIZE_TEXT = 8;
 
     /**
      * Value is used to store the text font.
@@ -78,14 +72,28 @@ public class ViewController {
     private static final String TEXT_FONT = "Helvetica Neue Thin";
 
     /**
-     * The value is used to store the value of the pause of the animation.
+     * The value is used to store the value of the PAUSE of the animation.
      */
-    private static final double PAUSE_ANIMATION = 0.1;
+    private static final double PAUSE_ANIMATION = 0.08;
 
     /**
      * Value is used to store the value the default percent of number '1'.
      */
     private static final String PERCENT_NUMBER_DEFAULT = "1";
+
+    private final static String PATTERN_NUMBER = "[-+0-9|.E]+"; //TODO ok
+
+    private final static String PATTERN_COMA = "^0.[0]+|(0.)??"; //TODO ok
+
+    private final static String FX_FONT_SIZE = "-fx-font-size: "; //TODo OK
+
+    private final static String FONT_SIZE = "px;"; //TODo OK
+
+    private final static Font FONT_APP; // TODO -> ok
+
+    static {
+        FONT_APP = new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT); // TODO -> ok
+    }
 
     /**
      * Value is used to store the value '0.'.
@@ -158,13 +166,9 @@ public class ViewController {
      * Value is used to store the value 'M'.
      */
     private static final String M_VAL = "M";
-    /**
-     * Value is used to store the value 'AC'.
-     */
-    private static final String VALUE_BUTTON_RESET_AC = "AC";
 
     /**
-     * Value is used to store the indicator of a buttons. --> E
+     * Value is used to store the indicator of a buttons.
      */
     private static final String ID_ZERO = "DIGIT0";
     private static final String ID_ONE = "DIGIT1";
@@ -311,7 +315,7 @@ public class ViewController {
      */
     public void init() {
         DISPLAY.setEditable(false);
-        DISPLAY.setFont(new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT));
+        DISPLAY.setFont(FONT_APP);
         DISPLAY.setText(START_CURSOR_POSITION);
         DISPLAY.lengthProperty().addListener((observable, oldValue, newValue) -> {
             changeDisplaySize(newValue.intValue());
@@ -325,86 +329,82 @@ public class ViewController {
      */
     @FXML
     public void handlerNumbersButton(Event event) {
-        try {
-            String value = DISPLAY.getText();
+        String value = DISPLAY.getText();
+        if (!isNumber(value)) {
+            DISPLAY.setText(RESET_NUMBER);
+            numberOne = RESET_NUMBER;
+        }
 
-            if (value == null) {
-                throw new IllegalArgumentException("Incorrect value received from the controller !");
-            }
+        if (value.equals(START_CURSOR_POSITION) && startPosition) {
+            DISPLAY.setText(RESET_NUMBER);
+            startPosition = false;
+        }
+        if (value.startsWith(START_CURSOR_POSITION) && DISPLAY.getText().length() == 1) {
+            DISPLAY.setText(RESET_NUMBER);
+        }
+        if (nextNumber) {
+            DISPLAY.setText(RESET_NUMBER);
+            nextNumber = false;
+        }
+        replaceOperator = false;
 
-            if (!isNumber(value)) {
-                DISPLAY.setText(RESET_NUMBER);
-                numberOne = RESET_NUMBER;
-            }
+        if (DISPLAY.getText().length() >= MAXIMUM_LENGTH) {
+            return;
+        } // TODO else ->>>>>
 
-//            if (value.length() > 0) {  // поменять название кнопки
-//                ESCAPE.textProperty().setValue("C");
-//            }
+        Button btn = (Button) event.getSource();
+        switch (btn.getId()) {
+            case ID_ZERO:
+                if (validateLimitNumberZeros()) {
+                    DISPLAY.appendText(START_CURSOR_POSITION);
+                }
+                break;
+            case ID_ONE:
+                DISPLAY.appendText("1");
+                break;
+            case ID_TWO:
+                DISPLAY.appendText("2");
+                break;
+            case ID_THREE:
+                DISPLAY.appendText("3");
+                break;
+            case ID_FOUR:
+                DISPLAY.appendText("4");
+                break;
+            case ID_FIVE:
+                DISPLAY.appendText("5");
+                break;
+            case ID_SIX:
+                DISPLAY.appendText("6");
+                break;
+            case ID_SEVEN:
+                DISPLAY.appendText("7");
+                break;
+            case ID_EIGHT:
+                DISPLAY.appendText("8");
+                break;
+            case ID_NINE:
+                DISPLAY.appendText("9");
+                break;
+            case ID_COMMA:
 
-            if (value.equals(START_CURSOR_POSITION) && startPosition) {
-                DISPLAY.setText(RESET_NUMBER);
-                startPosition = false;
-            }
-            if (value.startsWith(START_CURSOR_POSITION) && DISPLAY.getText().length() == 1) {
-                DISPLAY.setText(RESET_NUMBER);
-            }
-            if (nextNumber) {
-                DISPLAY.setText(RESET_NUMBER);
-                nextNumber = false;
-            }
-            replaceOperator = false;
+//                if (DISPLAY.getText().isEmpty()) {
+//                    DISPLAY.appendText(ZERO_COMMA);
+//                }
+//                if (!DISPLAY.getText().contains(COMMA_VAL)) {
+//                    DISPLAY.appendText(COMMA_VAL);
+//                }
 
-            if (DISPLAY.getText().length() >= MAXIMUM_LENGTH) {
-                return;
-            }
+                if (DISPLAY.getText().isEmpty()) {
+                    DISPLAY.appendText(ZERO_COMMA);
+                }
+                if (!DISPLAY.getText().contains(COMMA_VAL)) {
+                    DISPLAY.appendText(COMMA_VAL);
+                }
 
-            Button btn = (Button) event.getSource();
-            switch (btn.getId()) {
-                case ID_ZERO:
-                    if (validateLimitNumberZeros()) {
-                        DISPLAY.appendText(START_CURSOR_POSITION);
-                    }
-                    break;
-                case ID_ONE:
-                    DISPLAY.appendText("1");
-                    break;
-                case ID_TWO:
-                    DISPLAY.appendText("2");
-                    break;
-                case ID_THREE:
-                    DISPLAY.appendText("3");
-                    break;
-                case ID_FOUR:
-                    DISPLAY.appendText("4");
-                    break;
-                case ID_FIVE:
-                    DISPLAY.appendText("5");
-                    break;
-                case ID_SIX:
-                    DISPLAY.appendText("6");
-                    break;
-                case ID_SEVEN:
-                    DISPLAY.appendText("7");
-                    break;
-                case ID_EIGHT:
-                    DISPLAY.appendText("8");
-                    break;
-                case ID_NINE:
-                    DISPLAY.appendText("9");
-                    break;
-                case ID_COMMA:
-                    if (DISPLAY.getText().isEmpty()) {
-                        DISPLAY.appendText(ZERO_COMMA);
-                    }
-                    if (!DISPLAY.getText().contains(COMMA_VAL)) {
-                        DISPLAY.appendText(COMMA_VAL);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        } catch (Exception e) {
-            logger.error("Exception -> handlerNumbersButton(Event event): " + e.getMessage());
+                break;
+            default:
+                break;
         }
     }
 
@@ -417,105 +417,94 @@ public class ViewController {
     public void handlerOperationButton(Event event) {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
+        String tempNumber = DISPLAY.getText();
         try {
             if (!ID_EQUALS.equals(operatorValue)) {
                 if (operatorEqualsUsed) {
-
-                    if (replaceOperator) {
-                        replaceOperator = true;
-                        operator = operatorValue;
-                        return;
-                    }
-
-                    numberOne = DISPLAY.getText();
-                    numberTwo = RESET_NUMBER;
+                    numberOne = tempNumber;
                     operator = operatorValue;
+                    numberTwo = RESET_NUMBER;
                     nextNumber = true;
                     operatorEqualsUsed = false;
                 } else {
-
                     if (replaceOperator) {
                         replaceOperator = true;
                         operator = operatorValue;
-                        return;
-                    }
-
-                    if (!operator.isEmpty() && operatorInMemory.isEmpty()) {
-                        if (getPriorityOperations(operatorValue, operator)) {
-                            operatorInMemory = operatorValue;
-                            isPriorityOperations = true;
-                            numberTwo = DISPLAY.getText();
-                            nextNumber = true;
-                            return;
-                        }
-                    }
-
-                    if (!isPriorityOperations) {
-                        if (numberTwo.isEmpty() && operator.isEmpty()) {
-                            operator = operatorValue;
-                            numberOne = DISPLAY.getText();
-                            nextNumber = true;
-                        } else {
-                            numberOne = CALCULATOR.calculate(operator, numberOne, DISPLAY.getText());
-                            DISPLAY.setText(numberOne);
-                            operator = operatorValue;
-                            nextNumber = true;
-                        }
                     } else {
-                        numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, DISPLAY.getText());
-                        DISPLAY.setText(numberTwo);
-                        if (isHighPriorityOperation(operatorInMemory)) {
-                            operatorInMemory = operatorValue;
-                            isPriorityOperations = true;
-                        } else {
-                            operatorInMemory = RESET_NUMBER;
-                            numberOne = CALCULATOR.calculate(operator, numberOne, numberTwo);
-                            operator = operatorValue;
-                            numberTwo = RESET_NUMBER;
-                            isPriorityOperations = false;
+
+                        if (!operator.isEmpty() && operatorInMemory.isEmpty()) {
+                            if (getPriorityOperations(operatorValue, operator)) {
+                                operatorInMemory = operatorValue;
+                                isPriorityOperations = true;
+                                numberTwo = tempNumber;
+                                nextNumber = true;
+                                return;
+                            }else{
+                                // there
+                            }
                         }
-                        nextNumber = true;
+
+                        if (!isPriorityOperations) {
+                            if (numberTwo.isEmpty() && operator.isEmpty()) {
+                                operator = operatorValue;
+                                numberOne = tempNumber;
+                                nextNumber = true;
+                            } else {
+                                numberOne = CALCULATOR.calculate(operator, numberOne, tempNumber);
+                                operator = operatorValue;
+                                nextNumber = true;
+                                DISPLAY.setText(numberOne);
+                            }
+                        } else {
+                            numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, tempNumber);
+                            DISPLAY.setText(numberTwo);
+                            if (isHighPriorityOperation(operatorInMemory)) {
+                                operatorInMemory = operatorValue;
+                                isPriorityOperations = true;
+                            } else {
+                                operatorInMemory = RESET_NUMBER;
+                                numberOne = CALCULATOR.calculate(operator, numberOne, numberTwo);
+                                operator = operatorValue;
+                                numberTwo = RESET_NUMBER;
+                                isPriorityOperations = false;
+                            }
+                            nextNumber = true;
+                        }
+                        replaceOperator = true;
                     }
-                    replaceOperator = true;
                 }
             } else {
-                if (operator.isEmpty()) {
-                    String number = DISPLAY.getText();
-                    if (validateNumberAvailableInsideComma(number)) {
-                        DISPLAY.setText(START_CURSOR_POSITION);
-                    }
-                    return;
-                }
-
-                String tempNumber = DISPLAY.getText();
-                if (isPriorityOperations) {
-                    numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, tempNumber);
-                }
-
-                if (numberTwo.isEmpty()) {
-                    numberTwo = DISPLAY.getText();
-                }
-
-                if (numberOne.equals(RESET_NUMBER)) {
-                    numberOne = numberTwo;
-                }
-
-                if (!operator.equals(ID_EQUALS)) {
-                    String calculate = CALCULATOR.calculate(operator, numberOne, numberTwo);
-
-                    operatorEqualsUsed = true;
-                    if (!numberOne.isEmpty()) {
-                        numberOne = calculate;
-                    }
+                if (!operator.isEmpty()) {
                     if (isPriorityOperations) {
-                        operator = operatorInMemory;
-                        numberOne = tempNumber;
-                        numberTwo = RESET_NUMBER;
-                        operatorInMemory = RESET_NUMBER;
-                        isPriorityOperations = false;
+                        numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, tempNumber);
                     }
-                    DISPLAY.setText(calculate);
+                    if (numberTwo.isEmpty()) {
+                        numberTwo = DISPLAY.getText();
+                    }
+                    if (numberOne.equals(RESET_NUMBER)) {
+                        numberOne = numberTwo;
+                    }
+                    if (!operator.equals(ID_EQUALS)) {
+                        String calculate = CALCULATOR.calculate(operator, numberOne, numberTwo);
+                        operatorEqualsUsed = true;
+                        if (!numberOne.isEmpty()) {
+                            numberOne = calculate;
+                        }
+                        if (isPriorityOperations) {
+                            operator = operatorInMemory;
+                            numberOne = tempNumber;
+                            numberTwo = RESET_NUMBER;
+                            operatorInMemory = RESET_NUMBER;
+                            isPriorityOperations = false;
+                        }
+                        tempNumber = calculate;
+                    }
+                } else {
+                    if (validateNumberAvailableInsideComma(tempNumber)) {
+                        tempNumber = START_CURSOR_POSITION;
+                    }
                 }
+                DISPLAY.setText(tempNumber);
             }
         } catch (UndefinedNumberException e) {
             DISPLAY.setText("Undefined");
@@ -527,70 +516,49 @@ public class ViewController {
 
     /**
      * Handler pressing on click the button: 'AC'.
-     *
-     * @param event this event is generated when a button 'AC' is pressed.
      */
     @FXML
-    public void handlerResetButton(Event event) {
-        Button btn = (Button) event.getSource();
-        String operatorValue = btn.getId();
-        if (operatorValue.equals(ID_RESET)) {
-            resetDisplay();
-            btn.setText(VALUE_BUTTON_RESET_AC);
-            operator = RESET_NUMBER;
-            startPosition = true;
-            numberOne = RESET_NUMBER;
-            numberTwo = RESET_NUMBER;
-            isPriorityOperations = false;
-            operatorEqualsUsed = false;
-        }
+    public void handlerResetButton() {
+        operator = RESET_NUMBER;
+        numberOne = RESET_NUMBER;
+        numberTwo = RESET_NUMBER;
+        startPosition = true;
+        isPriorityOperations = false;
+        operatorEqualsUsed = false;
+        DISPLAY.setStyle(FX_FONT_SIZE + MAX_FONT_SIZE_TEXT + FONT_SIZE);
+        DISPLAY.setText(START_CURSOR_POSITION);
     }
 
     /**
      * Handler pressing on click the button: '-'.
-     *
-     * @param event this event is generated when a button '-' is pressed.
      */
     @FXML
-    public void handlerSingButton(Event event) {
-        Button btn = (Button) event.getSource();
-        String operatorValue = btn.getId();
-        if (operatorValue.equals(ID_SIGN)) {
-            String number = DISPLAY.getText();
-            if (!number.equals(START_CURSOR_POSITION)) {
-                if (validateNumberAvailableInsideComma(number)) {
-                    DISPLAY.setText(START_CURSOR_POSITION);
+    public void handlerSingButton() {
+        String number = DISPLAY.getText();
+        if (!number.equals(START_CURSOR_POSITION)) {
+            String textDisplay = START_CURSOR_POSITION;
+            if (!validateNumberAvailableInsideComma(number)) {
+                if (number.startsWith(SIGN_VAL)) {
+                    textDisplay = number.substring(0, 0) + number.substring(1);
                 } else {
-                    if (number.startsWith(SIGN_VAL)) {
-                        DISPLAY.setText(number.substring(0, 0) + number.substring(1));
-                    } else {
-                        DISPLAY.setText(SIGN_VAL + number);
-                    }
+                    textDisplay = SIGN_VAL + number;
                 }
             }
+            DISPLAY.setText(textDisplay);
         }
     }
 
     /**
      * Handler pressing on click the button: '%'.
-     *
-     * @param event this event is generated when a button '%' is pressed.
      */
     @FXML
-    public void handlerPercentButton(Event event) {
-        Button btn = (Button) event.getSource();
-        String percent = btn.getId();
-        try {
-            if (numberOne.isEmpty()) {
-                String calculate = CALCULATOR.calculate(percent, PERCENT_NUMBER_DEFAULT, DISPLAY.getText());
-                DISPLAY.setText(calculate);
-            } else {
-                String calculate = CALCULATOR.calculate(percent, numberOne, DISPLAY.getText());
-                DISPLAY.setText(calculate);
-            }
-        } catch (Exception e) {
-            logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerPercentButton(Event event): " + e.getMessage());
+    public void handlerPercentButton() throws Exception {
+        String textDisplay = DISPLAY.getText();
+        if (numberOne.isEmpty()) {
+            numberOne = PERCENT_NUMBER_DEFAULT;
         }
+        String calculate = CALCULATOR.calculate(ID_PERCENT, numberOne, textDisplay);
+        DISPLAY.setText(calculate);
     }
 
     /**
@@ -599,30 +567,26 @@ public class ViewController {
      * @param event this event is generated when a buttons 'mr', 'mc','m-','m+' is pressed.
      */
     @FXML
-    public void handlerMemoryButton(Event event) {
+    public void handlerMemoryButton(Event event) throws Exception {
         Button btn = (Button) event.getSource();
-        String memory = btn.getId();
-        try {
-            switch (memory) {
-                case "MC":
-                    numberInMemory = START_CURSOR_POSITION;
-                    break;
-                case "M_PLUS":
-                    numberInMemory = CALCULATOR.calculate(ID_ADD, numberInMemory, DISPLAY.getText());
-                    nextNumber = true;
-                    break;
-                case "M_MINUS":
-                    numberInMemory = CALCULATOR.calculate(ID_SUBTRACTION, numberInMemory, DISPLAY.getText());
-                    nextNumber = true;
-                    break;
-                case "MR":
-                    DISPLAY.setText(numberInMemory);
-                    break;
-                default:
-                    break;
-            }
-        } catch (Exception e) {
-            logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerMemoryButton(Event event): " + e.getMessage());
+        String textDisplay = DISPLAY.getText();
+        switch (btn.getId()) {
+            case "MC":
+                numberInMemory = START_CURSOR_POSITION;
+                break;
+            case "M_PLUS":
+                numberInMemory = CALCULATOR.calculate(ID_ADD, numberInMemory, textDisplay);
+                nextNumber = true;
+                break;
+            case "M_MINUS":
+                numberInMemory = CALCULATOR.calculate(ID_SUBTRACTION, numberInMemory, textDisplay);
+                nextNumber = true;
+                break;
+            case "MR":
+                DISPLAY.setText(numberInMemory);
+                break;
+            default:
+                break;
         }
     }
 
@@ -647,8 +611,6 @@ public class ViewController {
      */
     @FXML
     public void handleExitButton() {
-//        Stage stage = (Stage) EXIT.getScene().getWindow();
-//        stage.close();
         System.exit(0);
     }
 
@@ -669,77 +631,97 @@ public class ViewController {
     @FXML
     public void handlerKeyPressed(KeyEvent event) {
         String nameKey = shortcuts(event);
-        PauseTransition pause = new PauseTransition(Duration.seconds(PAUSE_ANIMATION));
         switch (nameKey) {
             case ID_ZERO:
-                clickOnButton(DIGIT0, pause);
+                clickOnButton(DIGIT0);
                 break;
             case ID_ONE:
-                clickOnButton(DIGIT1, pause);
+                clickOnButton(DIGIT1);
                 break;
             case ID_TWO:
-                clickOnButton(DIGIT2, pause);
+                clickOnButton(DIGIT2);
                 break;
             case ID_THREE:
-                clickOnButton(DIGIT3, pause);
+                clickOnButton(DIGIT3);
                 break;
             case ID_FOUR:
-                clickOnButton(DIGIT4, pause);
+                clickOnButton(DIGIT4);
                 break;
             case ID_FIVE:
-                clickOnButton(DIGIT5, pause);
+                clickOnButton(DIGIT5);
                 break;
             case ID_SIX:
-                clickOnButton(DIGIT6, pause);
+                clickOnButton(DIGIT6);
                 break;
             case ID_SEVEN:
-                clickOnButton(DIGIT7, pause);
+                clickOnButton(DIGIT7);
                 break;
             case ID_EIGHT:
-                clickOnButton(DIGIT8, pause);
+                clickOnButton(DIGIT8);
                 break;
             case ID_NINE:
-                clickOnButton(DIGIT9, pause);
+                clickOnButton(DIGIT9);
                 break;
             case ID_COMMA:
-                clickOnButton(COMMA, pause);
+                clickOnButton(COMMA);
                 break;
             case ID_MULTIPLICATION:
-                clickOnButton(MULTIPLICATION, pause);
+                clickOnButton(MULTIPLICATION);
                 break;
-            case ID_DIVISION:
-                clickOnButton(DIVISION, pause);
+            case SLASH_VAL:
+                clickOnButton(DIVISION);
                 break;
             case ID_SUBTRACTION:
-                clickOnButton(SUBTRACTION, pause);
+                clickOnButton(SUBTRACTION);
                 break;
             case ID_ADD:
-                clickOnButton(ADD, pause);
+                clickOnButton(ADD);
                 break;
             case ID_SIGN:
-                clickOnButton(SIGN, pause);
+                clickOnButton(SIGN);
                 break;
             case ID_PERCENT:
-                clickOnButton(PERCENT, pause);
+                clickOnButton(PERCENT);
                 break;
             case ID_EQUALS:
-                clickOnButton(EQUALS, pause);
+                clickOnButton(EQUALS);
                 break;
             case ID_RESET:
-                clickOnButton(ESCAPE, pause);
+                clickOnButton(ESCAPE);
                 break;
             case ID_MC:
-                clickOnButton(MC, pause);
+                clickOnButton(MC);
                 break;
             case ID_MR:
-                clickOnButton(MR, pause);
+                clickOnButton(MR);
                 break;
             case ID_M_MINUS:
-                clickOnButton(M_MINUS, pause);
+                clickOnButton(M_MINUS);
                 break;
             case ID_M_PLUS:
-                clickOnButton(M_PLUS, pause);
+                clickOnButton(M_PLUS);
                 break;
+            case ENTER_VAL:
+                clickOnButton(EQUALS);
+                break;
+
+
+//            if (nameKey.equals(PERIOD_VAL)) { //TODO in CASE
+//                return ID_COMMA;
+//            }
+//            if (nameKey.equals(C_VAL)) { //TODO in CASE
+//                return ID_MC;
+//            }
+//            if (nameKey.equals(R_VAL)) {  //TODO in CASE
+//                return ID_MR;
+//            }
+//            if (nameKey.equals(M_VAL)) { //TODO in CASE
+//                return ID_M_MINUS;
+//            }
+//            if (nameKey.equals(P_VAL)) { //TODO in CASE
+//                return ID_M_PLUS;
+//            }
+
             default:
                 break;
         }
@@ -749,26 +731,24 @@ public class ViewController {
      * Change the DISPLAY size.
      */
     private void changeDisplaySize(int length) {
-        if (length < ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
-            DISPLAY.setStyle("-fx-font-size: " + MAX_FONT_SIZE_TEXT + "px;");  //  DISPLAY.getStyleClass().add("custom_css_view");
-        }
+        int size = MAX_FONT_SIZE_TEXT;
         if (length > ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
-                int size = MAX_FONT_SIZE_TEXT * ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS / length;
-                DISPLAY.setStyle("-fx-font-size: " + size + "px;");
+            size = MAX_FONT_SIZE_TEXT * ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS / length;
         }
+        DISPLAY.setStyle(FX_FONT_SIZE + size + FONT_SIZE);
     }
 
     /**
      * Click on a given button.
      *
      * @param button the button.
-     * @param pause  the pause animation press on click button.
      */
-    private void clickOnButton(Button button, PauseTransition pause) {
-        button.fire();
+    private void clickOnButton(Button button) {
+        PauseTransition PAUSE = new PauseTransition(Duration.seconds(PAUSE_ANIMATION)); //TODO need fix!!!!!
         button.arm();
-        pause.setOnFinished(e -> button.disarm());
-        pause.play();
+        button.fire();
+        PAUSE.setOnFinished(e -> button.disarm());
+        PAUSE.play();
     }
 
     /**
@@ -779,7 +759,6 @@ public class ViewController {
      * @param inMemoryOperation the operation in memory.
      * @return true if the operation in DISPLAY has a higher priority.
      */
-    // return true if displayOperation = '/' or '*' and inMemoryOperation = '+' or '-'
     private boolean getPriorityOperations(String displayOperation, String inMemoryOperation) {
         return isHighPriorityOperation(displayOperation) && !isHighPriorityOperation(inMemoryOperation);
     }
@@ -801,9 +780,7 @@ public class ViewController {
      * @return true if number.
      */
     private boolean isNumber(String number) {
-        Pattern pattern = Pattern.compile("[-+0-9|.E]+");
-        Matcher matcher = pattern.matcher(number);
-        return matcher.matches();
+        return number.matches(PATTERN_NUMBER);
     }
 
     /**
@@ -812,7 +789,8 @@ public class ViewController {
      * @return true if the count of zeros in the permitted limit.
      */
     private boolean validateLimitNumberZeros() {
-        return !DISPLAY.getText().startsWith(START_CURSOR_POSITION) || DISPLAY.getText().startsWith(ZERO_COMMA) || DISPLAY.getText().isEmpty();
+        String textDisplay = DISPLAY.getText();  //TODO -> возможно можно передать текст
+        return !textDisplay.startsWith(START_CURSOR_POSITION) || textDisplay.startsWith(ZERO_COMMA);
     }
 
     /**
@@ -822,18 +800,7 @@ public class ViewController {
      * @return true if the count of commas in the permitted limit.
      */
     private boolean validateNumberAvailableInsideComma(String number) {
-        Pattern pattern = Pattern.compile("^0.[0]+");
-        Matcher matcher = pattern.matcher(number);
-        boolean checkValueZeroAndComma = number.startsWith(ZERO_COMMA) && number.length() == 2;
-        return matcher.matches() || checkValueZeroAndComma;
-    }
-
-    /**
-     * Reset the cursor position of the screen.
-     */
-    private void resetDisplay() {
-        DISPLAY.setFont(new Font(MAX_FONT_SIZE_TEXT));
-        DISPLAY.setText(START_CURSOR_POSITION);
+        return number.matches(PATTERN_COMA);
     }
 
     /**
@@ -843,48 +810,49 @@ public class ViewController {
      * @return the id button.
      */
     private String shortcuts(KeyEvent event) {
-        KeyCode code = event.getCode();
-        String nameKey = code.toString();
-        if (event.getText().equals(SEMICOLON_VAL) && nameKey.equals(ID_EIGHT)) {
+        String nameKey = event.getCode().toString();
+        String code = event.getText();
+
+        if (code.equals(SEMICOLON_VAL) && nameKey.equals(ID_EIGHT)) {
             return ID_MULTIPLICATION;
         }
-        if (event.getText().equals(STAR_VAL) && nameKey.equals(ID_EIGHT)) {
+        if (code.equals(STAR_VAL) && nameKey.equals(ID_EIGHT)) {
             return ID_MULTIPLICATION;
         }
-        if (event.getText().equals(PLUS_VAL) && nameKey.equals(ID_EQUALS)) {
+        if (code.equals(PLUS_VAL) && nameKey.equals(ID_EQUALS)) {
             return ID_ADD;
         }
-        if (event.getText().equals(UNDERSCORE_VAL) && nameKey.equals(MINUS_VAL)) {
+        if (code.equals(UNDERSCORE_VAL) && nameKey.equals(MINUS_VAL)) {
             return ID_SIGN;
         }
-        if (event.getText().equals(SIGN_VAL) && nameKey.equals(MINUS_VAL)) {
+        if (code.equals(SIGN_VAL) && nameKey.equals(MINUS_VAL)) {
             return ID_SUBTRACTION;
         }
-        if (event.getText().equals(COLON_VAL) && nameKey.equals(ID_FIVE)) {
+        if (code.equals(COLON_VAL) && nameKey.equals(ID_FIVE)) {
             return ID_PERCENT;
         }
-        if (event.getText().equals(PERCENT_VAL) && nameKey.equals(ID_FIVE)) {
+        if (code.equals(PERCENT_VAL) && nameKey.equals(ID_FIVE)) {
             return ID_PERCENT;
         }
-        if (nameKey.equals(SLASH_VAL)) {
-            return ID_DIVISION;
-        }
-        if (nameKey.equals(ENTER_VAL)) {
-            return ID_EQUALS;
-        }
-        if (nameKey.equals(PERIOD_VAL)) {
+//        if (nameKey.equals(SLASH_VAL)) { //TODO in CASE
+//            return ID_DIVISION;
+//        }
+//        if (nameKey.equals(ENTER_VAL)) { //TODO in CASE
+//            return ID_EQUALS;
+//        }
+        if (nameKey.equals(PERIOD_VAL)) { //TODO in CASE
             return ID_COMMA;
         }
-        if (nameKey.equals(C_VAL)) {
+        if (nameKey.equals(C_VAL)) { //TODO in CASE
             return ID_MC;
         }
-        if (nameKey.equals(R_VAL)) {
+        if (nameKey.equals(R_VAL)) {  //TODO in CASE
             return ID_MR;
         }
-        if (nameKey.equals(M_VAL)) {
+        if (nameKey.equals(M_VAL)) { //TODO in CASE
             return ID_M_MINUS;
         }
-        if (nameKey.equals(P_VAL)) {
+        if (nameKey.equals(P_VAL)) { //TODO in CASE
             return ID_M_PLUS;
         }
         return nameKey;

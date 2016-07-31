@@ -1,0 +1,1 @@
+11:21:05,924 ERROR AppKit Thread ViewController:handlerOperationButton:523 - Exception type: IllegalArgumentException -> handlerOperationButton(Event event): One of the numbers is empty !!
