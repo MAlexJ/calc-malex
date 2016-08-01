@@ -29,7 +29,6 @@ public class DivisionOperation extends AbstractOperation {
      */
     @Override
     public BigDecimal execute(BigDecimal numberOne, BigDecimal numberTwo) throws UndefinedNumberException {
-
         if (numberTwo.compareTo(BigDecimal.ZERO) == 0) {
             throw new UndefinedNumberException("Division by zero !");
         }

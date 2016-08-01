@@ -145,7 +145,7 @@ public class ViewController {
     /**
      * Value is used to store the value '-MINUS'.
      */
-    private static final String SUBTR_VALUE = "-MINUS";
+    private static final String SUBTRACTION_VALUE = "-MINUS";
     /**
      * Value is used to store the value '%DIGIT5'.
      */
@@ -722,7 +722,7 @@ public class ViewController {
             case SIGN_VALUE_NEW:
                 nameKey = ID_SIGN;
                 break;
-            case SUBTR_VALUE:
+            case SUBTRACTION_VALUE:
                 nameKey = ID_SUBTRACTION;
                 break;
             case PERCENT_VALUE_ENG:
