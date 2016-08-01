@@ -261,7 +261,6 @@ public class MainAppKeyTest {
         testCalculateKeyCode("99999999999999999*99999999999999999999============/1=", "1");
     }
 
-
     @Test
     public void testButtonMemory() {
         // simply operation

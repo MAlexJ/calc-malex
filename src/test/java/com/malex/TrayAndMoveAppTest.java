@@ -3,6 +3,7 @@ package com.malex;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.loadui.testfx.GuiTest;
@@ -32,10 +33,14 @@ public class TrayAndMoveAppTest {
 
     @Test
     public void testAppMove() {
+        //given
+        controller.push(KeyCode.ESCAPE);
         controller.click("#DISPLAY");
+
+        //when
         clickMouse(140, 200);
         controller.sleep(500);
-        clickMouse(900, 700);
+        clickMouse(900, 200);
         controller.sleep(500);
         clickMouse(600, 400);
         controller.sleep(500);

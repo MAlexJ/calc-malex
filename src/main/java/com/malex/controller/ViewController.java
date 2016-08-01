@@ -96,45 +96,41 @@ public class ViewController {
     /**
      * Value is used to store the style font size.
      */
-    private final static String FX_FONT_SIZE = "-fx-font-size: ";
+    private static final String FX_FONT_SIZE = "-fx-font-size: ";
 
     /**
      * Value is used to store the font size.
      */
-    private final static String FONT_SIZE = "px;";
+    private static final String FONT_SIZE = "px;";
 
     /**
      * Value is used to store the font.
      */
-    private final static Font FONT_APP;
+    private static final Font FONT_APP = new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT);
+
+    /**
+     * Value is used to store the default number in memory for an operation: MR; MC; M+; M-.
+     */
+    private static final BigDecimal DEFAULT_NUMBER = new BigDecimal(START_CURSOR_POSITION);
 
     /**
      * Value is used to store exponent.
      */
-    private final static String EXPONENT_VAL = "E";
+    private static final String EXPONENT_VAL = "E";
     /**
      * Value is used to store exponent.
      */
-    private final static String EXPONENT_PLUS_VAL = "E+";
+    private static final String EXPONENT_PLUS_VAL = "E+";
 
     /**
      * Value is used to store the maximum number for engineering calculations.
      */
-    private final static BigDecimal MAX_VALUE;
+    private static final BigDecimal MAX_NOT_ENGINEERING_VALUE = new BigDecimal("9999999999999999");
 
     /**
      * Value is used to store the minimum number for engineering calculations.
      */
-    private final static BigDecimal MIN_VALUE;
-
-    /**
-     * Initialization.
-     */
-    static {
-        FONT_APP = new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT);
-        MAX_VALUE = new BigDecimal("9999999999999999");
-        MIN_VALUE = new BigDecimal("-999999999999999");
-    }
+    private static final BigDecimal MIN_NOT_ENGINEERING_VALUE = new BigDecimal("-999999999999999");
 
     /**
      * Value is used to store the value '0.'.
@@ -150,27 +146,6 @@ public class ViewController {
      * Value is used to store the value '-'.
      */
     private static final String SIGN_VALUE = "-";
-
-    /**
-     * Value is used to store the indicator of a buttons.
-     */
-    private static final String ID_ZERO = "DIGIT0";
-    private static final String ID_ONE = "DIGIT1";
-    private static final String ID_TWO = "DIGIT2";
-    private static final String ID_THREE = "DIGIT3";
-    private static final String ID_FOUR = "DIGIT4";
-    private static final String ID_FIVE = "DIGIT5";
-    private static final String ID_SIX = "DIGIT6";
-    private static final String ID_SEVEN = "DIGIT7";
-    private static final String ID_EIGHT = "DIGIT8";
-    private static final String ID_NINE = "DIGIT9";
-    private static final String ID_ADD = "ADDITION";
-    private static final String ID_SUBTRACTION = "SUBTRACTION";
-    private static final String ID_MULTIPLICATION = "MULTIPLICATION";
-    private static final String ID_DIVISION = "DIVISION";
-    private static final String ID_PERCENT = "PERCENT";
-    private static final String ID_COMMA = "COMMA";
-    private static final String ID_EQUALS = "EQUALS";
 
     /**
      * Value is used to store ID.
@@ -239,6 +214,11 @@ public class ViewController {
     private static double POSITION_Y;
 
     /**
+     * Value is used to store the arithmetic operator in memory for an operation: MR; MC; M+; M-.
+     */
+    private static BigDecimal numberInMemory;
+
+    /**
      * Value is used to store the first number.
      */
     private String numberOne = "";
@@ -247,11 +227,6 @@ public class ViewController {
      * Value is used to store the second number.
      */
     private String numberTwo = "";
-
-    /**
-     * Value is used to store the arithmetic operator in memory for an operation: MR; MC; M+; M-.
-     */
-    private String numberInMemory = "0";
 
     /**
      * Value is used to store the arithmetic operator in memory.
@@ -307,72 +282,57 @@ public class ViewController {
      */
     @FXML
     public void handlerNumbersButton(Event event) {
-        String value = DISPLAY.getText();
-        if (!isNumber(value)) {
-            value = RESET_NUMBER;
+        String textDisplay = DISPLAY.getText();
+        if (!isNumber(textDisplay)) {
+            textDisplay = RESET_NUMBER;
             numberOne = RESET_NUMBER;
         } else {
-            if (value.equals(START_CURSOR_POSITION) && startPosition) {
-                value = RESET_NUMBER;
+            if (textDisplay.equals(START_CURSOR_POSITION) && startPosition) {
+                textDisplay = RESET_NUMBER;
                 startPosition = false;
-            } else if (value.startsWith(START_CURSOR_POSITION) && value.length() == 1) {
-                value = RESET_NUMBER;
+            } else if (textDisplay.startsWith(START_CURSOR_POSITION) && textDisplay.length() == 1) {
+                textDisplay = RESET_NUMBER;
             }
         }
         if (nextNumber) {
-            value = RESET_NUMBER;
+            textDisplay = RESET_NUMBER;
             nextNumber = false;
         }
-        DISPLAY.setText(value);//todo remove code duplicates
-
         replaceOperator = false;
-        if (value.length() < MAXIMUM_LENGTH) {
+        if (textDisplay.length() < MAXIMUM_LENGTH) {
             Button btn = (Button) event.getSource();
             String number = RESET_NUMBER;
-            switch (btn.getId()) {
-                case ID_ZERO:
-                    if (validateLimitNumberZeros(value)) {
-                        number = START_CURSOR_POSITION;
-                    }
-                    break;
-                case ID_ONE:
-                    number = "1";
-                    break;
-                case ID_TWO:
-                    number = "2";
-                    break;
-                case ID_THREE:
-                    number = "3";
-                    break;
-                case ID_FOUR:
-                    number = "4";
-                    break;
-                case ID_FIVE:
-                    number = "5";
-                    break;
-                case ID_SIX:
-                    number = "6";
-                    break;
-                case ID_SEVEN:
-                    number = "7";
-                    break;
-                case ID_EIGHT:
-                    number = "8";
-                    break;
-                case ID_NINE:
-                    number = "9";
-                    break;
-                case ID_COMMA:
-                    if (value.isEmpty()) {
-                        number = ZERO_COMMA;
-                    } else if (!value.contains(COMMA_VALUE)) {
-                        number = COMMA_VALUE;
-                    }
-                    break;
-                default:
-                    break;
+
+            if (btn.equals(DIGIT0)) {
+                if (validateLimitNumberZeros(textDisplay)) {
+                    number = START_CURSOR_POSITION;
+                }
+            } else if (btn.equals(DIGIT1)) {
+                number = "1";
+            } else if (btn.equals(DIGIT2)) {
+                number = "2";
+            } else if (btn.equals(DIGIT3)) {
+                number = "3";
+            } else if (btn.equals(DIGIT4)) {
+                number = "4";
+            } else if (btn.equals(DIGIT5)) {
+                number = "5";
+            } else if (btn.equals(DIGIT6)) {
+                number = "6";
+            } else if (btn.equals(DIGIT7)) {
+                number = "7";
+            } else if (btn.equals(DIGIT8)) {
+                number = "8";
+            } else if (btn.equals(DIGIT9)) {
+                number = "9";
+            } else if (btn.equals(COMMA)) {
+                if (textDisplay.isEmpty()) {
+                    number = ZERO_COMMA;
+                } else if (!textDisplay.contains(COMMA_VALUE)) {
+                    number = COMMA_VALUE;
+                }
             }
-            DISPLAY.appendText(number);
+            DISPLAY.setText(textDisplay + number);
         }
     }
 
@@ -385,11 +345,11 @@ public class ViewController {
     public void handlerOperationButton(Event event) {
         Button btn = (Button) event.getSource();
         String operatorValue = btn.getId();
-        String tempNumber = DISPLAY.getText();
+        String textDisplay = DISPLAY.getText();
         try {
-            if (!ID_EQUALS.equals(operatorValue)) {
+            if (!EQUALS.getId().equals(operatorValue)) {
                 if (operatorEqualsUsed) {
-                    numberOne = tempNumber;
+                    numberOne = textDisplay;
                     operator = operatorValue;
                     numberTwo = RESET_NUMBER;
                     nextNumber = true;
@@ -403,7 +363,7 @@ public class ViewController {
                             if (getPriorityOperations(operatorValue, operator)) {
                                 operatorInMemory = operatorValue;
                                 isPriorityOperations = true;
-                                numberTwo = tempNumber;
+                                numberTwo = textDisplay;
                                 nextNumber = true;
                                 return;
                             }
@@ -411,16 +371,16 @@ public class ViewController {
                         if (!isPriorityOperations) {
                             if (numberTwo.isEmpty() && operator.isEmpty()) {
                                 operator = operatorValue;
-                                numberOne = tempNumber;
+                                numberOne = textDisplay;
                                 nextNumber = true;
                             } else {
-                                numberOne = calculate(operator, numberOne, tempNumber);
+                                numberOne = calculate(operator, numberOne, textDisplay);
                                 operator = operatorValue;
                                 nextNumber = true;
                                 DISPLAY.setText(numberOne);
                             }
                         } else {
-                            numberTwo = calculate(operatorInMemory, numberTwo, tempNumber);
+                            numberTwo = calculate(operatorInMemory, numberTwo, textDisplay);
                             DISPLAY.setText(numberTwo);
                             if (isHighPriorityOperation(operatorInMemory)) {
                                 operatorInMemory = operatorValue;
@@ -440,7 +400,7 @@ public class ViewController {
             } else {
                 if (!operator.isEmpty()) {
                     if (isPriorityOperations) {
-                        numberTwo = calculate(operatorInMemory, numberTwo, tempNumber);
+                        numberTwo = calculate(operatorInMemory, numberTwo, textDisplay);
                     }
                     if (numberTwo.isEmpty()) {
                         numberTwo = DISPLAY.getText();
@@ -448,7 +408,7 @@ public class ViewController {
                     if (numberOne.equals(RESET_NUMBER)) {
                         numberOne = numberTwo;
                     }
-                    if (!operator.equals(ID_EQUALS)) {
+                    if (!operator.equals(EQUALS.getId())) {
                         String calculate = calculate(operator, numberOne, numberTwo);
                         operatorEqualsUsed = true;
                         if (!numberOne.isEmpty()) {
@@ -456,19 +416,19 @@ public class ViewController {
                         }
                         if (isPriorityOperations) {
                             operator = operatorInMemory;
-                            numberOne = tempNumber;
+                            numberOne = textDisplay;
                             numberTwo = RESET_NUMBER;
                             operatorInMemory = RESET_NUMBER;
                             isPriorityOperations = false;
                         }
-                        tempNumber = calculate;
+                        textDisplay = calculate;
                     }
                 } else {
-                    if (validateNumberAvailableInsideComma(tempNumber)) {
-                        tempNumber = START_CURSOR_POSITION;
+                    if (validateNumberAvailableInsideComma(textDisplay)) {
+                        textDisplay = START_CURSOR_POSITION;
                     }
                 }
-                DISPLAY.setText(tempNumber);
+                DISPLAY.setText(textDisplay);
             }
         } catch (UndefinedNumberException e) {
             DISPLAY.setText("Undefined");
@@ -498,17 +458,22 @@ public class ViewController {
      */
     @FXML
     public void handlerSingButton() {
-        String number = DISPLAY.getText();
-        if (!number.equals(START_CURSOR_POSITION)) {
-            String textDisplay = START_CURSOR_POSITION;
-            if (!validateNumberAvailableInsideComma(number)) {
-                if (number.startsWith(SIGN_VALUE)) {
-                    textDisplay = number.substring(0, 0) + number.substring(1);
+        String textDisplay = DISPLAY.getText();
+
+        if (!textDisplay.equals(START_CURSOR_POSITION)) {
+            String newTextDisplay;
+
+            if (validateNumberAvailableInsideComma(textDisplay)) {
+                newTextDisplay = START_CURSOR_POSITION;
+            } else {
+                if (textDisplay.startsWith(SIGN_VALUE)) {
+                    newTextDisplay = textDisplay.substring(1);
                 } else {
-                    textDisplay = SIGN_VALUE + number;
+                    newTextDisplay = SIGN_VALUE + textDisplay;
                 }
             }
-            DISPLAY.setText(textDisplay);
+
+            DISPLAY.setText(newTextDisplay);
         }
     }
 
@@ -521,7 +486,7 @@ public class ViewController {
         if (numberOne.isEmpty()) {
             numberOne = PERCENT_NUMBER_DEFAULT;
         }
-        String calculate = calculate(ID_PERCENT, numberOne, textDisplay);
+        String calculate = calculate(PERCENT.getId(), numberOne, textDisplay);
         DISPLAY.setText(calculate);
     }
 
@@ -536,18 +501,19 @@ public class ViewController {
         String textDisplay = DISPLAY.getText();
         switch (btn.getId()) {
             case "MC":
-                numberInMemory = START_CURSOR_POSITION;
+                numberInMemory = DEFAULT_NUMBER;
                 break;
             case "M_PLUS":
-                numberInMemory = calculate(ID_ADD, numberInMemory, textDisplay);
+                numberInMemory = calculateInMemory(ADDITION.getId(), numberInMemory, textDisplay);
                 nextNumber = true;
                 break;
             case "M_MINUS":
-                numberInMemory = calculate(ID_SUBTRACTION, numberInMemory, textDisplay);
+                numberInMemory = calculateInMemory(SUBTRACTION.getId(), numberInMemory, textDisplay);
                 nextNumber = true;
                 break;
             case "MR":
-                DISPLAY.setText(numberInMemory);
+                String number = convertBigDecimalToString(numberInMemory);
+                DISPLAY.setText(number);
                 break;
             default:
                 break;
@@ -698,7 +664,7 @@ public class ViewController {
     }
 
     /**
-     * Change the DISPLAY size.
+     * Change the display size.
      */
     private void changeDisplaySize(int length) {
         int size = MAX_FONT_SIZE_TEXT;
@@ -731,16 +697,40 @@ public class ViewController {
      * @throws UndefinedNumberException if division by zero.
      */
     private String calculate(String operationName, String numberOne, String numberTwo) throws UndefinedNumberException {
-        Operation name = Operation.get(operationName);
+        Operation operation = Operation.get(operationName);
 
         BigDecimal firstNumber = new BigDecimal(numberOne);
         BigDecimal secondNumber = new BigDecimal(numberTwo);
-        BigDecimal result = CALCULATOR.calculate(name, firstNumber, secondNumber);
+        BigDecimal result = CALCULATOR.calculate(operation, firstNumber, secondNumber);
+        return convertBigDecimalToString(result);
+    }
 
-        if (result.compareTo(MAX_VALUE) > 0 || result.compareTo(MIN_VALUE) < 0) {
-            return result.stripTrailingZeros().toString().replace(EXPONENT_PLUS_VAL, EXPONENT_VAL);
+    /**
+     * Calculate adding and subtracting operations from memory
+     *
+     * @param operationName the operator:  ADDITION, SUBTRACTION.
+     * @param numberOne     the first number.
+     * @param numberTwo     the second number.
+     * @return result of the arithmetic operation.
+     * @throws UndefinedNumberException if division by zero.
+     */
+    private BigDecimal calculateInMemory(String operationName, BigDecimal numberOne, String numberTwo) throws UndefinedNumberException {
+        Operation operation = Operation.get(operationName);
+        BigDecimal secondNumber = new BigDecimal(numberTwo);
+        return CALCULATOR.calculate(operation, numberOne, secondNumber);
+    }
+
+    /**
+     * Convert the number BigDecimal to a string.
+     *
+     * @param number BigDecimal
+     * @return string representation of the number.
+     */
+    private String convertBigDecimalToString(BigDecimal number) {
+        if (number.compareTo(MAX_NOT_ENGINEERING_VALUE) > 0 || number.compareTo(MIN_NOT_ENGINEERING_VALUE) < 0) {
+            return number.stripTrailingZeros().toString().replace(EXPONENT_PLUS_VAL, EXPONENT_VAL);
         }
-        return result.stripTrailingZeros().toPlainString();
+        return number.stripTrailingZeros().toPlainString();
     }
 
     /**
@@ -762,7 +752,7 @@ public class ViewController {
      * @return true if the operation has a higher priority.
      */
     private boolean isHighPriorityOperation(String operation) {
-        return operation.equals(ID_MULTIPLICATION) || operation.equals(ID_DIVISION);
+        return operation.equals(MULTIPLICATION.getId()) || operation.equals(DIVISION.getId());
     }
 
     /**

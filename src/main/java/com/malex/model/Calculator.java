@@ -31,13 +31,12 @@ public class Calculator {
     /**
      * Value is used to store the maximum limit number for calculations.
      */
-    private final static BigDecimal MAX_LIMIT_VALUE;
-
+    private final static BigDecimal MAX_LIMIT_VALUE = new BigDecimal("1E150");;
 
     /**
      * Value is used to store the minimum limit number for calculations.
      */
-    private final static BigDecimal MIN_LIMIT_VALUE;
+    private final static BigDecimal MIN_LIMIT_VALUE= new BigDecimal("-1E150");
 
     /**
      * Value is used to store model  {@code Calculator}.
@@ -59,8 +58,6 @@ public class Calculator {
         CALCULATOR.addOperation(new SubtractionOperation());
         CALCULATOR.addOperation(new MultiplicationOperation());
         CALCULATOR.addOperation(new PercentOperation());
-        MIN_LIMIT_VALUE = new BigDecimal("-1E150");
-        MAX_LIMIT_VALUE = new BigDecimal("1E150");
     }
 
     /**
