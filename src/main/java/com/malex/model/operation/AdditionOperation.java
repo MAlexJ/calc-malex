@@ -5,16 +5,16 @@ import com.malex.model.enums.Operation;
 import java.math.BigDecimal;
 
 /**
- * The {@code AddOperation} class represents the summation algorithm of two numbers.
+ * The {@code AdditionOperation} class represents the summation algorithm of two numbers.
  */
-public class AddOperation extends AbstractOperation {
+public class AdditionOperation extends AbstractOperation {
 
     /**
-     * Initializes a newly created {@code AddOperation} object.
+     * Initializes a newly created {@code AdditionOperation} object.
      * {@code Operation}
      */
-    public AddOperation() {
-        super(Operation.ADD);
+    public AdditionOperation() {
+        super(Operation.ADDITION);
     }
 
     /**

@@ -78,7 +78,7 @@
                         <Button fx:id="DIGIT1" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0" minWidth="59.0" mnemonicParsing="false" onAction="#handlerNumbersButton" styleClass="numbers" text="1" GridPane.rowIndex="4" />
                         <Button fx:id="DIGIT2" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0" minWidth="59.0" mnemonicParsing="false" onAction="#handlerNumbersButton" styleClass="numbers" text="2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Button fx:id="DIGIT3" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0" minWidth="59.0" mnemonicParsing="false" onAction="#handlerNumbersButton" styleClass="numbers" text="3" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                        <Button fx:id="ADD" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0" minWidth="58.0" mnemonicParsing="false" onAction="#handlerOperationButton" text="+" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                        <Button fx:id="ADDITION" alignment="CENTER" contentDisplay="CENTER" minHeight="48.0" minWidth="58.0" mnemonicParsing="false" onAction="#handlerOperationButton" text="+" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="4">
                             <styleClass>
                                 <String fx:value="operators" />
                                 <String fx:value="operatorsFont" />

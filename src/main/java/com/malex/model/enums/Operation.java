@@ -7,7 +7,7 @@ public enum Operation {
     /**
      * The arithmetic operation of addition.
      */
-    ADD("ADD"),
+    ADDITION("ADDITION"),
     /**
      * The arithmetic operation of subtraction.
      */
@@ -31,7 +31,7 @@ public enum Operation {
     private String description;
 
     /**
-     * Get enumeration: ADD, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
+     * Get enumeration: ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
      *
      * @param description the name arithmetic operation.
      */

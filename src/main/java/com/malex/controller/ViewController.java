@@ -1,16 +1,20 @@
 package com.malex.controller;
 
+import com.malex.model.enums.Operation;
 import com.malex.model.exception.UndefinedNumberException;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
+
+import java.math.BigDecimal;
 
 import static com.malex.model.Calculator.CALCULATOR;
 
@@ -105,10 +109,31 @@ public class ViewController {
     private final static Font FONT_APP;
 
     /**
+     * Value is used to store exponent.
+     */
+    private final static String EXPONENT_VAL = "E";
+    /**
+     * Value is used to store exponent.
+     */
+    private final static String EXPONENT_PLUS_VAL = "E+";
+
+    /**
+     * Value is used to store the maximum number for engineering calculations.
+     */
+    private final static BigDecimal MAX_VALUE;
+
+    /**
+     * Value is used to store the minimum number for engineering calculations.
+     */
+    private final static BigDecimal MIN_VALUE;
+
+    /**
      * Initialization.
      */
     static {
         FONT_APP = new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT);
+        MAX_VALUE = new BigDecimal("9999999999999999");
+        MIN_VALUE = new BigDecimal("-999999999999999");
     }
 
     /**
@@ -127,59 +152,6 @@ public class ViewController {
     private static final String SIGN_VALUE = "-";
 
     /**
-     * Value is used to store the value '*DIGIT8'.
-     */
-    private static final String MULTIPLICATION_VALUE_ENG = "*DIGIT8";
-    /**
-     * Value is used to store the value ';DIGIT8'.
-     */
-    private static final String MULTIPLICATION_VALUE_RU = ";DIGIT8";
-    /**
-     * Value is used to store the value '+EQUALS'.
-     */
-    private static final String ADD_VALUE = "+EQUALS";
-    /**
-     * Value is used to store the value '_MINUS'.
-     */
-    private static final String SIGN_VALUE_NEW = "_MINUS";
-    /**
-     * Value is used to store the value '-MINUS'.
-     */
-    private static final String SUBTRACTION_VALUE = "-MINUS";
-    /**
-     * Value is used to store the value '%DIGIT5'.
-     */
-    private static final String PERCENT_VALUE_ENG = "%DIGIT5";
-    /**
-     * Value is used to store the value ':DIGIT5'.
-     */
-    private static final String PERCENT_VALUE_RU = ":DIGIT5";
-    /**
-     * Value is used to store the value 'SLASH'.
-     */
-    private static final String SLASH_VALUE = "SLASH";
-    /**
-     * Value is used to store the value 'ENTER'.
-     */
-    private static final String ENTER_VALUE = "ENTER";
-    /**
-     * Value is used to store the value 'C'.
-     */
-    private static final String C_VALUE = "C";
-    /**
-     * Value is used to store the value 'R'.
-     */
-    private static final String R_VALUE = "R";
-    /**
-     * Value is used to store the value 'P'.
-     */
-    private static final String P_VALUE = "P";
-    /**
-     * Value is used to store the value 'M'.
-     */
-    private static final String M_VALUE = "M";
-
-    /**
      * Value is used to store the indicator of a buttons.
      */
     private static final String ID_ZERO = "DIGIT0";
@@ -192,15 +164,13 @@ public class ViewController {
     private static final String ID_SEVEN = "DIGIT7";
     private static final String ID_EIGHT = "DIGIT8";
     private static final String ID_NINE = "DIGIT9";
-    private static final String ID_ADD = "ADD";
+    private static final String ID_ADD = "ADDITION";
     private static final String ID_SUBTRACTION = "SUBTRACTION";
     private static final String ID_MULTIPLICATION = "MULTIPLICATION";
     private static final String ID_DIVISION = "DIVISION";
     private static final String ID_PERCENT = "PERCENT";
-    private static final String ID_SIGN = "SIGN";
     private static final String ID_COMMA = "COMMA";
     private static final String ID_EQUALS = "EQUALS";
-    private static final String ID_RESET = "ESCAPE";
 
     /**
      * Value is used to store ID.
@@ -242,7 +212,7 @@ public class ViewController {
     @FXML
     public Button DIVISION;
     @FXML
-    public Button ADD;
+    public Button ADDITION;
     @FXML
     public Button SUBTRACTION;
     @FXML
@@ -353,53 +323,56 @@ public class ViewController {
             value = RESET_NUMBER;
             nextNumber = false;
         }
-        DISPLAY.setText(value);
+        DISPLAY.setText(value);//todo remove code duplicates
+
         replaceOperator = false;
         if (value.length() < MAXIMUM_LENGTH) {
             Button btn = (Button) event.getSource();
+            String number = RESET_NUMBER;
             switch (btn.getId()) {
                 case ID_ZERO:
                     if (validateLimitNumberZeros(value)) {
-                        DISPLAY.appendText(START_CURSOR_POSITION);
+                        number = START_CURSOR_POSITION;
                     }
                     break;
                 case ID_ONE:
-                    DISPLAY.appendText("1");
+                    number = "1";
                     break;
                 case ID_TWO:
-                    DISPLAY.appendText("2");
+                    number = "2";
                     break;
                 case ID_THREE:
-                    DISPLAY.appendText("3");
+                    number = "3";
                     break;
                 case ID_FOUR:
-                    DISPLAY.appendText("4");
+                    number = "4";
                     break;
                 case ID_FIVE:
-                    DISPLAY.appendText("5");
+                    number = "5";
                     break;
                 case ID_SIX:
-                    DISPLAY.appendText("6");
+                    number = "6";
                     break;
                 case ID_SEVEN:
-                    DISPLAY.appendText("7");
+                    number = "7";
                     break;
                 case ID_EIGHT:
-                    DISPLAY.appendText("8");
+                    number = "8";
                     break;
                 case ID_NINE:
-                    DISPLAY.appendText("9");
+                    number = "9";
                     break;
                 case ID_COMMA:
                     if (value.isEmpty()) {
-                        DISPLAY.appendText(ZERO_COMMA);
+                        number = ZERO_COMMA;
                     } else if (!value.contains(COMMA_VALUE)) {
-                        DISPLAY.appendText(COMMA_VALUE);
+                        number = COMMA_VALUE;
                     }
                     break;
                 default:
                     break;
             }
+            DISPLAY.appendText(number);
         }
     }
 
@@ -441,20 +414,20 @@ public class ViewController {
                                 numberOne = tempNumber;
                                 nextNumber = true;
                             } else {
-                                numberOne = CALCULATOR.calculate(operator, numberOne, tempNumber);
+                                numberOne = calculate(operator, numberOne, tempNumber);
                                 operator = operatorValue;
                                 nextNumber = true;
                                 DISPLAY.setText(numberOne);
                             }
                         } else {
-                            numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, tempNumber);
+                            numberTwo = calculate(operatorInMemory, numberTwo, tempNumber);
                             DISPLAY.setText(numberTwo);
                             if (isHighPriorityOperation(operatorInMemory)) {
                                 operatorInMemory = operatorValue;
                                 isPriorityOperations = true;
                             } else {
                                 operatorInMemory = RESET_NUMBER;
-                                numberOne = CALCULATOR.calculate(operator, numberOne, numberTwo);
+                                numberOne = calculate(operator, numberOne, numberTwo);
                                 operator = operatorValue;
                                 numberTwo = RESET_NUMBER;
                                 isPriorityOperations = false;
@@ -467,7 +440,7 @@ public class ViewController {
             } else {
                 if (!operator.isEmpty()) {
                     if (isPriorityOperations) {
-                        numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, tempNumber);
+                        numberTwo = calculate(operatorInMemory, numberTwo, tempNumber);
                     }
                     if (numberTwo.isEmpty()) {
                         numberTwo = DISPLAY.getText();
@@ -476,7 +449,7 @@ public class ViewController {
                         numberOne = numberTwo;
                     }
                     if (!operator.equals(ID_EQUALS)) {
-                        String calculate = CALCULATOR.calculate(operator, numberOne, numberTwo);
+                        String calculate = calculate(operator, numberOne, numberTwo);
                         operatorEqualsUsed = true;
                         if (!numberOne.isEmpty()) {
                             numberOne = calculate;
@@ -500,7 +473,7 @@ public class ViewController {
         } catch (UndefinedNumberException e) {
             DISPLAY.setText("Undefined");
             operator = operatorValue;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerOperationButton(Event event): " + e.getMessage());
         }
     }
@@ -548,7 +521,7 @@ public class ViewController {
         if (numberOne.isEmpty()) {
             numberOne = PERCENT_NUMBER_DEFAULT;
         }
-        String calculate = CALCULATOR.calculate(ID_PERCENT, numberOne, textDisplay);
+        String calculate = calculate(ID_PERCENT, numberOne, textDisplay);
         DISPLAY.setText(calculate);
     }
 
@@ -566,11 +539,11 @@ public class ViewController {
                 numberInMemory = START_CURSOR_POSITION;
                 break;
             case "M_PLUS":
-                numberInMemory = CALCULATOR.calculate(ID_ADD, numberInMemory, textDisplay);
+                numberInMemory = calculate(ID_ADD, numberInMemory, textDisplay);
                 nextNumber = true;
                 break;
             case "M_MINUS":
-                numberInMemory = CALCULATOR.calculate(ID_SUBTRACTION, numberInMemory, textDisplay);
+                numberInMemory = calculate(ID_SUBTRACTION, numberInMemory, textDisplay);
                 nextNumber = true;
                 break;
             case "MR":
@@ -615,126 +588,113 @@ public class ViewController {
     }
 
     /**
-     * Initialize keyboard input data handler.
+     * Initialize input data handler with keyboard.
      *
      * @param event this event is generated when a key is pressed, released, or typed.
      */
     @FXML
     public void handlerKeyPressed(KeyEvent event) {
-        String nameKey = shortcuts(event);
-        switch (nameKey) {
-            case ID_ZERO:
-                clickOnButton(DIGIT0);
-                break;
-            case ID_ONE:
-                clickOnButton(DIGIT1);
-                break;
-            case ID_TWO:
-                clickOnButton(DIGIT2);
-                break;
-            case ID_THREE:
-                clickOnButton(DIGIT3);
-                break;
-            case ID_FOUR:
-                clickOnButton(DIGIT4);
-                break;
-            case ID_FIVE:
-                clickOnButton(DIGIT5);
-                break;
-            case ID_SIX:
-                clickOnButton(DIGIT6);
-                break;
-            case ID_SEVEN:
-                clickOnButton(DIGIT7);
-                break;
-            case ID_EIGHT:
-                clickOnButton(DIGIT8);
-                break;
-            case ID_NINE:
-                clickOnButton(DIGIT9);
-                break;
-            case ID_COMMA:
-                clickOnButton(COMMA);
-                break;
-            case ID_MULTIPLICATION:
-                clickOnButton(MULTIPLICATION);
-                break;
-            case SLASH_VALUE:
-                clickOnButton(DIVISION);
-                break;
-            case ID_SUBTRACTION:
-                clickOnButton(SUBTRACTION);
-                break;
-            case ID_ADD:
-                clickOnButton(ADD);
-                break;
-            case ID_SIGN:
-                clickOnButton(SIGN);
-                break;
-            case ID_PERCENT:
-                clickOnButton(PERCENT);
-                break;
-            case ID_EQUALS:
-                clickOnButton(EQUALS);
-                break;
-            case ID_RESET:
-                clickOnButton(ESCAPE);
-                break;
-            case ENTER_VALUE:
-                clickOnButton(EQUALS);
-                break;
-            case C_VALUE:
-                clickOnButton(MC);
-                break;
-            case R_VALUE:
-                clickOnButton(MR);
-                break;
-            case M_VALUE:
-                clickOnButton(M_MINUS);
-                break;
-            case P_VALUE:
-                clickOnButton(M_PLUS);
-                break;
-            default:
-                break;
+        Button button = findButton(event);
+        if (button != null) {
+            clickOnButton(button);
         }
     }
 
     /**
-     * The method determines the Shortcuts.
+     * Find the button.
      *
      * @param event this event is generated when a key is pressed, released, or typed.
-     * @return the id button.
+     * @return the button.
      */
-    private String shortcuts(KeyEvent event) {
-        String nameKey = event.getCode().toString();
-        String codeKey = event.getText() + nameKey;
-        switch (codeKey) {
-            case MULTIPLICATION_VALUE_ENG:
-                nameKey = ID_MULTIPLICATION;
-                break;
-            case MULTIPLICATION_VALUE_RU:
-                nameKey = ID_MULTIPLICATION;
-                break;
-            case ADD_VALUE:
-                nameKey = ID_ADD;
-                break;
-            case SIGN_VALUE_NEW:
-                nameKey = ID_SIGN;
-                break;
-            case SUBTRACTION_VALUE:
-                nameKey = ID_SUBTRACTION;
-                break;
-            case PERCENT_VALUE_ENG:
-                nameKey = ID_PERCENT;
-                break;
-            case PERCENT_VALUE_RU:
-                nameKey = ID_PERCENT;
-                break;
-            default:
-                break;
+    private Button findButton(KeyEvent event) {
+        Button button;
+        KeyCode code = event.getCode();
+        if (event.isShiftDown()) {
+            switch (code) {
+                case EQUALS:
+                    button = ADDITION;
+                    break;
+                case DIGIT8:
+                    button = MULTIPLICATION;
+                    break;
+                case MINUS:
+                    button = SIGN;
+                    break;
+                case DIGIT5:
+                    button = PERCENT;
+                    break;
+                default:
+                    button = null;
+                    break;
+            }
+        } else {
+            switch (code) {
+                case DIGIT0:
+                    button = DIGIT0;
+                    break;
+                case DIGIT1:
+                    button = DIGIT1;
+                    break;
+                case DIGIT2:
+                    button = DIGIT2;
+                    break;
+                case DIGIT3:
+                    button = DIGIT3;
+                    break;
+                case DIGIT4:
+                    button = DIGIT4;
+                    break;
+                case DIGIT5:
+                    button = DIGIT5;
+                    break;
+                case DIGIT6:
+                    button = DIGIT6;
+                    break;
+                case DIGIT7:
+                    button = DIGIT7;
+                    break;
+                case DIGIT8:
+                    button = DIGIT8;
+                    break;
+                case DIGIT9:
+                    button = DIGIT9;
+                    break;
+                case COMMA:
+                    button = COMMA;
+                    break;
+                case SLASH:
+                    button = DIVISION;
+                    break;
+                case MINUS:
+                    button = SUBTRACTION;
+                    break;
+                case EQUALS:
+                    button = EQUALS;
+                    break;
+                case ENTER:
+                    button = EQUALS;
+                    break;
+                case ESCAPE:
+                    button = ESCAPE;
+                    break;
+                case C:
+                    button = MC;
+                    break;
+                case R:
+                    button = MR;
+                    break;
+                case M:
+                    button = M_MINUS;
+                    break;
+                case P:
+                    button = M_PLUS;
+                    break;
+                default:
+                    button = null;
+                    break;
+            }
         }
-        return nameKey;
+        return button;
     }
 
     /**
@@ -759,6 +719,28 @@ public class ViewController {
         button.fire();
         pause.setOnFinished(e -> button.disarm());
         pause.play();
+    }
+
+    /**
+     * Calculate result of the arithmetic operation two numbers.
+     *
+     * @param operationName the arithmetic operator:  ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
+     * @param numberOne     the first number.
+     * @param numberTwo     the second number.
+     * @return result of the arithmetic operation.
+     * @throws UndefinedNumberException if division by zero.
+     */
+    private String calculate(String operationName, String numberOne, String numberTwo) throws UndefinedNumberException {
+        Operation name = Operation.get(operationName);
+
+        BigDecimal firstNumber = new BigDecimal(numberOne);
+        BigDecimal secondNumber = new BigDecimal(numberTwo);
+        BigDecimal result = CALCULATOR.calculate(name, firstNumber, secondNumber);
+
+        if (result.compareTo(MAX_VALUE) > 0 || result.compareTo(MIN_VALUE) < 0) {
+            return result.stripTrailingZeros().toString().replace(EXPONENT_PLUS_VAL, EXPONENT_VAL);
+        }
+        return result.stripTrailingZeros().toPlainString();
     }
 
     /**
