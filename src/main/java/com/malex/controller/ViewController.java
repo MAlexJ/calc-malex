@@ -15,6 +15,8 @@ import javafx.util.Duration;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.malex.model.Calculator.CALCULATOR;
 
@@ -45,107 +47,112 @@ public class ViewController {
     private static Logger logger = Logger.getLogger(ViewController.class.getName());
 
     /**
-     * Value is used to store allowable minimum length of digits.
+     * Minimum length of digits.
      */
     private static final int ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS = 7;
     /**
-     * Value is used to store maximum length of digits.
+     * Maximum length of digits.
      */
     private static final int MAXIMUM_LENGTH = 30;
 
     /**
-     * Value is used to store the cursor.
+     * Start position.
      */
-    private static final String START_CURSOR_POSITION = "0";
+    private static final String START_POSITION = "0";
 
     /**
-     * Value is used to store the reset number.
+     * Value is used to store the reset number. //TODO rename
      */
     private static final String RESET_NUMBER = "";
 
     /**
-     * Value is used to store the maximum font size a text.
+     * The maximum font size a text.
      */
     private static final int MAX_FONT_SIZE_TEXT = 46;
 
     /**
-     * Value is used to store the text font.
-     */
-    private static final String TEXT_FONT = "Helvetica Neue Thin";
-
-    /**
-     * The value is used to store the value of the PAUSE of the animation.
+     * The pause animation.
      */
     private static final double PAUSE_ANIMATION = 0.1;
 
     /**
-     * Value is used to store the value the default percent of number '1'.
+     * One hundredth part of number.
      */
-    private static final String PERCENT_NUMBER_DEFAULT = "1";
+    private static final String PERCENT_PART_NUMBER = "1";
 
     /**
-     * Value is used to store the pattern of validate the number.
+     * The pattern of validate the number.
      */
     private final static String PATTERN_NUMBER = "[-+0-9|.E]+";
 
     /**
-     * Value is used to store the pattern of validate the number.
+     * The pattern validation of the number of commas.
      */
     private final static String PATTERN_COMA = "^0.[0]+|(0.)??";
 
     /**
-     * Value is used to store the style font size.
+     * The style font size.
      */
     private static final String FX_FONT_SIZE = "-fx-font-size: ";
 
     /**
-     * Value is used to store the font size.
+     * The font size.
      */
     private static final String FONT_SIZE = "px;";
 
     /**
-     * Value is used to store the font.
+     * The screen font.
      */
-    private static final Font FONT_APP = new Font(TEXT_FONT, MAX_FONT_SIZE_TEXT);
+    private static final Font FONT_APP = new Font("Helvetica Neue Thin", MAX_FONT_SIZE_TEXT);           //todo move from here   >>> FIX
 
     /**
      * Value is used to store the default number in memory for an operation: MR; MC; M+; M-.
      */
-    private static final BigDecimal DEFAULT_NUMBER = new BigDecimal(START_CURSOR_POSITION);
+    private static final BigDecimal DEFAULT_NUMBER = new BigDecimal(START_POSITION);
 
     /**
-     * Value is used to store exponent.
+     * Value is used to store exponent. //TODO
      */
     private static final String EXPONENT_VAL = "E";
     /**
-     * Value is used to store exponent.
+     * Value is used to store exponent.  //TODO
      */
     private static final String EXPONENT_PLUS_VAL = "E+";
 
     /**
-     * Value is used to store the maximum number for engineering calculations.
+     * The maximum number for engineering calculations.
      */
     private static final BigDecimal MAX_NOT_ENGINEERING_VALUE = new BigDecimal("9999999999999999");
 
     /**
-     * Value is used to store the minimum number for engineering calculations.
+     * The minimum number for engineering calculations.
      */
     private static final BigDecimal MIN_NOT_ENGINEERING_VALUE = new BigDecimal("-999999999999999");
 
     /**
-     * Value is used to store the value '0.'.
+     * The value '0.'.
      */
     private static final String ZERO_COMMA = "0.";
 
     /**
-     * Value is used to store the value '.'.
+     * The value '.'.
      */
     private static final String COMMA_VALUE = ".";
 
     /**
-     * Value is used to store the value '-'.
+     * The value '-'.
      */
     private static final String SIGN_VALUE = "-";
+
+    /**
+     * Mapping shortcut.
+     */
+    private static final Map<KeyCode, Button> SHORTCUT_MAP = new HashMap<>();
+
+    /**
+     * Mapping buttons.
+     */
+    private static final Map<KeyCode, Button> KEY_MAP = new HashMap<>();
 
     /**
      * Value is used to store ID.
@@ -204,37 +211,37 @@ public class ViewController {
     public Button TRAY;
 
     /**
-     * Value is used to store the position on the x-axis.
+     * Position on the x-axis.
      */
     private static double POSITION_X;
 
     /**
-     * Value is used to store the position on the y-axis.
+     * Position on the y-axis.
      */
     private static double POSITION_Y;
 
     /**
-     * Value is used to store the arithmetic operator in memory for an operation: MR; MC; M+; M-.
+     *The arithmetic operator in memory for an operation: MR; MC; M+; M-.
      */
     private static BigDecimal numberInMemory;
 
     /**
-     * Value is used to store the first number.
+     * The first number.
      */
     private String numberOne = "";
 
     /**
-     * Value is used to store the second number.
+     * The second number.
      */
     private String numberTwo = "";
 
     /**
-     * Value is used to store the arithmetic operator in memory.
+     * The arithmetic operator in memory.
      */
-    private String operator = "";
+    private String operator = "";   //todo review all varable names, convert String -> BigDecimal or Operator
 
     /**
-     * Value is used to store the priority an operator in memory.
+     * The priority an operator in memory.
      */
     private String operatorInMemory = "";
 
@@ -269,10 +276,43 @@ public class ViewController {
     public void init() {
         DISPLAY.setEditable(false);
         DISPLAY.setFont(FONT_APP);
-        DISPLAY.setText(START_CURSOR_POSITION);
+        DISPLAY.setText(START_POSITION);
         DISPLAY.lengthProperty().addListener((observable, oldValue, newValue) -> {
             changeDisplaySize(newValue.intValue());
         });
+    }
+
+    /**
+     * Initialization the mapping of buttons.
+     */
+    @FXML
+    void initialize() {
+        SHORTCUT_MAP.put(KeyCode.EQUALS, ADDITION);
+        SHORTCUT_MAP.put(KeyCode.DIGIT8, MULTIPLICATION);
+        SHORTCUT_MAP.put(KeyCode.MINUS, SIGN);
+        SHORTCUT_MAP.put(KeyCode.DIGIT5, PERCENT);
+
+        KEY_MAP.put(KeyCode.DIGIT0, DIGIT0);
+        KEY_MAP.put(KeyCode.DIGIT1, DIGIT1);
+        KEY_MAP.put(KeyCode.DIGIT2, DIGIT2);
+        KEY_MAP.put(KeyCode.DIGIT3, DIGIT3);
+        KEY_MAP.put(KeyCode.DIGIT4, DIGIT4);
+        KEY_MAP.put(KeyCode.DIGIT5, DIGIT5);
+        KEY_MAP.put(KeyCode.DIGIT6, DIGIT6);
+        KEY_MAP.put(KeyCode.DIGIT7, DIGIT7);
+        KEY_MAP.put(KeyCode.DIGIT8, DIGIT8);
+        KEY_MAP.put(KeyCode.DIGIT9, DIGIT9);
+
+        KEY_MAP.put(KeyCode.COMMA, COMMA);
+        KEY_MAP.put(KeyCode.SLASH, DIVISION);
+        KEY_MAP.put(KeyCode.MINUS, SUBTRACTION);
+        KEY_MAP.put(KeyCode.EQUALS, EQUALS);
+        KEY_MAP.put(KeyCode.ENTER, EQUALS);
+        KEY_MAP.put(KeyCode.ESCAPE, ESCAPE);
+        KEY_MAP.put(KeyCode.C, MC);
+        KEY_MAP.put(KeyCode.R, MR);
+        KEY_MAP.put(KeyCode.M, M_MINUS);
+        KEY_MAP.put(KeyCode.P, M_PLUS);
     }
 
     /**
@@ -287,10 +327,10 @@ public class ViewController {
             textDisplay = RESET_NUMBER;
             numberOne = RESET_NUMBER;
         } else {
-            if (textDisplay.equals(START_CURSOR_POSITION) && startPosition) {
+            if (textDisplay.equals(START_POSITION) && startPosition) {
                 textDisplay = RESET_NUMBER;
                 startPosition = false;
-            } else if (textDisplay.startsWith(START_CURSOR_POSITION) && textDisplay.length() == 1) {
+            } else if (textDisplay.startsWith(START_POSITION) && textDisplay.length() == 1) {
                 textDisplay = RESET_NUMBER;
             }
         }
@@ -299,40 +339,48 @@ public class ViewController {
             nextNumber = false;
         }
         replaceOperator = false;
+
         if (textDisplay.length() < MAXIMUM_LENGTH) {
             Button btn = (Button) event.getSource();
-            String number = RESET_NUMBER;
+
+            int number = -1;                                     //todo int     >>> FIX
+            String coma = RESET_NUMBER;
 
             if (btn.equals(DIGIT0)) {
                 if (validateLimitNumberZeros(textDisplay)) {
-                    number = START_CURSOR_POSITION;
+                    number = 0;
                 }
             } else if (btn.equals(DIGIT1)) {
-                number = "1";
+                number = 1;
             } else if (btn.equals(DIGIT2)) {
-                number = "2";
+                number = 2;
             } else if (btn.equals(DIGIT3)) {
-                number = "3";
+                number = 3;
             } else if (btn.equals(DIGIT4)) {
-                number = "4";
+                number = 4;
             } else if (btn.equals(DIGIT5)) {
-                number = "5";
+                number = 5;
             } else if (btn.equals(DIGIT6)) {
-                number = "6";
+                number = 6;
             } else if (btn.equals(DIGIT7)) {
-                number = "7";
+                number = 7;
             } else if (btn.equals(DIGIT8)) {
-                number = "8";
+                number = 8;
             } else if (btn.equals(DIGIT9)) {
-                number = "9";
+                number = 9;
             } else if (btn.equals(COMMA)) {
                 if (textDisplay.isEmpty()) {
-                    number = ZERO_COMMA;
+                    coma = ZERO_COMMA;
                 } else if (!textDisplay.contains(COMMA_VALUE)) {
-                    number = COMMA_VALUE;
+                    coma = COMMA_VALUE;
                 }
             }
-            DISPLAY.setText(textDisplay + number);
+
+            if (number != -1) {
+                textDisplay = textDisplay + number;
+            }
+
+            DISPLAY.setText(textDisplay + coma);
         }
     }
 
@@ -425,7 +473,7 @@ public class ViewController {
                     }
                 } else {
                     if (validateNumberAvailableInsideComma(textDisplay)) {
-                        textDisplay = START_CURSOR_POSITION;
+                        textDisplay = START_POSITION;
                     }
                 }
                 DISPLAY.setText(textDisplay);
@@ -450,7 +498,7 @@ public class ViewController {
         isPriorityOperations = false;
         operatorEqualsUsed = false;
         DISPLAY.setStyle(FX_FONT_SIZE + MAX_FONT_SIZE_TEXT + FONT_SIZE);
-        DISPLAY.setText(START_CURSOR_POSITION);
+        DISPLAY.setText(START_POSITION);
     }
 
     /**
@@ -459,12 +507,11 @@ public class ViewController {
     @FXML
     public void handlerSingButton() {
         String textDisplay = DISPLAY.getText();
-
-        if (!textDisplay.equals(START_CURSOR_POSITION)) {
+        if (!textDisplay.equals(START_POSITION)) {
             String newTextDisplay;
 
             if (validateNumberAvailableInsideComma(textDisplay)) {
-                newTextDisplay = START_CURSOR_POSITION;
+                newTextDisplay = START_POSITION;
             } else {
                 if (textDisplay.startsWith(SIGN_VALUE)) {
                     newTextDisplay = textDisplay.substring(1);
@@ -472,7 +519,6 @@ public class ViewController {
                     newTextDisplay = SIGN_VALUE + textDisplay;
                 }
             }
-
             DISPLAY.setText(newTextDisplay);
         }
     }
@@ -484,7 +530,7 @@ public class ViewController {
     public void handlerPercentButton() throws Exception {
         String textDisplay = DISPLAY.getText();
         if (numberOne.isEmpty()) {
-            numberOne = PERCENT_NUMBER_DEFAULT;
+            numberOne = PERCENT_PART_NUMBER;
         }
         String calculate = calculate(PERCENT.getId(), numberOne, textDisplay);
         DISPLAY.setText(calculate);
@@ -499,24 +545,18 @@ public class ViewController {
     public void handlerMemoryButton(Event event) throws Exception {
         Button btn = (Button) event.getSource();
         String textDisplay = DISPLAY.getText();
-        switch (btn.getId()) {
-            case "MC":
-                numberInMemory = DEFAULT_NUMBER;
-                break;
-            case "M_PLUS":
-                numberInMemory = calculateInMemory(ADDITION.getId(), numberInMemory, textDisplay);
-                nextNumber = true;
-                break;
-            case "M_MINUS":
-                numberInMemory = calculateInMemory(SUBTRACTION.getId(), numberInMemory, textDisplay);
-                nextNumber = true;
-                break;
-            case "MR":
-                String number = convertBigDecimalToString(numberInMemory);
-                DISPLAY.setText(number);
-                break;
-            default:
-                break;
+
+        if (btn.equals(MC)) {                                                   // todo    >>> FIX
+            numberInMemory = DEFAULT_NUMBER;
+        } else if (btn.equals(M_PLUS)) {
+            numberInMemory = calculateInMemory(ADDITION.getId(), numberInMemory, textDisplay);
+            nextNumber = true;
+        } else if (btn.equals(M_MINUS)) {
+            numberInMemory = calculateInMemory(SUBTRACTION.getId(), numberInMemory, textDisplay);
+            nextNumber = true;
+        } else if (btn.equals(MR)) {
+            String number = convertBigDecimalToString(numberInMemory);
+            DISPLAY.setText(number);
         }
     }
 
@@ -572,93 +612,13 @@ public class ViewController {
      * @param event this event is generated when a key is pressed, released, or typed.
      * @return the button.
      */
-    private Button findButton(KeyEvent event) {
+    private Button findButton(KeyEvent event) {                                          //todo mapping       >>> FIX
         Button button;
         KeyCode code = event.getCode();
         if (event.isShiftDown()) {
-            switch (code) {
-                case EQUALS:
-                    button = ADDITION;
-                    break;
-                case DIGIT8:
-                    button = MULTIPLICATION;
-                    break;
-                case MINUS:
-                    button = SIGN;
-                    break;
-                case DIGIT5:
-                    button = PERCENT;
-                    break;
-                default:
-                    button = null;
-                    break;
-            }
+            button = SHORTCUT_MAP.get(code);
         } else {
-            switch (code) {
-                case DIGIT0:
-                    button = DIGIT0;
-                    break;
-                case DIGIT1:
-                    button = DIGIT1;
-                    break;
-                case DIGIT2:
-                    button = DIGIT2;
-                    break;
-                case DIGIT3:
-                    button = DIGIT3;
-                    break;
-                case DIGIT4:
-                    button = DIGIT4;
-                    break;
-                case DIGIT5:
-                    button = DIGIT5;
-                    break;
-                case DIGIT6:
-                    button = DIGIT6;
-                    break;
-                case DIGIT7:
-                    button = DIGIT7;
-                    break;
-                case DIGIT8:
-                    button = DIGIT8;
-                    break;
-                case DIGIT9:
-                    button = DIGIT9;
-                    break;
-                case COMMA:
-                    button = COMMA;
-                    break;
-                case SLASH:
-                    button = DIVISION;
-                    break;
-                case MINUS:
-                    button = SUBTRACTION;
-                    break;
-                case EQUALS:
-                    button = EQUALS;
-                    break;
-                case ENTER:
-                    button = EQUALS;
-                    break;
-                case ESCAPE:
-                    button = ESCAPE;
-                    break;
-                case C:
-                    button = MC;
-                    break;
-                case R:
-                    button = MR;
-                    break;
-                case M:
-                    button = M_MINUS;
-                    break;
-                case P:
-                    button = M_PLUS;
-                    break;
-                default:
-                    button = null;
-                    break;
-            }
+            button = KEY_MAP.get(code);
         }
         return button;
     }
@@ -726,11 +686,12 @@ public class ViewController {
      * @param number BigDecimal
      * @return string representation of the number.
      */
-    private String convertBigDecimalToString(BigDecimal number) {
+    private String convertBigDecimalToString(BigDecimal number) {                            // todo duplication       >>> FIX
+        BigDecimal result = number.stripTrailingZeros();
         if (number.compareTo(MAX_NOT_ENGINEERING_VALUE) > 0 || number.compareTo(MIN_NOT_ENGINEERING_VALUE) < 0) {
-            return number.stripTrailingZeros().toString().replace(EXPONENT_PLUS_VAL, EXPONENT_VAL);
+            return result.toString().replace(EXPONENT_PLUS_VAL, EXPONENT_VAL);
         }
-        return number.stripTrailingZeros().toPlainString();
+        return result.toPlainString();
     }
 
     /**
@@ -752,7 +713,7 @@ public class ViewController {
      * @return true if the operation has a higher priority.
      */
     private boolean isHighPriorityOperation(String operation) {
-        return operation.equals(MULTIPLICATION.getId()) || operation.equals(DIVISION.getId());
+        return operation.equals(MULTIPLICATION.getId()) || operation.equals(DIVISION.getId());  //todo fix
     }
 
     /**
@@ -771,7 +732,7 @@ public class ViewController {
      * @return true if the count of zeros in the permitted limit.
      */
     private boolean validateLimitNumberZeros(String textDisplay) {
-        return !textDisplay.startsWith(START_CURSOR_POSITION) || textDisplay.startsWith(ZERO_COMMA);
+        return !textDisplay.startsWith(START_POSITION) || textDisplay.startsWith(ZERO_COMMA);
     }
 
     /**
