@@ -106,16 +106,16 @@ public class ViewController {
     private static final Font FONT_APP = new Font("Helvetica Neue Thin", MAX_FONT_SIZE_TEXT);           //todo move from here   >>> FIX
 
     /**
-     * Value is used to store the default number in memory for an operation: MR; MC; M+; M-.
+     * The default number in memory for an operation: MR; MC; M+; M-.
      */
     private static final BigDecimal DEFAULT_NUMBER = new BigDecimal(START_POSITION);
 
     /**
-     * Value is used to store exponent. //TODO
+     * Display the exponent on display
      */
     private static final String EXPONENT_VAL = "E";
     /**
-     * Value is used to store exponent.  //TODO
+     * Display the exponent on model.
      */
     private static final String EXPONENT_PLUS_VAL = "E+";
 
@@ -221,52 +221,52 @@ public class ViewController {
     private static double POSITION_Y;
 
     /**
-     *The arithmetic operator in memory for an operation: MR; MC; M+; M-.
+     * The arithmetic operator in memory for an operation: MR; MC; M+; M-.
      */
     private static BigDecimal numberInMemory;
 
     /**
      * The first number.
      */
-    private String numberOne = "";
+    private String numberOne = "";  //BigDecimal
 
     /**
      * The second number.
      */
-    private String numberTwo = "";
+    private String numberTwo = "";  //BigDecimal
 
     /**
      * The arithmetic operator in memory.
      */
-    private String operator = "";   //todo review all varable names, convert String -> BigDecimal or Operator
+    private Operation operator;   //todo review all varable names, convert String -> BigDecimal or Operator
 
     /**
      * The priority an operator in memory.
      */
-    private String operatorInMemory = "";
+    private Operation operatorInMemory;
 
     /**
-     * Value is used to indicate next a number.
+     * Indicate next a number.
      */
     private boolean nextNumber;
 
     /**
-     * Value is used to indicate starting position of a cursor.
+     * Specifies starting position.
      */
     private boolean startPosition = true;
 
     /**
-     * Value is used to store the status of reuse operators
+     * The status of reuse operators
      */
     private boolean replaceOperator;
 
     /**
-     * Value is used to store reuse operator 'equals'.
+     * Reuse operator 'equals'.
      */
     private boolean operatorEqualsUsed;
 
     /**
-     * Value is used to indicate the priority operation.
+     * Specifies the priority of the operation.
      */
     private boolean isPriorityOperations;
 
@@ -392,10 +392,11 @@ public class ViewController {
     @FXML
     public void handlerOperationButton(Event event) {
         Button btn = (Button) event.getSource();
-        String operatorValue = btn.getId();
+        Operation operatorValue = Operation.get(btn.getId());
+
         String textDisplay = DISPLAY.getText();
         try {
-            if (!EQUALS.getId().equals(operatorValue)) {
+            if (!EQUALS.equals(btn)) {    //todo remove getId();
                 if (operatorEqualsUsed) {
                     numberOne = textDisplay;
                     operator = operatorValue;
@@ -407,7 +408,7 @@ public class ViewController {
                         replaceOperator = true;
                         operator = operatorValue;
                     } else {
-                        if (!operator.isEmpty() && operatorInMemory.isEmpty()) {
+                        if (operator != null && operatorInMemory == null) {
                             if (getPriorityOperations(operatorValue, operator)) {
                                 operatorInMemory = operatorValue;
                                 isPriorityOperations = true;
@@ -417,7 +418,7 @@ public class ViewController {
                             }
                         }
                         if (!isPriorityOperations) {
-                            if (numberTwo.isEmpty() && operator.isEmpty()) {
+                            if (numberTwo.isEmpty() && operator == null) {
                                 operator = operatorValue;
                                 numberOne = textDisplay;
                                 nextNumber = true;
@@ -434,7 +435,7 @@ public class ViewController {
                                 operatorInMemory = operatorValue;
                                 isPriorityOperations = true;
                             } else {
-                                operatorInMemory = RESET_NUMBER;
+                                operatorInMemory = null;
                                 numberOne = calculate(operator, numberOne, numberTwo);
                                 operator = operatorValue;
                                 numberTwo = RESET_NUMBER;
@@ -446,7 +447,7 @@ public class ViewController {
                     }
                 }
             } else {
-                if (!operator.isEmpty()) {
+                if (operator != null) {
                     if (isPriorityOperations) {
                         numberTwo = calculate(operatorInMemory, numberTwo, textDisplay);
                     }
@@ -456,7 +457,7 @@ public class ViewController {
                     if (numberOne.equals(RESET_NUMBER)) {
                         numberOne = numberTwo;
                     }
-                    if (!operator.equals(EQUALS.getId())) {
+                    if (!operator.equals(Operation.EQUALS)) {
                         String calculate = calculate(operator, numberOne, numberTwo);
                         operatorEqualsUsed = true;
                         if (!numberOne.isEmpty()) {
@@ -466,7 +467,7 @@ public class ViewController {
                             operator = operatorInMemory;
                             numberOne = textDisplay;
                             numberTwo = RESET_NUMBER;
-                            operatorInMemory = RESET_NUMBER;
+                            operatorInMemory = null;
                             isPriorityOperations = false;
                         }
                         textDisplay = calculate;
@@ -491,7 +492,7 @@ public class ViewController {
      */
     @FXML
     public void handlerResetButton() {
-        operator = RESET_NUMBER;
+        operator = null;
         numberOne = RESET_NUMBER;
         numberTwo = RESET_NUMBER;
         startPosition = true;
@@ -532,7 +533,7 @@ public class ViewController {
         if (numberOne.isEmpty()) {
             numberOne = PERCENT_PART_NUMBER;
         }
-        String calculate = calculate(PERCENT.getId(), numberOne, textDisplay);
+        String calculate = calculate(Operation.PERCENT, numberOne, textDisplay);
         DISPLAY.setText(calculate);
     }
 
@@ -546,7 +547,7 @@ public class ViewController {
         Button btn = (Button) event.getSource();
         String textDisplay = DISPLAY.getText();
 
-        if (btn.equals(MC)) {                                                   // todo    >>> FIX
+        if (btn.equals(MC)) {                                                   // todo remove btn.getId()    >>> FIX
             numberInMemory = DEFAULT_NUMBER;
         } else if (btn.equals(M_PLUS)) {
             numberInMemory = calculateInMemory(ADDITION.getId(), numberInMemory, textDisplay);
@@ -650,17 +651,16 @@ public class ViewController {
     /**
      * Calculate result of the arithmetic operation two numbers.
      *
-     * @param operationName the arithmetic operator:  ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
-     * @param numberOne     the first number.
-     * @param numberTwo     the second number.
+     * @param operation the arithmetic operator:  ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
+     * @param numberOne the first number.
+     * @param numberTwo the second number.
      * @return result of the arithmetic operation.
      * @throws UndefinedNumberException if division by zero.
      */
-    private String calculate(String operationName, String numberOne, String numberTwo) throws UndefinedNumberException {
-        Operation operation = Operation.get(operationName);
-
+    private String calculate(Operation operation, String numberOne, String numberTwo) throws UndefinedNumberException {
         BigDecimal firstNumber = new BigDecimal(numberOne);
         BigDecimal secondNumber = new BigDecimal(numberTwo);
+
         BigDecimal result = CALCULATOR.calculate(operation, firstNumber, secondNumber);
         return convertBigDecimalToString(result);
     }
@@ -702,7 +702,7 @@ public class ViewController {
      * @param inMemoryOperation the operation in memory.
      * @return true if the operation in DISPLAY has a higher priority.
      */
-    private boolean getPriorityOperations(String displayOperation, String inMemoryOperation) {
+    private boolean getPriorityOperations(Operation displayOperation, Operation inMemoryOperation) {
         return isHighPriorityOperation(displayOperation) && !isHighPriorityOperation(inMemoryOperation);
     }
 
@@ -712,8 +712,8 @@ public class ViewController {
      * @param operation the arithmetic operation
      * @return true if the operation has a higher priority.
      */
-    private boolean isHighPriorityOperation(String operation) {
-        return operation.equals(MULTIPLICATION.getId()) || operation.equals(DIVISION.getId());  //todo fix
+    private boolean isHighPriorityOperation(Operation operation) {
+        return operation.equals(Operation.MULTIPLICATION) || operation.equals(Operation.DIVISION);  //todo  >>>> fix
     }
 
     /**

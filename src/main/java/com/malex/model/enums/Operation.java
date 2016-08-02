@@ -23,7 +23,11 @@ public enum Operation {
     /**
      * The arithmetic operation of percentage.
      */
-    PERCENT("PERCENT");
+    PERCENT("PERCENT"),
+    /**
+     * The arithmetic operation of EQUALS.
+     */
+    EQUALS("EQUALS");
 
     /**
      * Value is used to store the name arithmetic operation.
