@@ -34,11 +34,11 @@ public class CalculatorTest {
 
     /**
      * Arithmetic operations:
-     * ADDITION
-     * SUBTRACTION
-     * DIVISION
-     * MULTIPLICATION
-     * PERCENT
+     * addition
+     * subtraction
+     * division
+     * multiplication
+     * percent
      */
     @Test
     public void testSimplyNumbers() {

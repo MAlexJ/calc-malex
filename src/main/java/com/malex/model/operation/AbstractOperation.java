@@ -35,7 +35,7 @@ abstract class AbstractOperation implements ArithmeticOperation {
 
     /**
      * Initializes a newly created {@code AbstractOperation} object.
-     * Set a specific arithmetic operation: ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
+     * Set a specific arithmetic operation: addition, subtraction, division, multiplication, percent.
      *
      * @param operationName the arithmetic operation.
      */

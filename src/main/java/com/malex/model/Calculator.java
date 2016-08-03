@@ -61,7 +61,7 @@ public class Calculator {
     }
 
     /**
-     * Value is used to store map {@code Operation} of operations:  ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
+     * Value is used to store map {@code Operation} of operations:  addition, subtraction, division, multiplication, percent.
      */
     private Map<Operation, ArithmeticOperation> operations;
 
@@ -84,7 +84,7 @@ public class Calculator {
     /**
      * Calculate result of the arithmetic operation two numbers.
      *
-     * @param operationName the arithmetic operator:  ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
+     * @param operationName the arithmetic operator:  addition, subtraction, division, multiplication, percent.
      * @param numberOne     the first number.
      * @param numberTwo     the second number.
      * @return result of the arithmetic operation.

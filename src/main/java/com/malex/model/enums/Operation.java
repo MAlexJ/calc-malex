@@ -7,27 +7,27 @@ public enum Operation {
     /**
      * The arithmetic operation of addition.
      */
-    ADDITION("ADDITION"),
+    ADDITION("addition"),
     /**
      * The arithmetic operation of subtraction.
      */
-    SUBTRACTION("SUBTRACTION"),
+    SUBTRACTION("subtraction"),
     /**
      * The arithmetic operation of division.
      */
-    DIVISION("DIVISION"),
+    DIVISION("division"),
     /**
      * The arithmetic operation of multiplication.
      */
-    MULTIPLICATION("MULTIPLICATION"),
+    MULTIPLICATION("multiplication"),
     /**
      * The arithmetic operation of percentage.
      */
-    PERCENT("PERCENT"),
+    PERCENT("percent"),
     /**
-     * The arithmetic operation of EQUALS.
+     * The arithmetic operation of equals.
      */
-    EQUALS("EQUALS");
+    EQUALS("equals");
 
     /**
      * Value is used to store the name arithmetic operation.
@@ -35,7 +35,7 @@ public enum Operation {
     private String description;
 
     /**
-     * Get enumeration: ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
+     * Get enumeration: addition, subtraction, division, multiplication, percent.
      *
      * @param description the name arithmetic operation.
      */

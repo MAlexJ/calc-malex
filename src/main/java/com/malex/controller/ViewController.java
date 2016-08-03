@@ -7,8 +7,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -19,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.malex.model.Calculator.CALCULATOR;
+import static com.malex.model.enums.Operation.*;
+import static javafx.scene.input.KeyCombination.META_ANY;
 
 /**
  * The {@code ViewController} class translate interactions with the view {@code layout.fxml}  into actions to be performed of the model {@code Calculator}.
@@ -47,16 +48,17 @@ public class ViewController {
     private static Logger logger = Logger.getLogger(ViewController.class.getName());
 
     /**
-     * Minimum length of digits.
+     * The minimum number of characters after which the screen font changes.
      */
     private static final int ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS = 7;
+
     /**
-     * Maximum length of digits.
+     * Maximum permissible length of the input numbers on the display.
      */
     private static final int MAXIMUM_LENGTH = 30;
 
     /**
-     * The default values.
+     * The initial value of which is displayed on the display screen of the calculator.
      */
     private static final String DEFAULT_VALUE = "0";
 
@@ -66,20 +68,19 @@ public class ViewController {
     private static final String EMPTY_VALUE = "";
 
     /**
-     * The maximum font size a text.
+     * The maximum font size of the text displayed on the screen.
      */
     private static final int MAX_FONT_SIZE_TEXT = 46;
 
     /**
-     * The pause animation.
+     * Pause animation when pressing the button.
      */
     private static final double PAUSE_ANIMATION = 0.1;
 
     /**
-     * One hundredth part of number.
+     * One hundredth part of the number is used in interest calculation.
      */
-    private static final String ONE_HUNDREDTH_PART_NUMBER = "1";
-
+    private static final BigDecimal ONE_HUNDREDTH_PART_NUMBER = new BigDecimal("1");
 
     /**
      * The number is undefined.
@@ -109,21 +110,21 @@ public class ViewController {
     /**
      * The screen font.
      */
-    private static final Font FONT_APP = new Font("Helvetica Neue Thin", MAX_FONT_SIZE_TEXT);           //todo move from here   >>> FIX
+    private static final Font FONT_APP = new Font("Helvetica Neue Thin", MAX_FONT_SIZE_TEXT);
 
     /**
-     * The default number in memory for an operation: MR; MC; M+; M-.
+     * The default number in memory for an operation: mr; mc; M+; M-.
      */
     private static final BigDecimal DEFAULT_NUMBER = new BigDecimal(DEFAULT_VALUE);
 
     /**
      * Display the exponent on display
      */
-    private static final String EXPONENT_VAL = "E";
+    private static final String EXPONENT_VALUE = "E";
     /**
-     * Display the exponent on model.
+     * Display the exponent in model.
      */
-    private static final String EXPONENT_PLUS_VAL = "E+";
+    private static final String EXPONENT_PLUS_VALUE = "E+";
 
     /**
      * The maximum number for engineering calculations.
@@ -138,7 +139,7 @@ public class ViewController {
     /**
      * The value '0.'.
      */
-    private static final String ZERO_COMMA = "0.";
+    private static final String ZERO_COMMA_VALUE = "0.";
 
     /**
      * The value '.'.
@@ -148,73 +149,68 @@ public class ViewController {
     /**
      * The value '-'.
      */
-    private static final String SIGN_VALUE = "-";
+    private static final String MINUS_VALUE = "-";
 
     /**
-     * Mapping shortcut.
+     * Mapping the buttons and combinations of keyboard buttons.
      */
-    private static final Map<KeyCode, Button> SHORTCUT_MAP = new HashMap<>();
+    private static final Map<KeyCodeCombination, Button> MAP_KEY_CODE = new HashMap<>();
 
     /**
-     * Mapping buttons.
-     */
-    private static final Map<KeyCode, Button> KEY_MAP = new HashMap<>();
-
-    /**
-     * Value is used to store ID.
+     * Value is used to store ID buttons.
      */
     @FXML
-    public TextField DISPLAY;
+    public TextField display;
     @FXML
-    public Button MR;
+    public Button mr;
     @FXML
-    public Button MC;
+    public Button mc;
     @FXML
-    public Button M_PLUS;
+    public Button mPlus;
     @FXML
-    public Button M_MINUS;
+    public Button mMinus;
     @FXML
-    public Button DIGIT0;
+    public Button digit0;
     @FXML
-    public Button DIGIT1;
+    public Button digit1;
     @FXML
-    public Button DIGIT2;
+    public Button digit2;
     @FXML
-    public Button DIGIT3;
+    public Button digit3;
     @FXML
-    public Button DIGIT4;
+    public Button digit4;
     @FXML
-    public Button DIGIT5;
+    public Button digit5;
     @FXML
-    public Button DIGIT6;
+    public Button digit6;
     @FXML
-    public Button DIGIT7;
+    public Button digit7;
     @FXML
-    public Button DIGIT8;
+    public Button digit8;
     @FXML
-    public Button DIGIT9;
+    public Button digit9;
     @FXML
-    public Button COMMA;
+    public Button comma;
     @FXML
-    public Button MULTIPLICATION;
+    public Button multiplication;
     @FXML
-    public Button DIVISION;
+    public Button division;
     @FXML
-    public Button ADDITION;
+    public Button addition;
     @FXML
-    public Button SUBTRACTION;
+    public Button subtraction;
     @FXML
-    public Button EQUALS;
+    public Button equals;
     @FXML
-    public Button ESCAPE;
+    public Button escape;
     @FXML
-    public Button SIGN;
+    public Button sign;
     @FXML
-    public Button PERCENT;
+    public Button percent;
     @FXML
-    public Button EXIT;
+    public Button exit;
     @FXML
-    public Button TRAY;
+    public Button tray;
 
     /**
      * Position on the x-axis.
@@ -227,24 +223,24 @@ public class ViewController {
     private static double POSITION_Y;
 
     /**
-     * The arithmetic operator in memory for an operation: MR; MC; M+; M-.
+     * The arithmetic operator in memory for an operation: mr; mc; M+; M-.
      */
-    private static BigDecimal numberInMemory;
+    private static BigDecimal numberInMemory = new BigDecimal(DEFAULT_VALUE);
 
     /**
-     * The first number.
+     * The first number stored in memory.
      */
-    private BigDecimal numberOne;  //todo BigDecimal  >>>  FIX
+    private BigDecimal numberOne;
 
     /**
-     * The second number.
+     * The second number stored in memory.
      */
-    private BigDecimal numberTwo;  //todo BigDecimal  >>>  FIX
+    private BigDecimal numberTwo;
 
     /**
      * The arithmetic operator in memory.
      */
-    private Operation operator;   //todo review all varable names, convert String -> BigDecimal or Operator   >>>  FIX
+    private Operation operator;
 
     /**
      * The priority an operator in memory.
@@ -262,12 +258,12 @@ public class ViewController {
     private boolean startPosition = true;
 
     /**
-     * The status of reuse operators
+     * The status of reuse arithmetic operators: '+', '-', '*', '/'.
      */
     private boolean replaceOperator;
 
     /**
-     * Check to reuse operator 'equals'.
+     * The status of reuse operators 'equals'.
      */
     private boolean reuseOperatorEquals;
 
@@ -280,10 +276,10 @@ public class ViewController {
      * Initialization the controller.
      */
     public void init() {
-        DISPLAY.setEditable(false);
-        DISPLAY.setFont(FONT_APP);
-        DISPLAY.setText(DEFAULT_VALUE);
-        DISPLAY.lengthProperty().addListener((observable, oldValue, newValue) -> {
+        display.setEditable(false);
+        display.setFont(FONT_APP);
+        display.setText(DEFAULT_VALUE);
+        display.lengthProperty().addListener((observable, oldValue, newValue) -> {
             changeDisplaySize(newValue.intValue());
         });
     }
@@ -293,32 +289,33 @@ public class ViewController {
      */
     @FXML
     void initialize() {
-        SHORTCUT_MAP.put(KeyCode.EQUALS, ADDITION);
-        SHORTCUT_MAP.put(KeyCode.DIGIT8, MULTIPLICATION);
-        SHORTCUT_MAP.put(KeyCode.MINUS, SIGN);
-        SHORTCUT_MAP.put(KeyCode.DIGIT5, PERCENT);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT0, META_ANY), digit0);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT1, META_ANY), digit1);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT2, META_ANY), digit2);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT3, META_ANY), digit3);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT4, META_ANY), digit4);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT5, META_ANY), digit5);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT6, META_ANY), digit6);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT7, META_ANY), digit7);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT8, META_ANY), digit8);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT9, META_ANY), digit9);
 
-        KEY_MAP.put(KeyCode.DIGIT0, DIGIT0);
-        KEY_MAP.put(KeyCode.DIGIT1, DIGIT1);
-        KEY_MAP.put(KeyCode.DIGIT2, DIGIT2);
-        KEY_MAP.put(KeyCode.DIGIT3, DIGIT3);
-        KEY_MAP.put(KeyCode.DIGIT4, DIGIT4);
-        KEY_MAP.put(KeyCode.DIGIT5, DIGIT5);
-        KEY_MAP.put(KeyCode.DIGIT6, DIGIT6);
-        KEY_MAP.put(KeyCode.DIGIT7, DIGIT7);
-        KEY_MAP.put(KeyCode.DIGIT8, DIGIT8);
-        KEY_MAP.put(KeyCode.DIGIT9, DIGIT9);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.COMMA, META_ANY), comma);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.PERIOD, META_ANY), comma);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.SLASH, META_ANY), division);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.MINUS, META_ANY), subtraction);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.EQUALS, META_ANY), equals);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.ENTER, META_ANY), equals);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.ESCAPE, META_ANY), escape);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.C, META_ANY), mc);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.R, META_ANY), mr);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.M, META_ANY), mMinus);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.P, META_ANY), mPlus);
 
-        KEY_MAP.put(KeyCode.COMMA, COMMA);
-        KEY_MAP.put(KeyCode.SLASH, DIVISION);
-        KEY_MAP.put(KeyCode.MINUS, SUBTRACTION);
-        KEY_MAP.put(KeyCode.EQUALS, EQUALS);
-        KEY_MAP.put(KeyCode.ENTER, EQUALS);
-        KEY_MAP.put(KeyCode.ESCAPE, ESCAPE);
-        KEY_MAP.put(KeyCode.C, MC);
-        KEY_MAP.put(KeyCode.R, MR);
-        KEY_MAP.put(KeyCode.M, M_MINUS);
-        KEY_MAP.put(KeyCode.P, M_PLUS);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.SHIFT_DOWN), addition);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT8, KeyCombination.SHIFT_DOWN), multiplication);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.MINUS, KeyCombination.SHIFT_DOWN), sign);
+        MAP_KEY_CODE.put(new KeyCodeCombination(KeyCode.DIGIT5, KeyCombination.SHIFT_DOWN), percent);
     }
 
     /**
@@ -327,8 +324,8 @@ public class ViewController {
      * @param event this event is generated when a buttons is pressed.
      */
     @FXML
-    public void handlerNumbersButton(Event event) {
-        String textDisplay = DISPLAY.getText();
+    public void pushNumbersButton(Event event) {
+        String textDisplay = display.getText();
         if (!isNumber(textDisplay)) {
             textDisplay = EMPTY_VALUE;
             numberOne = null;
@@ -352,31 +349,31 @@ public class ViewController {
             int number = -1;
             String coma = EMPTY_VALUE;
 
-            if (btn.equals(DIGIT0)) {
+            if (btn.equals(digit0)) {
                 if (validateLimitNumberZeros(textDisplay)) {
                     number = 0;
                 }
-            } else if (btn.equals(DIGIT1)) {
-                number = 1;                          //todo int     >>> FIX
-            } else if (btn.equals(DIGIT2)) {
+            } else if (btn.equals(digit1)) {
+                number = 1;
+            } else if (btn.equals(digit2)) {
                 number = 2;
-            } else if (btn.equals(DIGIT3)) {
+            } else if (btn.equals(digit3)) {
                 number = 3;
-            } else if (btn.equals(DIGIT4)) {
+            } else if (btn.equals(digit4)) {
                 number = 4;
-            } else if (btn.equals(DIGIT5)) {
+            } else if (btn.equals(digit5)) {
                 number = 5;
-            } else if (btn.equals(DIGIT6)) {
+            } else if (btn.equals(digit6)) {
                 number = 6;
-            } else if (btn.equals(DIGIT7)) {
+            } else if (btn.equals(digit7)) {
                 number = 7;
-            } else if (btn.equals(DIGIT8)) {
+            } else if (btn.equals(digit8)) {
                 number = 8;
-            } else if (btn.equals(DIGIT9)) {
+            } else if (btn.equals(digit9)) {
                 number = 9;
-            } else if (btn.equals(COMMA)) {
+            } else if (btn.equals(comma)) {
                 if (textDisplay.isEmpty()) {
-                    coma = ZERO_COMMA;
+                    coma = ZERO_COMMA_VALUE;
                 } else if (!textDisplay.contains(COMMA_VALUE)) {
                     coma = COMMA_VALUE;
                 }
@@ -386,10 +383,9 @@ public class ViewController {
                 textDisplay = textDisplay + number;
             }
 
-            DISPLAY.setText(textDisplay + coma);
+            display.setText(textDisplay + coma);
         }
     }
-
 
     /**
      * Handler pressing on click the buttons: '=', '+', '-', '*', '/'.
@@ -397,11 +393,11 @@ public class ViewController {
      * @param event this event is generated when a buttons '=', '+', '-', '*', '/' is pressed.
      */
     @FXML
-    public void handlerOperationButton(Event event) {
+    public void pushOperationButton(Event event) {
         Button btn = (Button) event.getSource();
         Operation operatorValue = Operation.get(btn.getId());
 
-        String textDisplay = DISPLAY.getText();
+        String textDisplay = display.getText();
 
         try {
             BigDecimal numbers;
@@ -412,7 +408,7 @@ public class ViewController {
             } else {
                 numbers = convertStringToBigDecimal(textDisplay);
 
-                if (!EQUALS.equals(btn)) {                    //todo remove getId() >>>> FIX
+                if (equals != btn) {
                     if (reuseOperatorEquals) {
                         numberOne = numbers;
                         operator = operatorValue;
@@ -439,23 +435,20 @@ public class ViewController {
                                     numberOne = numbers;
                                     nextNumber = true;
                                 } else {
-                                    String calculate = calculate(operator, numberOne, numbers);
-                                    numberOne = convertStringToBigDecimal(calculate);
+                                    numberOne = CALCULATOR.calculate(operator, numberOne, numbers);
                                     operator = operatorValue;
                                     nextNumber = true;
-                                    DISPLAY.setText(convertBigDecimalToString(numberOne));
+                                    display.setText(convertBigDecimalToString(numberOne));
                                 }
                             } else {
-                                String calculate = calculate(operatorInMemory, numberTwo, numbers);
-                                numberTwo = convertStringToBigDecimal(calculate);
-                                DISPLAY.setText(convertBigDecimalToString(numberOne));
+                                numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, numbers);
+                                display.setText(convertBigDecimalToString(numberOne));
                                 if (isHighPriorityOperation(operatorInMemory)) {
                                     operatorInMemory = operatorValue;
                                     isPriorityOperations = true;
                                 } else {
                                     operatorInMemory = null;
-                                    calculate = calculate(operator, numberOne, numberTwo);
-                                    numberOne = convertStringToBigDecimal(calculate);
+                                    numberOne = CALCULATOR.calculate(operator, numberOne, numberTwo);
                                     operator = operatorValue;
                                     numberTwo = null;
                                     isPriorityOperations = false;
@@ -468,20 +461,19 @@ public class ViewController {
                 } else {
                     if (operator != null) {
                         if (isPriorityOperations) {
-                            String calculate = calculate(operatorInMemory, numberTwo, numbers);
-                            numberTwo = convertStringToBigDecimal(calculate);
+                            numberTwo = CALCULATOR.calculate(operatorInMemory, numberTwo, numbers);
                         }
                         if (numberTwo == null) {
-                            numberTwo = convertStringToBigDecimal(DISPLAY.getText());
+                            numberTwo = convertStringToBigDecimal(display.getText());
                         }
                         if (numberOne == null) {
                             numberOne = numberTwo;
                         }
                         if (!operator.equals(Operation.EQUALS)) {
-                            String calculate = calculate(operator, numberOne, numberTwo);
+                            BigDecimal calculate = CALCULATOR.calculate(operator, numberOne, numberTwo);
                             reuseOperatorEquals = true;
                             if (numberOne != null) {
-                                numberOne = convertStringToBigDecimal(calculate);
+                                numberOne = calculate;
                             }
                             if (isPriorityOperations) {
                                 operator = operatorInMemory;
@@ -490,22 +482,17 @@ public class ViewController {
                                 operatorInMemory = null;
                                 isPriorityOperations = false;
                             }
-                            numbers = convertStringToBigDecimal(calculate);
-                        }
-                    } else {
-                        if (validateNumberAvailableInsideComma(convertBigDecimalToString(numbers))) {
-                            numbers = convertStringToBigDecimal(DEFAULT_VALUE);
+                            numbers = calculate;
                         }
                     }
-                    DISPLAY.setText(convertBigDecimalToString(numbers));
+                    display.setText(convertBigDecimalToString(numbers));
                 }
             }
-
         } catch (UndefinedNumberException e) {
-            DISPLAY.setText(UNDEFINED);
+            display.setText(UNDEFINED);
             operator = operatorValue;
         } catch (RuntimeException e) {
-            logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerOperationButton(Event event): " + e.getMessage());
+            logger.error("Exception type: " + e.getClass().getSimpleName() + " -> pushOperationButton(Event event): " + e.getMessage());
         }
     }
 
@@ -513,36 +500,36 @@ public class ViewController {
      * Handler pressing on click the button: 'AC'.
      */
     @FXML
-    public void handlerResetButton() {
+    public void pushResetButton() {
         operator = null;
         numberOne = null;
         numberTwo = null;
         startPosition = true;
         isPriorityOperations = false;
         reuseOperatorEquals = false;
-        DISPLAY.setStyle(FX_FONT_SIZE + MAX_FONT_SIZE_TEXT + FONT_SIZE);
-        DISPLAY.setText(DEFAULT_VALUE);
+        display.setStyle(FX_FONT_SIZE + MAX_FONT_SIZE_TEXT + FONT_SIZE);
+        display.setText(DEFAULT_VALUE);
     }
 
     /**
      * Handler pressing on click the button: '-'.
      */
     @FXML
-    public void handlerSingButton() {
-        String textDisplay = DISPLAY.getText();
+    public void pushMinusButton() {
+        String textDisplay = display.getText();
         if (!textDisplay.equals(DEFAULT_VALUE)) {
             String newTextDisplay;
 
             if (validateNumberAvailableInsideComma(textDisplay)) {
                 newTextDisplay = DEFAULT_VALUE;
             } else {
-                if (textDisplay.startsWith(SIGN_VALUE)) {
-                    newTextDisplay = textDisplay.substring(1);
+                if (textDisplay.startsWith(MINUS_VALUE)) {
+                    newTextDisplay = textDisplay.substring(MINUS_VALUE.length());
                 } else {
-                    newTextDisplay = SIGN_VALUE + textDisplay;
+                    newTextDisplay = MINUS_VALUE + textDisplay;
                 }
             }
-            DISPLAY.setText(newTextDisplay);
+            display.setText(newTextDisplay);
         }
     }
 
@@ -550,14 +537,22 @@ public class ViewController {
      * Handler pressing on click the button: '%'.
      */
     @FXML
-    public void handlerPercentButton() throws Exception {
-        BigDecimal textDisplay = new BigDecimal(DISPLAY.getText());
+    public void pushPercentButton() {
+        String text = display.getText();
+        try {
+            if (!text.equals(UNDEFINED)) {
+                BigDecimal textDisplay = new BigDecimal(text);
 
-        if (numberOne == null) {
-            numberOne = new BigDecimal(ONE_HUNDREDTH_PART_NUMBER);
+                if (numberOne == null) {
+                    numberOne = ONE_HUNDREDTH_PART_NUMBER;
+                }
+
+                BigDecimal result = CALCULATOR.calculate(PERCENT, numberOne, textDisplay);
+                display.setText(convertBigDecimalToString(result));
+            }
+        } catch (UndefinedNumberException e) {
+            display.setText(UNDEFINED);
         }
-        String calculate = calculate(Operation.PERCENT, numberOne, textDisplay);
-        DISPLAY.setText(calculate);
     }
 
     /**
@@ -566,55 +561,59 @@ public class ViewController {
      * @param event this event is generated when a buttons 'mr', 'mc','m-','m+' is pressed.
      */
     @FXML
-    public void handlerMemoryButton(Event event) throws Exception {
+    public void pushMemoryButton(Event event) throws UndefinedNumberException {
         Button btn = (Button) event.getSource();
-        String textDisplay = DISPLAY.getText();
 
-        if (btn.equals(MC)) {                                                   // todo remove btn.getId()    >>> FIX
-            numberInMemory = DEFAULT_NUMBER;
-        } else if (btn.equals(M_PLUS)) {
-            numberInMemory = calculateInMemory(ADDITION.getId(), numberInMemory, textDisplay);
-            nextNumber = true;
-        } else if (btn.equals(M_MINUS)) {
-            numberInMemory = calculateInMemory(SUBTRACTION.getId(), numberInMemory, textDisplay);
-            nextNumber = true;
-        } else if (btn.equals(MR)) {
-            String number = convertBigDecimalToString(numberInMemory);
+        String textDisplay = display.getText();
 
-            DISPLAY.setText(number);
+        if (!textDisplay.equals(UNDEFINED)) {
+            BigDecimal number = convertStringToBigDecimal(textDisplay);
+
+            if (btn == mc) {
+                numberInMemory = DEFAULT_NUMBER;
+            } else if (btn == mPlus) {
+                numberInMemory = CALCULATOR.calculate(ADDITION, numberInMemory, number);
+                nextNumber = true;
+            } else if (btn == mMinus) {
+                numberInMemory = CALCULATOR.calculate(SUBTRACTION, numberInMemory, number);
+                nextNumber = true;
+            } else if (btn == mr) {
+                String result = convertBigDecimalToString(numberInMemory);
+                display.setText(result);
+            }
         }
     }
 
     /**
-     * Handler moving applications.
+     * Move an application by pressing the right mouse button.
      */
     @FXML
-    public void handlerDragMouse() {
-        Stage stage = (Stage) DISPLAY.getScene().getWindow();
-        DISPLAY.setOnMousePressed(mouseEvent -> {
+    public void mouseDragOver() {
+        Stage stage = (Stage) display.getScene().getWindow();
+        display.setOnMousePressed(mouseEvent -> {
             POSITION_X = stage.getX() - mouseEvent.getScreenX();
             POSITION_Y = stage.getY() - mouseEvent.getScreenY();
         });
-        DISPLAY.setOnMouseDragged(mouseEvent -> {
+        display.setOnMouseDragged(mouseEvent -> {
             stage.setX(mouseEvent.getScreenX() + POSITION_X);
             stage.setY(mouseEvent.getScreenY() + POSITION_Y);
         });
     }
 
     /**
-     * Handler pressing on click the button 'EXIT'.
+     * Shutdown the application.
      */
     @FXML
-    public void handleExitButton() {
+    public void exitApplication() {
         System.exit(0);
     }
 
     /**
-     * Handler pressing on click the button 'TRAY'.
+     * Minimize application to the system tray
      */
     @FXML
-    public void handleTrayButton() {
-        Stage stage = (Stage) TRAY.getScene().getWindow();
+    public void minimizeApplication() {
+        Stage stage = (Stage) tray.getScene().getWindow();
         stage.setIconified(true);
     }
 
@@ -624,7 +623,7 @@ public class ViewController {
      * @param event this event is generated when a key is pressed, released, or typed.
      */
     @FXML
-    public void handlerKeyPressed(KeyEvent event) {
+    public void keyPressed(KeyEvent event) {
         Button button = findButton(event);
         if (button != null) {
             clickOnButton(button);
@@ -637,15 +636,13 @@ public class ViewController {
      * @param event this event is generated when a key is pressed, released, or typed.
      * @return the button.
      */
-    private Button findButton(KeyEvent event) {                                          //todo mapping       >>> FIX
-        Button button;
-        KeyCode code = event.getCode();
-        if (event.isShiftDown()) {
-            button = SHORTCUT_MAP.get(code);
-        } else {
-            button = KEY_MAP.get(code);
+    private Button findButton(KeyEvent event) {
+        for (KeyCodeCombination combination : MAP_KEY_CODE.keySet()) {
+            if (combination.match(event)) {
+                return MAP_KEY_CODE.get(combination);
+            }
         }
-        return button;
+        return null;
     }
 
     /**
@@ -656,7 +653,7 @@ public class ViewController {
         if (length > ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS) {
             size = MAX_FONT_SIZE_TEXT * ALLOWABLE_MINIMUM_LENGTH_OF_DIGITS / length;
         }
-        DISPLAY.setStyle(FX_FONT_SIZE + size + FONT_SIZE);
+        display.setStyle(FX_FONT_SIZE + size + FONT_SIZE);
     }
 
     /**
@@ -673,44 +670,15 @@ public class ViewController {
     }
 
     /**
-     * Calculate result of the arithmetic operation two numbers.
-     *
-     * @param operation    the arithmetic operator:  ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
-     * @param firstNumber  the first number.
-     * @param secondNumber the second number.
-     * @return result of the arithmetic operation.
-     * @throws UndefinedNumberException if division by zero.
-     */
-    private String calculate(Operation operation, BigDecimal firstNumber, BigDecimal secondNumber) throws UndefinedNumberException {
-        BigDecimal result = CALCULATOR.calculate(operation, firstNumber, secondNumber);
-        return convertBigDecimalToString(result);
-    }
-
-    /**
-     * Calculate adding and subtracting operations from memory.
-     *
-     * @param operationName the operator:  ADDITION, SUBTRACTION.
-     * @param numberOne     the first number.
-     * @param numberTwo     the second number.
-     * @return result of the arithmetic operation.
-     * @throws UndefinedNumberException if division by zero.
-     */
-    private BigDecimal calculateInMemory(String operationName, BigDecimal numberOne, String numberTwo) throws UndefinedNumberException {
-        Operation operation = Operation.get(operationName);
-        BigDecimal secondNumber = new BigDecimal(numberTwo);
-        return CALCULATOR.calculate(operation, numberOne, secondNumber);
-    }
-
-    /**
      * Convert the number BigDecimal to String.
      *
      * @param number BigDecimal
      * @return string representation of the number.
      */
-    private String convertBigDecimalToString(BigDecimal number) {                            // todo duplication       >>> FIX
+    private String convertBigDecimalToString(BigDecimal number) {
         BigDecimal result = number.stripTrailingZeros();
         if (number.compareTo(MAX_NOT_ENGINEERING_VALUE) > 0 || number.compareTo(MIN_NOT_ENGINEERING_VALUE) < 0) {
-            return result.toString().replace(EXPONENT_PLUS_VAL, EXPONENT_VAL);
+            return result.toString().replace(EXPONENT_PLUS_VALUE, EXPONENT_VALUE);
         }
         return result.toPlainString();
     }
@@ -731,7 +699,7 @@ public class ViewController {
      *
      * @param displayOperation  the operation selected by the user.
      * @param inMemoryOperation the operation in memory.
-     * @return true if the operation in DISPLAY has a higher priority.
+     * @return true if the operation in display has a higher priority.
      */
     private boolean getPriorityOperations(Operation displayOperation, Operation inMemoryOperation) {
         return isHighPriorityOperation(displayOperation) && !isHighPriorityOperation(inMemoryOperation);
@@ -744,7 +712,7 @@ public class ViewController {
      * @return true if the operation has a higher priority.
      */
     private boolean isHighPriorityOperation(Operation operation) {
-        return operation.equals(Operation.MULTIPLICATION) || operation.equals(Operation.DIVISION);  //todo  >>>> fix
+        return operation.equals(MULTIPLICATION) || operation.equals(DIVISION);
     }
 
     /**
@@ -763,7 +731,7 @@ public class ViewController {
      * @return true if the count of zeros in the permitted limit.
      */
     private boolean validateLimitNumberZeros(String textDisplay) {
-        return !textDisplay.startsWith(DEFAULT_VALUE) || textDisplay.startsWith(ZERO_COMMA);
+        return !textDisplay.startsWith(DEFAULT_VALUE) || textDisplay.startsWith(ZERO_COMMA_VALUE);
     }
 
     /**

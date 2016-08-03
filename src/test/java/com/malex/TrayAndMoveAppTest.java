@@ -35,7 +35,7 @@ public class TrayAndMoveAppTest {
     public void testAppMove() {
         //given
         controller.push(KeyCode.ESCAPE);
-        controller.click("#DISPLAY");
+        controller.click("#display");
 
         //when
         clickMouse(140, 200);
@@ -44,16 +44,16 @@ public class TrayAndMoveAppTest {
         controller.sleep(500);
         clickMouse(600, 400);
         controller.sleep(500);
+        testTray();
     }
 
-    @Test
-    public void testTray() {
+    private void testTray() {
         //STEP #1 find button
-        Button tray = FXTestUtils.getOrFail("#TRAY");
+        Button tray = FXTestUtils.getOrFail("#tray");
         assertFalse(tray.isHover());
 
         //STEP #2 press button
-        controller.click("#TRAY");
+        controller.click("#tray");
         controller.sleep(500);
 
         //STEP #3 check button

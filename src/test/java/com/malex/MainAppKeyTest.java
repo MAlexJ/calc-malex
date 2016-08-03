@@ -166,6 +166,10 @@ public class MainAppKeyTest {
         testCalculateKeyCode("2-52%+3*4=", "12.96");
         testCalculateKeyCode("2-52%+3*4-111.2222=", "-98.2622");
         testCalculateKeyCode("2-52%+3*4/2=", "6.96");
+        testCalculateKeyCode("9999999999999999*99999999999===%%%%%%%%%%%%=+1", "1");
+        testCalculateKeyCode("9999999999999999*99999999999===%%%%%%%%%%%%=-1", "1");
+        testCalculateKeyCode("9999999999999999*99999999999===%%%%%%%%%%%%=*1", "1");
+        testCalculateKeyCode("9999999999999999*99999999999===%%%%%%%%%%%%=/1", "1");
     }
 
     @Test
@@ -260,10 +264,11 @@ public class MainAppKeyTest {
     @Test
     public void testButtonMemory() {
         // simply operation
+        testCalculateKeyCode("c5r", "0");
         testCalculateKeyCode("cr", "0");
-        testCalculateKeyCode("56r", "0");
-        testCalculateKeyCode("2pppppp", "2");
-        testCalculateKeyCode("2mmmmmm", "2");
+        testCalculateKeyCode("c56r", "0");
+        testCalculateKeyCode("c2pppppp", "2");
+        testCalculateKeyCode("c2mmmmmm", "2");
         testCalculateKeyCode("c5pmr", "0");
         testCalculateKeyCode("c5pmmr", "-5");
         testCalculateKeyCode("c5mpr", "0");
@@ -322,10 +327,19 @@ public class MainAppKeyTest {
         testCalculateKeyCode("2/0+45=", "90");
         testCalculateKeyCode("2/0*45=", "2025");
         testCalculateKeyCode("0.99+3*4-2/0=", "Undefined");
+
+        testCalculateKeyCode("2/0=%", "Undefined");
+        testCalculateKeyCode("1/0=%====", "Undefined");
+        testCalculateKeyCode("99999999999*9999999999999999=%%%%%%%%%%%%%%%%%%%%", "Undefined");
+        testCalculateKeyCode("99999999999*9999999999999999=%%%%%%%%%%%%%%%%%%====", "Undefined");
+
+        testCalculateKeyCode("999999999999999999999*999999999999999999999==============%====", "Undefined");
+        testCalculateKeyCode("1/0=pmr", "Undefined");
+        testCalculateKeyCode("999999999999999999999*999999999999999999999==============rpmc=", "Undefined");
     }
 
     private void testCalculateKeyCode(String arithmeticExpression, String expectedResult) {
-        //#Step: 1. Clear DISPLAY
+        //#Step: 1. Clear display
         controller.push(KeyCode.ESCAPE);
 
         //#Step: 2. Click on buttons
@@ -333,8 +347,8 @@ public class MainAppKeyTest {
             pushKey(button);
         }
 
-        //# Step: 3. Get result on DISPLAY
-        TextField display = GuiTest.find("#DISPLAY");
+        //# Step: 3. Get result on display
+        TextField display = GuiTest.find("#display");
         String actualResult = display.getText();
 
         //# Step: 4. Compare the expected results with the actual result.
