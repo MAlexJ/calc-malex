@@ -56,14 +56,14 @@ public class ViewController {
     private static final int MAXIMUM_LENGTH = 30;
 
     /**
-     * Start position.
+     * The default values.
      */
-    private static final String START_POSITION = "0";
+    private static final String DEFAULT_VALUE = "0";
 
     /**
-     * Value is used to store the reset number. //TODO rename
+     * The empty string value.
      */
-    private static final String RESET_NUMBER = "";
+    private static final String EMPTY_VALUE = "";
 
     /**
      * The maximum font size a text.
@@ -78,7 +78,13 @@ public class ViewController {
     /**
      * One hundredth part of number.
      */
-    private static final String PERCENT_PART_NUMBER = "1";
+    private static final String ONE_HUNDREDTH_PART_NUMBER = "1";
+
+
+    /**
+     * The number is undefined.
+     */
+    private final static String UNDEFINED = "Undefined";
 
     /**
      * The pattern of validate the number.
@@ -108,7 +114,7 @@ public class ViewController {
     /**
      * The default number in memory for an operation: MR; MC; M+; M-.
      */
-    private static final BigDecimal DEFAULT_NUMBER = new BigDecimal(START_POSITION);
+    private static final BigDecimal DEFAULT_NUMBER = new BigDecimal(DEFAULT_VALUE);
 
     /**
      * Display the exponent on display
@@ -228,17 +234,17 @@ public class ViewController {
     /**
      * The first number.
      */
-    private String numberOne = "";  //BigDecimal
+    private BigDecimal numberOne;  //todo BigDecimal  >>>  FIX
 
     /**
      * The second number.
      */
-    private String numberTwo = "";  //BigDecimal
+    private BigDecimal numberTwo;  //todo BigDecimal  >>>  FIX
 
     /**
      * The arithmetic operator in memory.
      */
-    private Operation operator;   //todo review all varable names, convert String -> BigDecimal or Operator
+    private Operation operator;   //todo review all varable names, convert String -> BigDecimal or Operator   >>>  FIX
 
     /**
      * The priority an operator in memory.
@@ -261,9 +267,9 @@ public class ViewController {
     private boolean replaceOperator;
 
     /**
-     * Reuse operator 'equals'.
+     * Check to reuse operator 'equals'.
      */
-    private boolean operatorEqualsUsed;
+    private boolean reuseOperatorEquals;
 
     /**
      * Specifies the priority of the operation.
@@ -276,7 +282,7 @@ public class ViewController {
     public void init() {
         DISPLAY.setEditable(false);
         DISPLAY.setFont(FONT_APP);
-        DISPLAY.setText(START_POSITION);
+        DISPLAY.setText(DEFAULT_VALUE);
         DISPLAY.lengthProperty().addListener((observable, oldValue, newValue) -> {
             changeDisplaySize(newValue.intValue());
         });
@@ -324,18 +330,18 @@ public class ViewController {
     public void handlerNumbersButton(Event event) {
         String textDisplay = DISPLAY.getText();
         if (!isNumber(textDisplay)) {
-            textDisplay = RESET_NUMBER;
-            numberOne = RESET_NUMBER;
+            textDisplay = EMPTY_VALUE;
+            numberOne = null;
         } else {
-            if (textDisplay.equals(START_POSITION) && startPosition) {
-                textDisplay = RESET_NUMBER;
+            if (textDisplay.equals(DEFAULT_VALUE) && startPosition) {
+                textDisplay = EMPTY_VALUE;
                 startPosition = false;
-            } else if (textDisplay.startsWith(START_POSITION) && textDisplay.length() == 1) {
-                textDisplay = RESET_NUMBER;
+            } else if (textDisplay.startsWith(DEFAULT_VALUE) && textDisplay.length() == 1) {
+                textDisplay = EMPTY_VALUE;
             }
         }
         if (nextNumber) {
-            textDisplay = RESET_NUMBER;
+            textDisplay = EMPTY_VALUE;
             nextNumber = false;
         }
         replaceOperator = false;
@@ -343,15 +349,15 @@ public class ViewController {
         if (textDisplay.length() < MAXIMUM_LENGTH) {
             Button btn = (Button) event.getSource();
 
-            int number = -1;                                     //todo int     >>> FIX
-            String coma = RESET_NUMBER;
+            int number = -1;
+            String coma = EMPTY_VALUE;
 
             if (btn.equals(DIGIT0)) {
                 if (validateLimitNumberZeros(textDisplay)) {
                     number = 0;
                 }
             } else if (btn.equals(DIGIT1)) {
-                number = 1;
+                number = 1;                          //todo int     >>> FIX
             } else if (btn.equals(DIGIT2)) {
                 number = 2;
             } else if (btn.equals(DIGIT3)) {
@@ -384,6 +390,7 @@ public class ViewController {
         }
     }
 
+
     /**
      * Handler pressing on click the buttons: '=', '+', '-', '*', '/'.
      *
@@ -395,92 +402,107 @@ public class ViewController {
         Operation operatorValue = Operation.get(btn.getId());
 
         String textDisplay = DISPLAY.getText();
+
         try {
-            if (!EQUALS.equals(btn)) {    //todo remove getId();
-                if (operatorEqualsUsed) {
-                    numberOne = textDisplay;
-                    operator = operatorValue;
-                    numberTwo = RESET_NUMBER;
-                    nextNumber = true;
-                    operatorEqualsUsed = false;
-                } else {
-                    if (replaceOperator) {
-                        replaceOperator = true;
+            BigDecimal numbers;
+
+            if (textDisplay.equals(UNDEFINED)) {
+                throw new UndefinedNumberException("The number is Undefined!");
+
+            } else {
+                numbers = convertStringToBigDecimal(textDisplay);
+
+                if (!EQUALS.equals(btn)) {                    //todo remove getId() >>>> FIX
+                    if (reuseOperatorEquals) {
+                        numberOne = numbers;
                         operator = operatorValue;
+                        numberTwo = null;
+                        nextNumber = true;
+                        reuseOperatorEquals = false;
                     } else {
-                        if (operator != null && operatorInMemory == null) {
-                            if (getPriorityOperations(operatorValue, operator)) {
-                                operatorInMemory = operatorValue;
-                                isPriorityOperations = true;
-                                numberTwo = textDisplay;
-                                nextNumber = true;
-                                return;
-                            }
-                        }
-                        if (!isPriorityOperations) {
-                            if (numberTwo.isEmpty() && operator == null) {
-                                operator = operatorValue;
-                                numberOne = textDisplay;
-                                nextNumber = true;
-                            } else {
-                                numberOne = calculate(operator, numberOne, textDisplay);
-                                operator = operatorValue;
-                                nextNumber = true;
-                                DISPLAY.setText(numberOne);
-                            }
+                        if (replaceOperator) {
+                            replaceOperator = true;
+                            operator = operatorValue;
                         } else {
-                            numberTwo = calculate(operatorInMemory, numberTwo, textDisplay);
-                            DISPLAY.setText(numberTwo);
-                            if (isHighPriorityOperation(operatorInMemory)) {
-                                operatorInMemory = operatorValue;
-                                isPriorityOperations = true;
+                            if (operator != null && operatorInMemory == null) {
+                                if (getPriorityOperations(operatorValue, operator)) {
+                                    operatorInMemory = operatorValue;
+                                    isPriorityOperations = true;
+                                    numberTwo = numbers;
+                                    nextNumber = true;
+                                    return;
+                                }
+                            }
+                            if (!isPriorityOperations) {
+                                if (numberTwo == null && operator == null) {
+                                    operator = operatorValue;
+                                    numberOne = numbers;
+                                    nextNumber = true;
+                                } else {
+                                    String calculate = calculate(operator, numberOne, numbers);
+                                    numberOne = convertStringToBigDecimal(calculate);
+                                    operator = operatorValue;
+                                    nextNumber = true;
+                                    DISPLAY.setText(convertBigDecimalToString(numberOne));
+                                }
                             } else {
+                                String calculate = calculate(operatorInMemory, numberTwo, numbers);
+                                numberTwo = convertStringToBigDecimal(calculate);
+                                DISPLAY.setText(convertBigDecimalToString(numberOne));
+                                if (isHighPriorityOperation(operatorInMemory)) {
+                                    operatorInMemory = operatorValue;
+                                    isPriorityOperations = true;
+                                } else {
+                                    operatorInMemory = null;
+                                    calculate = calculate(operator, numberOne, numberTwo);
+                                    numberOne = convertStringToBigDecimal(calculate);
+                                    operator = operatorValue;
+                                    numberTwo = null;
+                                    isPriorityOperations = false;
+                                }
+                                nextNumber = true;
+                            }
+                            replaceOperator = true;
+                        }
+                    }
+                } else {
+                    if (operator != null) {
+                        if (isPriorityOperations) {
+                            String calculate = calculate(operatorInMemory, numberTwo, numbers);
+                            numberTwo = convertStringToBigDecimal(calculate);
+                        }
+                        if (numberTwo == null) {
+                            numberTwo = convertStringToBigDecimal(DISPLAY.getText());
+                        }
+                        if (numberOne == null) {
+                            numberOne = numberTwo;
+                        }
+                        if (!operator.equals(Operation.EQUALS)) {
+                            String calculate = calculate(operator, numberOne, numberTwo);
+                            reuseOperatorEquals = true;
+                            if (numberOne != null) {
+                                numberOne = convertStringToBigDecimal(calculate);
+                            }
+                            if (isPriorityOperations) {
+                                operator = operatorInMemory;
+                                numberOne = numbers;
+                                numberTwo = null;
                                 operatorInMemory = null;
-                                numberOne = calculate(operator, numberOne, numberTwo);
-                                operator = operatorValue;
-                                numberTwo = RESET_NUMBER;
                                 isPriorityOperations = false;
                             }
-                            nextNumber = true;
+                            numbers = convertStringToBigDecimal(calculate);
                         }
-                        replaceOperator = true;
+                    } else {
+                        if (validateNumberAvailableInsideComma(convertBigDecimalToString(numbers))) {
+                            numbers = convertStringToBigDecimal(DEFAULT_VALUE);
+                        }
                     }
+                    DISPLAY.setText(convertBigDecimalToString(numbers));
                 }
-            } else {
-                if (operator != null) {
-                    if (isPriorityOperations) {
-                        numberTwo = calculate(operatorInMemory, numberTwo, textDisplay);
-                    }
-                    if (numberTwo.isEmpty()) {
-                        numberTwo = DISPLAY.getText();
-                    }
-                    if (numberOne.equals(RESET_NUMBER)) {
-                        numberOne = numberTwo;
-                    }
-                    if (!operator.equals(Operation.EQUALS)) {
-                        String calculate = calculate(operator, numberOne, numberTwo);
-                        operatorEqualsUsed = true;
-                        if (!numberOne.isEmpty()) {
-                            numberOne = calculate;
-                        }
-                        if (isPriorityOperations) {
-                            operator = operatorInMemory;
-                            numberOne = textDisplay;
-                            numberTwo = RESET_NUMBER;
-                            operatorInMemory = null;
-                            isPriorityOperations = false;
-                        }
-                        textDisplay = calculate;
-                    }
-                } else {
-                    if (validateNumberAvailableInsideComma(textDisplay)) {
-                        textDisplay = START_POSITION;
-                    }
-                }
-                DISPLAY.setText(textDisplay);
             }
+
         } catch (UndefinedNumberException e) {
-            DISPLAY.setText("Undefined");
+            DISPLAY.setText(UNDEFINED);
             operator = operatorValue;
         } catch (RuntimeException e) {
             logger.error("Exception type: " + e.getClass().getSimpleName() + " -> handlerOperationButton(Event event): " + e.getMessage());
@@ -493,13 +515,13 @@ public class ViewController {
     @FXML
     public void handlerResetButton() {
         operator = null;
-        numberOne = RESET_NUMBER;
-        numberTwo = RESET_NUMBER;
+        numberOne = null;
+        numberTwo = null;
         startPosition = true;
         isPriorityOperations = false;
-        operatorEqualsUsed = false;
+        reuseOperatorEquals = false;
         DISPLAY.setStyle(FX_FONT_SIZE + MAX_FONT_SIZE_TEXT + FONT_SIZE);
-        DISPLAY.setText(START_POSITION);
+        DISPLAY.setText(DEFAULT_VALUE);
     }
 
     /**
@@ -508,11 +530,11 @@ public class ViewController {
     @FXML
     public void handlerSingButton() {
         String textDisplay = DISPLAY.getText();
-        if (!textDisplay.equals(START_POSITION)) {
+        if (!textDisplay.equals(DEFAULT_VALUE)) {
             String newTextDisplay;
 
             if (validateNumberAvailableInsideComma(textDisplay)) {
-                newTextDisplay = START_POSITION;
+                newTextDisplay = DEFAULT_VALUE;
             } else {
                 if (textDisplay.startsWith(SIGN_VALUE)) {
                     newTextDisplay = textDisplay.substring(1);
@@ -529,9 +551,10 @@ public class ViewController {
      */
     @FXML
     public void handlerPercentButton() throws Exception {
-        String textDisplay = DISPLAY.getText();
-        if (numberOne.isEmpty()) {
-            numberOne = PERCENT_PART_NUMBER;
+        BigDecimal textDisplay = new BigDecimal(DISPLAY.getText());
+
+        if (numberOne == null) {
+            numberOne = new BigDecimal(ONE_HUNDREDTH_PART_NUMBER);
         }
         String calculate = calculate(Operation.PERCENT, numberOne, textDisplay);
         DISPLAY.setText(calculate);
@@ -557,6 +580,7 @@ public class ViewController {
             nextNumber = true;
         } else if (btn.equals(MR)) {
             String number = convertBigDecimalToString(numberInMemory);
+
             DISPLAY.setText(number);
         }
     }
@@ -651,22 +675,19 @@ public class ViewController {
     /**
      * Calculate result of the arithmetic operation two numbers.
      *
-     * @param operation the arithmetic operator:  ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
-     * @param numberOne the first number.
-     * @param numberTwo the second number.
+     * @param operation    the arithmetic operator:  ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, PERCENT.
+     * @param firstNumber  the first number.
+     * @param secondNumber the second number.
      * @return result of the arithmetic operation.
      * @throws UndefinedNumberException if division by zero.
      */
-    private String calculate(Operation operation, String numberOne, String numberTwo) throws UndefinedNumberException {
-        BigDecimal firstNumber = new BigDecimal(numberOne);
-        BigDecimal secondNumber = new BigDecimal(numberTwo);
-
+    private String calculate(Operation operation, BigDecimal firstNumber, BigDecimal secondNumber) throws UndefinedNumberException {
         BigDecimal result = CALCULATOR.calculate(operation, firstNumber, secondNumber);
         return convertBigDecimalToString(result);
     }
 
     /**
-     * Calculate adding and subtracting operations from memory
+     * Calculate adding and subtracting operations from memory.
      *
      * @param operationName the operator:  ADDITION, SUBTRACTION.
      * @param numberOne     the first number.
@@ -681,7 +702,7 @@ public class ViewController {
     }
 
     /**
-     * Convert the number BigDecimal to a string.
+     * Convert the number BigDecimal to String.
      *
      * @param number BigDecimal
      * @return string representation of the number.
@@ -692,6 +713,16 @@ public class ViewController {
             return result.toString().replace(EXPONENT_PLUS_VAL, EXPONENT_VAL);
         }
         return result.toPlainString();
+    }
+
+    /**
+     * Convert the String to BigDecimal.
+     *
+     * @param number string
+     * @return BigDecimal.
+     */
+    private BigDecimal convertStringToBigDecimal(String number) {
+        return new BigDecimal(number);
     }
 
     /**
@@ -717,7 +748,7 @@ public class ViewController {
     }
 
     /**
-     * Verification whether a string is a number.
+     * Verification incoming string.
      *
      * @param number the incoming parameter.
      * @return true if number.
@@ -732,7 +763,7 @@ public class ViewController {
      * @return true if the count of zeros in the permitted limit.
      */
     private boolean validateLimitNumberZeros(String textDisplay) {
-        return !textDisplay.startsWith(START_POSITION) || textDisplay.startsWith(ZERO_COMMA);
+        return !textDisplay.startsWith(DEFAULT_VALUE) || textDisplay.startsWith(ZERO_COMMA);
     }
 
     /**
